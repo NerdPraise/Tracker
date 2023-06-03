@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300&family=Roboto:wght@400;500;700;900&display=swap"
+    rel="stylesheet">
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <style>
+    body {
+      background: #181c1e;
+    }
+
+    #root:not(:empty)+.spinner {
+      display: none;
+    }
+
+    .spin1,
+    .spin2 {
+      width: 65px;
+      position: fixed;
+      top: 40%;
+      left: 48%;
+    }
+
+    .spin1 {
+      transform: rotateX(60deg) rotateY(45deg) rotateZ(45deg);
+      animation: 750ms rotateBefore infinite linear reverse;
+    }
+
+    .spin2 {
+      animation: 750ms rotateAfter infinite linear;
+      transform: rotateX(240deg) rotateY(45deg) rotateZ(45deg);
+    }
+
+    @keyframes rotateBefore {
+      from {
+        transform: rotateX(60deg) rotateY(45deg) rotateZ(0deg);
+      }
+
+      to {
+        transform: rotateX(60deg) rotateY(45deg) rotateZ(-360deg);
+      }
+    }
+
+    @keyframes rotateAfter {
+      from {
+        transform: rotateX(240deg) rotateY(45deg) rotateZ(0deg);
+      }
+
+      to {
+        transform: rotateX(240deg) rotateY(45deg) rotateZ(360deg);
+      }
+    }
+
+  </style>
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+  <title>React App</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <div class='spinner'>
+    <div class="spin1">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 266 297">
+        <path fill="green"
+          d="M171.508 3.25c54.7 9.608 125.605 68.241 79.388 105.16-34.314 27.41-64.368-11.348-94.095-22.637-29.728-11.289-79.913-1.557-96.672 22.637-76.11 109.871 85.148 188.258 85.148 188.258S-25.449 257.242 3.398 108.41c12.91-66.599 81.33-120.402 168.11-105.16Z"
+          fill="#000" fill-rule="evenodd" />
+      </svg>
+    </div>
+    <div class="spin2">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 266 297">
+        <path fill="red"
+          d="M171.508 3.25c54.7 9.608 125.605 68.241 79.388 105.16-34.314 27.41-64.368-11.348-94.095-22.637-29.728-11.289-79.913-1.557-96.672 22.637-76.11 109.871 85.148 188.258 85.148 188.258S-25.449 257.242 3.398 108.41c12.91-66.599 81.33-120.402 168.11-105.16Z"
+          fill="#000" fill-rule="evenodd" />
+      </svg>
+    </div>
+  </div>
+  <div id="flow-root"></div>
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+@import '_Images/global.styl'
+
+:local(.Button)
+  padding 8px 15px
+  border-radius 3px
+  border none
+  background $color-blue-milk
+  color $color-solid-white
+  transition ease 0.7s
+  cursor pointer
+
+  &:hover:not([disabled])
+    border 1px solid $color-blue-milk
+    background transparent
+    color $color-blue-milk
+  &.disabled
+    background rgb(151, 151, 151) !important
+    cursor not-allowed
+   
+

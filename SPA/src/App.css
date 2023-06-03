@@ -1,0 +1,23 @@
+body {
+  margin: 0px;
+  color: #d2d5d9;
+  font-family: 'Lato', sans-serif;
+  background: #181c1e;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  font-family: 'Lato', sans-serif;
+  margin: 0;
+}
+
+.error-message {
+  color: #cf6679;
+  padding-top: 10px;
+  font-size: 15px;
+}
