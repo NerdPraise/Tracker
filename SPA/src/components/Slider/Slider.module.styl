@@ -1,0 +1,33 @@
+:local(.Slider)
+  display flex
+  .slider_item_content
+    display none
+    width 370px
+    animation fadeOut 1.5s ease-in-out
+    .image
+      width 370px
+      height 370px
+      img
+        width 370px
+        height 370px
+  .active
+    display flex
+    align-items center
+    flex-direction column
+  .slide_content > div
+    text-align center
+  .slider_item_title
+    font-size 25px
+    font-weight 800
+    margin 10px 0
+    text-align center
+  .slider_item_description
+    margin-bottom 10px
+    font-size 13px
+    text-align center
+    
+@keyframes fadeOut 
+  from 
+    opacity 0
+  to 
+    opacity 1

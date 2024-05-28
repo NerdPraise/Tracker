@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+
 import os
 import sys
 
@@ -8,11 +9,12 @@ from decouple import config
 
 def main():
     """Run administrative tasks."""
-    if config('ENVIRONMENT') == 'prod':
-        path_to_settings = 'tracker.settings.prod'
+    if config("ENVIRONMENT") == "prod":
+        path_to_settings = "tracker.settings.prod"
     else:
-        path_to_settings = 'tracker.settings.dev'
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', path_to_settings)
+        path_to_settings = "tracker.settings.dev"
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", path_to_settings)
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -24,5 +26,5 @@ def main():
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

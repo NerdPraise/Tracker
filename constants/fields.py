@@ -1,7 +1,7 @@
 import datetime
 
-from django.db import models
 from django.core import exceptions
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from .utils import Month
@@ -11,7 +11,7 @@ class MonthField(models.DateField):
     description = "A specific month of a specific year."
 
     default_error_messages = {
-        'invalid_year': _("Year informed invalid. Enter at least 4 digits."),
+        "invalid_year": _("Year informed invalid. Enter at least 4 digits."),
     }
 
     def to_python(self, value):
@@ -21,9 +21,9 @@ class MonthField(models.DateField):
             month = Month.from_date(value)
             if len(str(month.year)) < 4:
                 raise exceptions.ValidationError(
-                    self.error_messages['invalid_year'],
-                    code='invalid_year',
-                    params={'value': value},
+                    self.error_messages["invalid_year"],
+                    code="invalid_year",
+                    params={"value": value},
                 )
         elif isinstance(value, str):
             month = Month.from_string(value)

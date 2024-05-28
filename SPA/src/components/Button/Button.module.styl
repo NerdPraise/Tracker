@@ -1,0 +1,39 @@
+:local(.Button)
+  padding 8px 15px
+  border-radius 3px
+  border none
+  min-height 40px
+  background $color-green 
+  color $color-solid-white
+  transition ease 0.7s
+  cursor pointer
+  display flex
+  border 1px solid $color-green 
+  align-items center
+
+  &:hover:not([disabled])
+    border 1px solid $color-green 
+    background transparent
+    color $color-green 
+  &:disabled
+    background rgb(151, 151, 151) !important
+    cursor not-allowed
+    border 1px solid rgb(151, 151, 151)
+
+   
+:local(.ExportButton)
+    background transparent
+    border 1px solid $color-white-grey
+    svg
+        padding-left 0px
+        margin-left 0px
+    &:hover:not([disabled])
+      border 1px solid transparent
+    &.disabled
+        background transparent
+        border none
+        &:hover
+            background transparent
+            border none
+        svg 
+            fill #ccc

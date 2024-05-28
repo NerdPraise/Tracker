@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "baseUrl": "./src",
+    "jsx": "react-jsx",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "paths":{
+        "_Home/*": ["./*"],
+        "_Images/*": ["./assets/img/*"]
+    },
+  "types": ["vite-plugin-svgr/client"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

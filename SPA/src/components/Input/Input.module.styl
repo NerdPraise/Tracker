@@ -1,0 +1,42 @@
+:local(.Input)
+  width 100%
+  display flex
+  flex-direction column
+  margin 10px 0
+  min-height 65px
+  position relative
+  .input_container
+    position relative
+    width 100%
+
+  input 
+    width 100%
+    height 35px
+    background inherit
+    border 1px solid $color-light-ccc 
+    border-radius 5px
+    color $color-white-grey
+    padding-left 10px
+    &:focus
+      outline none
+    &.has_icon
+      padding-left 55px
+  label
+    margin-bottom 10px
+  .error
+    font-size 12px
+    margin-top 5px
+    color $color-error-red
+  .icon
+    position absolute
+    background mix($color-global-dark, #fff, 79%)
+    width 50px
+    height 100%
+    border 1px solid $color-light-ccc 
+    border-right none
+    border-top-left-radius 5px
+    border-bottom-left-radius 5px
+    font-size 14px
+    display flex
+    justify-content center
+    align-items center

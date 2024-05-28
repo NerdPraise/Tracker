@@ -26,16 +26,16 @@ class Month(object):
         y = int(date[:4])
         try:
             m = int(date[5:7])
-        except:
+        except Exception:
             m = int(date[5:6])
         return cls(y, m)
 
     def __add__(self, x):
-        '''x is an integer'''
+        """x is an integer"""
         return Month.from_int(int(self) + x)
 
     def __sub__(self, x):
-        '''x is integer or Month instance'''
+        """x is integer or Month instance"""
         if isinstance(x, Month):
             return int(self) - int(x)
         else:
@@ -71,9 +71,7 @@ class Month(object):
 
     def __gt__(self, x):
         if isinstance(x, Month):
-            if self.year != x.year:
-                return self.year > x.year
-            return self.month > x.month
+            return self.year > x.year if self.year != x.year else self.month > x.month
         if isinstance(x, datetime.date):
             return self.first_day() > x
         if isinstance(x, int):
@@ -94,7 +92,7 @@ class Month(object):
         return not self >= x
 
     def __str__(self):
-        return '%s-%02d' % (self.year, self.month)
+        return "%s-%02d" % (self.year, self.month)
 
     def __unicode__(self):
         return self.__str__()
@@ -107,11 +105,12 @@ class Month(object):
 
     def datestring(self):
         return self.first_day().isoformat()
+
     isoformat = datestring
 
     def range(self, x):
-        '''x must be an instance of Month that is larger than self.
-        returns a list of Month objects that make up the timespan from self to x (inclusive)'''
+        """x must be an instance of Month that is larger than self.
+        returns a list of Month objects that make up the timespan from self to x (inclusive)"""
         months_as_ints = range(int(self), int(x) + 1)
         return [Month.from_int(i) for i in months_as_ints]
 

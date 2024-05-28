@@ -1,8 +1,7 @@
-from rest_framework import generics, status, views
+from django.contrib.auth import get_user_model
+from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from django.contrib.auth import get_user_model
 
 from api.serializer.accounts import UserSerializer
 
@@ -20,20 +19,20 @@ class RegisterAPIView(generics.CreateAPIView):
             user = serializer.save()
             refresh = RefreshToken.for_user(user)
             data = {
-                'user': serializer.data,
-                'access': str(refresh.access_token),
-                'refresh': str(refresh)
+                "user": serializer.data,
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
             }
-            return Response({'data': data}, status=status.HTTP_201_CREATED)
-        return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"data": data}, status=status.HTTP_201_CREATED)
+        return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MeAPIView(views.APIView):
     serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = User.objects.all()
 
     def get(self, request):
-        user = self.request.user
-        if user.id is not None:
-            serializer = self.serializer_class(user)
-            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
-        return Response({'error': 'No user logged in'}, status=status.HTTP_400_BAD_REQUEST)
+        qs = self.queryset.get(id=request.user.id)
+        serializer = self.serializer_class(qs)
+        return Response(serializer.data)

@@ -1,11 +1,11 @@
-from django.db import models
-from django.contrib.auth import get_user_model
-from django.utils.translation import gettext as _
-from django.db.models.signals import post_save
-from django.db.models import Sum
-from django.utils.timezone import now
-
 import uuid
+
+from django.contrib.auth import get_user_model
+from django.db import models
+from django.db.models import Sum
+from django.db.models.signals import post_save
+from django.utils.timezone import now
+from django.utils.translation import gettext as _
 
 from constants.fields import MonthField
 
@@ -16,45 +16,27 @@ class Wallet(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     total_income = models.BigIntegerField(default=0)
 
-    def get_total_income(self):
-        pass
-
     def __str__(self):
-        return f'{self.user.username} wallet'
+        return f"{self.user.username} wallet"
 
 
-class Budget(models.Model):
-    wallet = models.ForeignKey(Wallet, on_delete=models.PROTECT)
+class MonthTrack(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     month = MonthField(unique=True)
-    monthly_budget = models.IntegerField(_('Budget Percentage'), help_text=_(
-        'Percentage used to determine monthly budget'), default=40)
-    month_income = models.BigIntegerField(default=0)
+    amount = models.BigIntegerField(default=0, help_text=_("Amount of money held into the month"))
 
     def __str__(self):
-        return f'{self.month} budget'
+        return f"{self.month} track"
 
-    @staticmethod
-    def update_wallet(sender, instance, **kwargs):
-        wallet = instance.wallet
-        new_income = instance.month_income * \
-            (1 - (instance.monthly_budget / 100))
-        wallet.total_income += new_income
-        wallet.save()
-
-    def get_total_transaction_amount(self):
-        amount = self.transactions.all().aggregate(sum=Sum('amount'))
-        return amount['sum']
-
-    def can_add_more_to_budget(self):
-        # This is to safe guard against adding more budget allowances than the current month_income
-        pass
-
-
-post_save.connect(Budget.update_wallet, Budget)
+    def get_balance(self):
+        amount = self.transactions.all().aggregate(sum=Sum("amount"))
+        return amount["sum"]
 
 
 class Category(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=150)
+    # TODO: Unique validator for each user and their categories
 
     def __str__(self):
         return self.name
@@ -63,43 +45,54 @@ class Category(models.Model):
         verbose_name_plural = "Categories"
 
 
-class UserCategory(models.Model):
-    name = models.CharField(max_length=150)
-    max_spend = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    monthly_track = models.ForeignKey(Budget, on_delete=models.PROTECT)
-
-    @property
-    def get_current_sepnd(self):
-        return self.transaction_set.all().aggregate(sum=Sum('amount'))["sum"]
-
-    def __str__(self):
-        return f'{self.user.email} {self.name}'
-
-    class Meta:
-        verbose_name_plural = "User Categories"
-
-
 class Transaction(models.Model):
     class Source(models.TextChoices):
-        CREDIT = 'credit'
-        DEBIT = 'debit'
+        CREDIT = "credit"
+        DEBIT = "debit"
 
-    category = models.ForeignKey(
-        UserCategory, related_name='transactions', on_delete=models.PROTECT)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True, blank=True)
     source = models.CharField(max_length=10, choices=Source.choices)
     description = models.CharField(max_length=150)
     amount = models.IntegerField()
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(default=now)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True)
+    month_track = models.ForeignKey(MonthTrack, related_name="transactions", on_delete=models.PROTECT)
+    wallet = models.ForeignKey(
+        Wallet, related_name="wallet_transactions", on_delete=models.PROTECT, null=True, blank=True
+    )
 
     def save(self, *args, **kwargs):
-        if not self.id and self.source == 'credit':
-            category, created = Category.objects.get_or_create(name='Income')
+        if not self.id and self.source == "credit":
+            category, _ = Category.objects.get_or_create(name="Income")
             self.category = category
         super().save(*args, **kwargs)
 
     def __str__(self):
-        track = self.monthly_track
-        return f'{track.wallet.user.username, track.month}'
+        track = self.month_track
+        return f"{track.user.username, track.month, self.source}"
+
+
+def set_income(sender, instance, created, **kwargs):
+    if instance and instance.source == "credit":
+        category, _ = Category.objects.get_or_create(name="Income")
+        instance.category = category
+
+
+post_save.connect(set_income, Transaction)
+
+
+# class Category (models.Model):
+#     name = models.CharField(max_length=150)
+#     max_spend = models.IntegerField()
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     monthly_track = models.ForeignKey(Budget, on_delete=models.PROTECT)
+
+#     @property
+#     def get_current_sepnd(self):
+#         return self.transaction_set.all().aggregate(sum=Sum("amount"))["sum"]
+
+#     def __str__(self):
+#         return f"{self.user.email} {self.name}"
+
+#     class Meta:
+#         verbose_name_plural = "User Categories"

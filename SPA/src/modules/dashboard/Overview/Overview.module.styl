@@ -1,0 +1,185 @@
+:local(.MoneyDash) 
+  .grid 
+    width 100%
+    height: 500px
+
+  .title
+    display flex
+    justify-content space-between
+    margin-bottom 25px
+    .overview
+      font-size 32px
+
+  .expenses_overview
+    display flex
+    justify-content space-between
+    margin-bottom 35px
+
+    .card
+      width 100%
+      margin-right 35px
+      height 320px
+      max-height 320px
+      &:last-of-type
+        margin-right 0
+      .card_content
+        height 270px
+        overflow-y auto
+        padding-right 20px
+      &.report_card
+        overflow hidden
+        .category_data
+          width 100%
+          position relative
+        :global(.children)
+          padding 0
+          display flex
+          overflow hidden
+          .chart
+            width 100%
+            align-self flex-end
+            position absolute
+            bottom 0
+            
+
+      .ge_placeholder
+        display flex
+        align-items center
+        width 100%
+        > div:first-of-type
+          margin-right 25px
+
+      .transactions_list, 
+        align-items center
+        > div:first-of-type
+          display flex
+          align-items center
+        .moneybag
+          width 40px
+          height 40px
+          margin-right 15px
+          background $color-green
+          border-radius 50%
+          display flex
+          align-items center
+          justify-content center
+
+        .debit
+          color $color-red 
+        .credit
+          color $color-green
+        .description
+          font-size 16px
+          > div:last-of-type
+            color $color-small-text
+            font-size 9px
+
+      .loading_div_two, .transactions_list
+        display flex
+        justify-content space-between
+        margin-bottom 15px
+        align-items center
+        width 100%
+        > div:first-of-type
+          margin-right 18px
+      .category_list
+        display flex
+        flex-wrap wrap
+        width 100%
+        padding 0 20px
+        .category_item
+          display flex
+          flex 1 0 50%
+          align-items center
+          margin-bottom 15px
+
+          .logo
+            width 41px
+            height 40px
+            border-radius 50%
+            display flex
+            align-items center
+            justify-content center
+            img
+              width 35px
+              height 35px
+          .category_description
+            display flex
+            flex-direction column
+            margin-left 10px
+            .category_money
+              position relative
+              span:first-of-type
+                font-size 10px
+                top 0
+                position absolute
+                left 0
+              span:last-of-type
+                margin-left 10px
+            small
+              font-size 12px
+              color $color-small-text
+           
+
+  .months_selection
+    display flex
+    width 100%
+    justify-content flex-end
+    margin-bottom 15px
+
+    select
+      padding 8px
+      background transparent
+      color white
+      border-radius 4px
+      width 150px
+
+      &:focus
+        outline none
+  .money_transactions
+    display flex
+    flex-direction column
+    .export
+      margin-bottom 10px
+      align-self flex-end
+
+
+
+:local(.calendar)
+  :global(button.tile), :global(.react-calendar__month-view__weekdays__weekday)
+    background $content-sidebar-gray
+    border none
+    color $calendar-tile-text
+    font-size 11px
+    padding 10px 0
+    cursor pointer
+
+  :global(button.tile):hover 
+    background $content-gray-dark
+
+  :global(.react-calendar__month-view__weekdays)
+    margin-left 10px
+
+  :global(.react-calendar__navigation)
+    display flex
+    justify-content center
+    :global(button)
+      display none
+    :global(button.react-calendar__navigation__label)
+      display block
+      background $content-sidebar-gray
+      color white
+      cursor pointer
+      border 1px solid $content-gray-dark
+
+  :global(.tile)
+    .active_day
+      width 100%
+      display flex
+      justify-content center
+      > div
+        height 2.5px
+        width 2.5px
+        border-radius 50%
+        background $color-green
+  

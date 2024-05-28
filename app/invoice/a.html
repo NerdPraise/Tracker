@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300&family=Roboto:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      main {
+        font-family: Lato, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        color: #000;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      .invoice-container {
+        width: 100%;
+        margin: 1.25em auto;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .invoice-container .body {
+        padding: 5em 6.25em;
+        background-color: #fff;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4%;
+      }
+      .header img {
+        width: 6.25em;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 1.875em;
+        font-weight: 800;
+      }
+      .address {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 3.125em;
+        font-size: 0.8125em;
+      }
+      .address .client p {
+        font-weight: 600;
+        font-size: 1em;
+        margin-bottom: 1.25em;
+      }
+      .address .client div {
+        margin-bottom: 0.45em;
+      }
+      .address .client span {
+        font-weight: 600;
+      }
+      .address .user-detail {
+        text-align: right;
+      }
+      .address .user-detail div {
+        margin-bottom: 0.3125em;
+      }
+
+      .table-container {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8125em;
+      }
+      .table-container tr:first-of-type td {
+        padding-top: 1.5625em;
+      }
+      .table-container td {
+        font-weight: 600;
+      }
+      .table-container td:last-of-type {
+        color: #d7493a;
+      }
+      .table-container th,
+      .table-container td {
+        padding: 0.5em;
+        text-align: center;
+      }
+      .table-container th {
+        color: #808080;
+        font-weight: 400;
+        font-size: 0.75em;
+        border: none;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 0.9375em;
+      }
+      .table-container td:first-of-type,
+      .table-container th:first-of-type {
+        text-align: left;
+        padding-left: 0;
+      }
+      .table-container td:last-of-type,
+      .table-container th:last-of-type {
+        text-align: right;
+        padding-right: 0;
+      }
+      .footer {
+        background: #e3e1dda3;
+        height: 21.875em;
+        padding: 4.375em 6.25em 4.375em;
+      }
+      .footer-header,
+      .footer-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .footer-header {
+        font-size: 0.75em;
+        color: #808080;
+        width: 100%;
+      }
+      .third {
+        flex-basis: 33%;
+      }
+      .third.end {
+        text-align: right;
+      }
+      .footer-item {
+        margin: 1.5625em 0;
+      }
+      .footer-item .account_details {
+        font-size: 0.75em;
+      }
+      .footer-item .due_item {
+        font-size: 1.375em;
+      }
+      .footer-item .total_item {
+        font-size: 1.625em;
+        color: #d7493a;
+        font-weight: 700;
+        padding-right: 0;
+      }
+      hr {
+        border: 0.7px solid #ccc;
+        border-style: solid;
+        border-bottom: none;
+      }
+      .footer-msg {
+        margin-top: 2.5em;
+      }
+      .footer-msg {
+        font-size: 1.0625em;
+      }
+    </style>
+  </head>
+  <main>
+    <div class="invoice-container">
+      <div class="body">
+        <div class="header">
+          <img src="../../a.png" alt="Your Logo" />{}
+          <h1>INVOICE</h1>
+        </div>
+        <div class="address">
+          <div class="client">
+            <p>{{client}}</p>
+            <div>Date Issued: <span>{{invoice.issue_date}}</span></div>
+            <div>Invoice No: <span>{{invoice.inv_number}}</span></div>
+          </div>
+          <div class="user-detail">
+            <div>{{ user.name }}</div>
+            <div>{{user.address}}</div>
+            <div>{{user.city}}, {{user.country}}</div>
+            <div>{{user.extras}}</div>
+          </div>
+        </div>
+        <table class="table-container">
+          <thead>
+            <tr>
+              <th>DESCRIPTION</th>
+              <th>RATE</th>
+              <th>QTY.</th>
+              <th>SUBTOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#invoice.items}}
+            <tr>
+              <td>{{description}}</td>
+              <td>{{rate}}</td>
+              <td>{{qty}}</td>
+              <td>{{subtotal}}</td>
+            </tr>
+            {{/invoice.items}}
+          </tbody>
+        </table>
+      </div>
+      <div class="footer">
+        <div class="footer-header">
+          <div class="third">BANK INFO</div>
+          <div class="third">DUE BY</div>
+          <div class="third end">TOTAL DUE</div>
+        </div>
+        <hr />
+        <div class="footer-item">
+          <div class="third">
+            <div class="account_details">{{user.account}}</div>
+          </div>
+          <div class="third due_item">
+            <div>{{invoice.due_date}}</div>
+          </div>
+          <div class="third total_item end">{{invoice.total}}</div>
+        </div>
+        <hr />
+        <div class="footer-msg">
+          <div class="thanks">❤️ Thank you!</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</html>
