@@ -24,10 +24,11 @@ export const INVOICE_ACTION_TYPE = {
   SET_SELECTED_INVOICE_DONE: 'INVOICE_ACTION_TYPE/SET_SELECTED_INVOICE/DONE',
   SAVE_INVOICE_START: 'INVOICE_ACTION_TYPE/SAVE_INVOICE/START',
   SAVE_INVOICE_DONE: 'INVOICE_ACTION_TYPE/SAVE_INVOICE/DONE',
-  SET_SELECTED_CLIENT_DONE: 'INVOICE_ACTION_TYPE/SET_SELECTED_CLIENT/DONE',
+  CLEAR_INVOICE_STATUS_CODE: 'INVOICE_ACTION_TYPE/CLEAR_INVOICE_STATUS_CODE/DONE',
 }
 
 export const getAllInvoices = () => (dispatch) => {
+  dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
   dispatch({ type: INVOICE_ACTION_TYPE.GET_ALL_INVOICES_START })
 
   AuthenticatedAPI.get(`invoices/`)
@@ -50,6 +51,7 @@ export const getAllInvoices = () => (dispatch) => {
 }
 
 export const getSingleInvoice = (id) => (dispatch) => {
+  dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
   dispatch({ type: INVOICE_ACTION_TYPE.GET_SINGLE_INVOICE_START })
 
   AuthenticatedAPI.get(`invoice/${id}`)
@@ -103,6 +105,7 @@ export const getAllTemplates = () => (dispatch) => {
 }
 
 export const createInvoice = () => (dispatch) => {
+  dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
   dispatch({ type: INVOICE_ACTION_TYPE.CREATE_INVOICE_START })
 
   AuthenticatedAPI.post(`invoices/`)
@@ -243,25 +246,28 @@ export const deleteTransactions = (uuid: string) => (dispatch) => {
 }
 
 export const updateInvoice = (data: Record<string, string | number>) => (dispatch) => {
+  dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
   dispatch({
     type: INVOICE_ACTION_TYPE.UPDATE_INVOICE,
     payload: { data },
   })
 }
 
-export const setSelectedInvoice = (id) => (dispatch) => {
+export const setSelectedInvoice = (data: Record<'invoiceID' | 'type', string>) => (dispatch) => {
+  dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
   dispatch({
     type: INVOICE_ACTION_TYPE.SET_SELECTED_INVOICE_DONE,
     payload: {
-      data: id,
+      type: data.type,
+      id: data.invoiceID,
     },
   })
 }
 
 export const saveInvoice = (uuid?: string) => (dispatch, getState) => {
+  dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
   const { selectedInvoice } = getState().invoices.invoice
   const data = snakify(selectedInvoice)
-  console.log(data)
 
   let request, url
   dispatch({ type: INVOICE_ACTION_TYPE.SAVE_INVOICE_START })
@@ -279,6 +285,7 @@ export const saveInvoice = (uuid?: string) => (dispatch, getState) => {
         type: INVOICE_ACTION_TYPE.SAVE_INVOICE_DONE,
         payload: {
           statusCode: response.status,
+          data: camelize(response.data),
         },
       })
     })
@@ -291,13 +298,4 @@ export const saveInvoice = (uuid?: string) => (dispatch, getState) => {
         },
       }),
     )
-}
-
-export const setSelectedClient = (id: number) => (dispatch) => {
-  dispatch({
-    type: INVOICE_ACTION_TYPE.SET_SELECTED_CLIENT_DONE,
-    payload: {
-      data: id,
-    },
-  })
 }

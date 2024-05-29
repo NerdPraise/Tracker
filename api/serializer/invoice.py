@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user
 from functools import reduce
 from rest_framework import serializers
 
@@ -24,9 +23,12 @@ class InvoiceItemsSerializer(serializers.Serializer):
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    status = serializers.CharField(read_only=True)
+    total_due = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Payment
-        fields = "__all__"
+        fields = ("status", "total_due")
 
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -60,10 +62,9 @@ class InvoiceTemplateSerializer(serializers.ModelSerializer):
 
 
 class InvoiceSerializer(serializers.ModelSerializer):
-    payment = serializers.PrimaryKeyRelatedField(read_only=True, source="payment.total_due")
+    payment = PaymentSerializer(read_only=True)
     client = ClientSerializer()
     invoice_items = InvoiceItemsSerializer(many=True, allow_empty=False, required=True)
-    status = serializers.CharField(read_only=True)
     user = serializers.CharField(read_only=True)
     amount = serializers.SerializerMethodField()
     template = InvoiceTemplateSerializer(required=False)
@@ -72,23 +73,34 @@ class InvoiceSerializer(serializers.ModelSerializer):
         model = Invoice
         exclude = ("created_at", "updated_at")
 
-    def update(self, instance, validated):
-        user = get_user(self.context["request"])
-        # client, invoice_items, template
+    def create(self, validated):
+        user = self.context["request"].user
+        client = validated.pop("client")
+        template_data = validated.pop("template")
+        invoice = Invoice.objects.create(**validated, user=user)
+        invoice.client = Client.objects.get(**client)
+        existing_template, _ = InvoiceTemplate.objects.get_or_create(**template_data, defaults={"user": user})
+        invoice.template = existing_template
+        invoice.save()
+        return invoice
 
+    def update(self, instance, validated):
+        user = self.context["request"].user
         client = validated.pop("client")
         if instance.client.id != client.get("id"):
             instance.client = Client.objects.get(**client)
 
-        # # # Update template if necessary
+        # Update template if necessary
         template_data = validated.pop("template")
-        # template_html = template_data.get("settings", {}).get("html")
+        settings = template_data.get("settings")
+        if settings["theme"] != instance.template.settings.get("theme"):
+            template, _ = InvoiceTemplate.objects.update_or_create(
+                user=user,
+                invoice=instance,
+                defaults={"settings": settings, "user": user},
+            )
+            instance.template = template
 
-        # if instance.template.id != template_data.get("id"):
-        #     instance.template_id = template_data.get("id")
-        # # elif instance.template.settings.get("html") != template_html: # TODO: Figure out how to compare html devoid of the extra mustache'd data
-        # #     new_template = InvoiceTemplate.objects.create(user=user, **template_data)
-        # #     instance.template = new_template
         instance = super().update(instance, validated)
         instance.save()
         return instance

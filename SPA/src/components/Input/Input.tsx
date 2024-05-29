@@ -29,6 +29,7 @@ interface InputProps {
   customValidation?: (value: string | number) => null | string
   error?: Record<string, string>
   setError?: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  iconStyle?: React.CSSProperties
 }
 
 export const Input = ({
@@ -43,6 +44,7 @@ export const Input = ({
   error = null,
   defaultValue,
   icon,
+  iconStyle,
   ...props
 }: PickProps<React.HTMLAttributes<HTMLInputElement>, InputProps>) => {
   const inputRef = useRef(null)
@@ -88,7 +90,11 @@ export const Input = ({
     <div className={ClassNames(styles.Input, className)}>
       <label htmlFor={name}>{labelName}</label>
       <div className={styles.input_container}>
-        {icon && <div className={styles.icon}>{icon}</div>}
+        {icon && (
+          <div className={styles.icon} style={iconStyle}>
+            {icon}
+          </div>
+        )}
         <input
           className={ClassNames({ [styles.has_icon]: icon })}
           ref={inputRef}

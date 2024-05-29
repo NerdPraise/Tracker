@@ -49,11 +49,17 @@ export const InvoiceDetail = () => {
   const templateSettings = selectedInvoice?.template?.settings
 
   useEffect(() => {
+    if (!transLoading && statusCode === StatusCode.CREATED) {
+      setIsRecordPayment(false)
+    }
+  }, [statusCode])
+
+  useEffect(() => {
     dispatch(getInvoiceTransactions(invoiceID))
   }, [])
 
   useEffect(() => {
-    dispatch(setSelectedInvoice(invoiceID))
+    dispatch(setSelectedInvoice({ invoiceID, type: 'exist' }))
   }, [invoices])
 
   const context = useMemo(() => getContext(selectedInvoice, user), [selectedInvoice])
@@ -76,14 +82,8 @@ export const InvoiceDetail = () => {
     // dispatch(createInvoiceTransaction(formData))
   }
 
-  useEffect(() => {
-    if (!transLoading && statusCode === StatusCode.CREATED) {
-      setIsRecordPayment(false)
-    }
-  }, [statusCode])
-
   const gridData = transactions?.map((item) => ({ ...item, client: selectedInvoice?.client }))
-  const clientHasPaidAll = !Number(selectedInvoice?.payment)
+  const clientHasPaidAll = !Number(selectedInvoice?.payment.totalDue)
 
   return (
     <SideBarLayout selectedKey={ROUTES.authenticatedRoutes.INVOICE.key} disableHide>
@@ -122,7 +122,7 @@ export const InvoiceDetail = () => {
                 </div>
               ) : (
                 <div className={styles.card_paid}>
-                  <p>Congrats!!🎉 Your selectedInvoice is all paid for</p>
+                  <p>Congrats!!🎉 Your invoice is all paid for</p>
                   <Button text="Send Receipt" onClick={() => setIsSendToClient(true)} />
                 </div>
               )}
@@ -130,7 +130,7 @@ export const InvoiceDetail = () => {
             <Card className={styles.card}>
               {clientHasPaidAll ? (
                 <div className={styles.card_paid}>
-                  <p>Wish to reverse selectedInvoice payment? Click below button.</p>
+                  <p>Wish to reverse invoice payment? Click below button.</p>
                   <Button text="Mark Unpaid" onClick={onHandleMarkUpaid} />
                 </div>
               ) : (
@@ -213,7 +213,7 @@ export const InvoiceDetail = () => {
                     icon={selectedInvoice.currency}
                     type="number"
                     max={selectedInvoice.amount}
-                    defaultValue={selectedInvoice.amount}
+                    defaultValue={selectedInvoice.payment.totalDue}
                     name="amount"
                     customValidation={(value) =>
                       Number(value) > selectedInvoice.amount

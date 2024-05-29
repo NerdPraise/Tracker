@@ -84,7 +84,7 @@ class TransactionAPIView(views.APIView):
             return Response("Invoice doesn't exist", status=400)
 
         payment = invoice.payment
-        payment.total_due = invoice.invoice_items.aggregate(amount_sum=Sum("amount"))["amount_sum"]
+        payment.total_due = invoice.get_amount()
         payment.save()
         payment.transactions.all().delete()
         return Response(status=204)

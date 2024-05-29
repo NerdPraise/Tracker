@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { Button, Card, Modal } from '_Home/components'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 import { ROUTES } from '_Home/routing/routes'
 
-import { getAllTemplates, setSelectedTemplate } from '../redux/actions'
+import { setSelectedTemplate } from '../redux/actions'
 import styles from '../Invoice.module.styl'
-import { ITemplate, TemplatesProcessor } from '../redux/processor'
+import { TemplatesProcessor } from '../redux/processor'
 
 export const AddInvoice = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -52,7 +52,9 @@ export const AddInvoice = () => {
             <h2 className={styles.template_name}>Simple</h2>
             <div className={`${styles.simple_container} ${styles.template_container}`}>
               {processed_templates.simple.map((item, ind) => (
-                <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template} />
+                <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>
+                  <img className={styles.card_image} src={item?.image} />
+                </Card>
               ))}
             </div>
           </div>
@@ -60,7 +62,9 @@ export const AddInvoice = () => {
             <h2 className={styles.template_name}>Classy</h2>
             <div className={`${styles.simple_container} ${styles.template_container}`}>
               {processed_templates.classy.map((item, ind) => (
-                <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template} />
+                <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>
+                  <img className={styles.card_image} src={item?.image} />
+                </Card>
               ))}
             </div>
           </div>

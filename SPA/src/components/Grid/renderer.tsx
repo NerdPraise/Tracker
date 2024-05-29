@@ -1,11 +1,11 @@
 import { ICellRendererParams } from 'ag-grid-community'
-import ClassNames from 'classnames'
 
 export const StatusRenderer = (params: ICellRendererParams<any>) => {
-  const data = params.value
+  const data = params.value?.status
+
   return (
     <div className={`status_render ${data}`}>
-      <div>{data.toUpperCase()}</div>
+      <div>{(data || '').toUpperCase()}</div>
     </div>
   )
 }

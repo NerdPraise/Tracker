@@ -6,7 +6,7 @@ import { capitalise } from '_Home/common/utils'
 export const columnDefs = [
   {
     headerName: '',
-    valueGetter: (params) => `INV-${params.node.rowIndex + 1}`,
+    valueGetter: (params) => `${params.data.name}`,
     maxWidth: 110,
     flex: 0,
   },
@@ -33,6 +33,9 @@ export const columnDefs = [
     headerName: 'Issue Date',
     field: 'issueDate',
     valueFormatter: (params) => {
+      if (!params.value) {
+        return 'Still in Draft'
+      }
       return new Intl.DateTimeFormat('en-GB', {
         dateStyle: 'long',
       }).format(new Date(params.value))
@@ -49,7 +52,7 @@ export const columnDefs = [
   },
   {
     headerName: 'Status',
-    field: 'status',
+    field: 'payment',
     cellRenderer: StatusRenderer,
     maxWidth: 100,
   },
@@ -71,7 +74,10 @@ export const a = `<!DOCTYPE html>
         margin: 0;
         padding: 0;
         background-color: #f9f9f9;
-        color: #000;
+        {{#theme.body}}
+        color: {{.}};
+        {{/theme.body}}
+
       }
       * {
         box-sizing: border-box;
@@ -97,6 +103,9 @@ export const a = `<!DOCTYPE html>
         margin: 0;
         font-size: clamp(1.5rem, 0.0025rem + 1.933vw, 2.3rem);
         font-weight: 800;
+        {{#theme.header}}
+        color: {{.}};
+        {{/theme.header}}
       }
       .address {
         display: flex;
@@ -346,11 +355,12 @@ export const getContext = (invoice: IInvoice, user: IUser) => ({
     country: 'NG',
     account: 'Some text bla bla bla bla ',
   },
-  client: invoice?.client.name,
+  client: invoice?.client?.name,
   theme: {
-    footerBg: invoice?.template.settings.theme?.footerBg,
-    accent: invoice?.template.settings.theme?.accent,
-    header: invoice?.template.settings.theme?.header,
+    footerBg: invoice?.template?.settings.theme?.footerBg,
+    accent: invoice?.template?.settings.theme?.accent,
+    header: invoice?.template?.settings.theme?.header,
+    body: invoice?.template?.settings.theme?.body,
   },
   invoice: {
     issue_date: invoice?.issueDate,
@@ -358,8 +368,8 @@ export const getContext = (invoice: IInvoice, user: IUser) => ({
     total: function total() {
       return this.invoice.items?.reduce((acc, cur) => acc + cur.subtotal(), 0)
     },
-    total_due: invoice?.payment,
-    status: capitalise(invoice?.status),
+    total_due: invoice?.payment.totalDue,
+    status: capitalise(invoice?.payment.status),
     inv_tag: invoice?.name,
     currency: invoice?.currency,
     items: invoice?.invoiceItems.map((item) => ({
@@ -372,3 +382,12 @@ export const getContext = (invoice: IInvoice, user: IUser) => ({
     })),
   },
 })
+
+//  "theme": {
+//     "body": "#000",
+//     "accent": "#d7493a",
+//     "header": "#000",
+//     "footer_bg": "#e3e1dda3"
+//   }
+
+// console.log(JSON.stringify(a))

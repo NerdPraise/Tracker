@@ -25,13 +25,15 @@ declare global {
     issueDate: string
     dueDate: string
     description: string
-    status: string
     extraInfo: string
     client: IClient
     template: ITemplate
     amount: number
     currency: string
-    payment: number
+    payment: {
+      status: string
+      totalDue: number
+    }
   }
   type ITheme = {
     footer_background?: string

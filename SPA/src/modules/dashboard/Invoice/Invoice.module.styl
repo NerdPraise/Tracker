@@ -23,8 +23,6 @@
       height 550px
       :global(.ag-cell-focus)
         border 1px solid transparent !important
-      // :global(.ag-row-odd)
-      //   background mix($color-global-dark, #fff, 79%)
   .export 
     display flex
     justify-content center
@@ -225,6 +223,9 @@
       margin-left 25px
       min-width 450px
       height 100%
+      .form_card_children
+        padding 15px
+        max-width 450px
       .form_card
         height 100%
         .edit_input_group
@@ -245,15 +246,22 @@
                   background white
           .invoice_items
             margin-top 35px
-            h3
-              margin-bottom 15px
+            .invoice_items_header
+              display flex
+              justify-content space-between
+              align-items center
+              svg
+                cursor pointer
+              h3
+                margin-bottom 15px
             .input_group
               display none
             .active_it
               display block
-          .halves
-            display flex
-            justify-content space-between
-            > div
-              flex-basis 48%
+      .halves
+        display flex
+        justify-content space-between
+        flex-wrap wrap
+        > div
+          flex-basis 48%
 

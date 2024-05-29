@@ -1,23 +1,24 @@
 from django.contrib import admin
+from django.db.models import JSONField
 
 from .models import Client, Invoice, InvoiceTemplate, Payment, Transaction
+from .widgets import JSONFieldWidget
 
 admin.site.register(Transaction)
 
 
-# class InlineInvoiceItemsAdmin(admin.TabularInline):
-#     model = InvoiceItems
-#     extra = 1
-
-
 class InvoiceAdmin(admin.ModelAdmin):
-    # inlines = (InlineInvoiceItemsAdmin,)
-    list_display = ["name", "narration", "issue_date", "due_date", "status"]
+    formfield_overrides = {
+        JSONField: {"widget": JSONFieldWidget},
+    }
+    list_display = ["name", "narration", "issue_date", "due_date", "payment"]
     search_fields = ["name"]
 
     @admin.display
     def narration(self, obj):
         return f"ID={obj.id} {obj.user.email} invoice to client={obj.client_id}"
+
+    list_select_related = ["payment"]
 
 
 class ClientAdmin(admin.ModelAdmin):
@@ -26,6 +27,9 @@ class ClientAdmin(admin.ModelAdmin):
 
 class InvoiceTemplateAdmin(admin.ModelAdmin):
     list_display = ("uuid", "category", "user")
+    formfield_overrides = {
+        JSONField: {"widget": JSONFieldWidget},
+    }
 
 
 class InlineTransactionsAdmin(admin.TabularInline):

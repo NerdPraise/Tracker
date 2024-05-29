@@ -1,4 +1,5 @@
 import uuid
+from functools import reduce
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -16,59 +17,47 @@ class TimeStampedModel(models.Model):
 
 
 class Invoice(TimeStampedModel):
-    class StatusChoices(models.TextChoices):
-        PENDING = "pending"
-        PAID = "paid"
-        DRAFT = "draft"
-        OVERDUE = "OVERDUE"
-
     class CurrencyChoices(models.TextChoices):
         USD = "USD"
         NGN = "NGN"
         EUR = "EUR"
         GBP = "GBP"
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     client = models.ForeignKey("Client", on_delete=models.SET_NULL, null=True)
-    issue_date = models.DateField()
+    issue_date = models.DateField(null=True, blank=True)
     due_date = models.DateField()
     user = models.ForeignKey(User, related_name="invoices", on_delete=models.CASCADE)
     description = models.TextField()
-    status = models.CharField(choices=StatusChoices.choices, default=StatusChoices.DRAFT, max_length=20)
     extra_info = models.TextField(null=True, blank=True)
     currency = models.CharField(choices=CurrencyChoices.choices, default=CurrencyChoices.USD, max_length=20)
-    template = models.ForeignKey("InvoiceTemplate", on_delete=models.PROTECT)
-    invoice_items = models.JSONField(default=list, null=False)
+    template = models.ForeignKey("InvoiceTemplate", on_delete=models.PROTECT, null=True)
+    invoice_items = models.JSONField(default=list, null=False, blank=False)
 
     def __str__(self):
-        return f"ID={self.id} {self.user.email} invoice to Client={self.client_id}"
+        return f"INVOICE {self.name} Email={self.user.email}"
 
     def save(self, *args, **kwargs):
         if not self.id:
             self.name = f"INV-{self.user.invoices.count() + 1}"
         return super().save(*args, **kwargs)
 
+    def get_amount(self):
+        return reduce(lambda a, b: a + (b["quantity"]) * b["unit_price"], self.invoice_items, 0)
+
     @staticmethod
     def create_payment_fk(sender, created, instance, **kwargs):
+        updated_amount = instance.get_amount()
         if created:
-            Payment.objects.create(invoice=instance, total_due=instance.amount)
+            Payment.objects.create(invoice=instance, total_due=updated_amount)
+        else:
+            already_paid = instance.payment.transactions.aggregate(sum=models.Sum("amount"))["sum"] or 0
+            instance.payment.total_due = updated_amount - already_paid
+            instance.payment.save()
 
 
 post_save.connect(Invoice.create_payment_fk, Invoice)
-
-
-# class InvoiceItems(TimeStampedModel):
-#     description = models.TextField()
-#     quantity = models.IntegerField()
-#     unit_price = models.PositiveBigIntegerField()
-#     amount = models.PositiveBigIntegerField(blank=True, editable=False)
-#     invoice = models.ForeignKey(Invoice, related_name="invoice_items", on_delete=models.CASCADE)
-
-#     def save(self, *args, **kwargs):
-#         if not self.id:
-#             self.amount = self.quantity * self.unit_price
-#         return super().save(*args, **kwargs)
 
 
 class InvoiceTemplate(models.Model):
@@ -76,7 +65,7 @@ class InvoiceTemplate(models.Model):
         SIMPLE = "SIMPLE"
         CLASSY = "CLASSY"
 
-    image = models.ImageField(upload_to="invoice_temp", null=True)
+    image = models.ImageField(upload_to="invoice_temp", null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     settings = models.JSONField(default=dict)
     category = models.CharField(choices=CategoryChoices.choices, default=CategoryChoices.SIMPLE, max_length=20)
@@ -96,18 +85,23 @@ class Client(models.Model):
 
 
 class Payment(TimeStampedModel):
+    class StatusChoices(models.TextChoices):
+        PENDING = "pending"
+        PAID = "paid"
+        DRAFT = "draft"
+        OVERDUE = "OVERDUE"
+
+    status = models.CharField(choices=StatusChoices.choices, default=StatusChoices.DRAFT, max_length=20)
     invoice = models.OneToOneField(Invoice, on_delete=models.CASCADE)
     total_due = models.PositiveBigIntegerField()
 
-    @staticmethod
-    def update_invoice(sender, created, instance, **kwargs):
-        if not instance.total_due:
-            invoice = instance.invoice
-            invoice.status = Invoice.StatusChoices.PAID
-            invoice.save()
-
-
-post_save.connect(Payment.update_invoice, Payment)
+    def save(self, *args, **kwargs):
+        if self.id:
+            if self.total_due:
+                self.status = Payment.StatusChoices.PENDING
+            else:
+                self.status = Payment.StatusChoices.PAID
+        return super().save(*args, **kwargs)
 
 
 class Transaction(TimeStampedModel):

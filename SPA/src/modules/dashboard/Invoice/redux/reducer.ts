@@ -1,6 +1,5 @@
 // @ts-nocheck
-import { createReducer, current, original } from '@reduxjs/toolkit'
-import { color } from '@uiw/color-convert'
+import { createReducer } from '@reduxjs/toolkit'
 
 import { StatusCode } from '_Home/common/utils'
 
@@ -12,6 +11,7 @@ type InvoiceState = {
     loading: boolean
     invoices: IInvoice[]
     selectedInvoice: IInvoice | null
+    statusCode: IStatusCode
   }
   client: {
     loading: boolean
@@ -61,10 +61,14 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
     .addCase(INVOICE_ACTION_TYPE.GET_ALL_INVOICES_START, (state, _) => {
       state.invoice.loading = true
     })
+    .addCase(INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE, (state, _) => {
+      state.invoice.statusCode = StatusCode.CLEARED
+    })
     .addCase(INVOICE_ACTION_TYPE.GET_ALL_INVOICES_DONE, (state, action) => {
       state.invoice.loading = false
       state.invoice.invoices = action.payload.data || []
       state.errorMessage = action.payload.errorMessage || ''
+      state.statusCode = StatusCode.CLEARED
     })
     .addCase(INVOICE_ACTION_TYPE.GET_USER_CLIENT_START, (state, _) => {
       state.client.loading = true
@@ -88,13 +92,33 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
       )
     })
     .addCase(INVOICE_ACTION_TYPE.SET_SELECTED_INVOICE_DONE, (state, action) => {
-      const selected = original(state.invoice.invoices).find((item) => item.uuid === action.payload.data)
-      state.invoice.selectedInvoice = selected
-    })
-    .addCase(INVOICE_ACTION_TYPE.SET_SELECTED_CLIENT_DONE, (state, action) => {
-      state.invoice.selectedInvoice.client = state.client.clients.find(
-        (item) => item.id === action.payload.data,
-      )
+      switch (action.payload.type) {
+        case 'new':
+          state.invoice.selectedInvoice = {
+            invoiceItems: [],
+            name: '',
+            uuid: '',
+            dueDate: '',
+            description: '',
+            extraInfo: '',
+            client: null,
+            template: state.template.selectedTemplate,
+            amount: 0,
+            currency: '',
+            payment: {
+              status: '',
+              totalDue: 0,
+            },
+          }
+          break
+        case 'exist':
+          state.invoice.selectedInvoice = state.invoice.invoices.find(
+            (item) => item.uuid === action.payload.id,
+          )
+          break
+        default:
+          break
+      }
     })
     .addCase(INVOICE_ACTION_TYPE.CREATE_TRANSACTION_START, (state, _) => {
       state.transaction.statusCode = StatusCode.CLEARED
@@ -113,6 +137,14 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
     .addCase(INVOICE_ACTION_TYPE.DELETE_TRANSACTION_START, (state, action) => {
       state.transaction.loading = true
     })
+    .addCase(INVOICE_ACTION_TYPE.SAVE_INVOICE_START, (state, action) => {
+      state.invoice.loading = true
+    })
+    .addCase(INVOICE_ACTION_TYPE.SAVE_INVOICE_DONE, (state, action) => {
+      state.invoice.loading = false
+      state.invoice.statusCode = action.payload.statusCode
+      state.invoice.selectedInvoice = action.payload.data
+    })
     .addCase(INVOICE_ACTION_TYPE.DELETE_TRANSACTION_DONE, (state, action) => {
       state.transaction.loading = false
       state.transaction.statusCode = action.payload.statusCode
@@ -126,12 +158,12 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
     .addCase(INVOICE_ACTION_TYPE.UPDATE_INVOICE, (state, action) => {
       let { selectedInvoice } = state.invoice
       const { section } = action.payload.data
-      console.log(section)
       switch (section) {
         case 'invoiceItems':
           const { name, value, ind } = action.payload.data
           selectedInvoice.invoiceItems[ind][name] = value
           break
+
         case 'theme':
           const { color, name: colorName } = action.payload.data
           selectedInvoice.template.settings.theme[colorName] = color
@@ -149,6 +181,17 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
             quantity: 0,
             invoice: state.invoice.selectedInvoice.id,
           })
+          break
+
+        case 'client':
+          const { id: clientId } = action.payload.data
+          state.invoice.selectedInvoice.client = state.client.clients.find(
+            (item) => item.id === clientId,
+          )
+          break
+        case 'others':
+          const { field, res } = action.payload.data
+          state.invoice.selectedInvoice[field] = res
           break
         default:
           break

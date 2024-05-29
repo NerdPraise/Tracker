@@ -38,7 +38,7 @@ export const InvoiceList = () => {
     gridRef.current?.api.exportDataAsCsv()
   }
   const filteredRowData = invoice.invoices.filter((item) =>
-    currentTab !== 'all' ? item.status === currentTab : item,
+    currentTab !== 'all' ? item.payment?.status === currentTab : item,
   )
 
   return (

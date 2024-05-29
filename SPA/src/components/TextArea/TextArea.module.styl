@@ -1,0 +1,23 @@
+:local(.TextArea)
+  width 100%
+  display flex
+  flex-direction column
+  margin 10px 0
+  position relative
+
+  textarea 
+    width 100%
+    background inherit
+    border 1px solid $color-light-ccc 
+    border-radius 5px
+    color $color-white-grey
+    padding-left 10px
+    &:focus
+      outline none
+    
+  label
+    margin-bottom 10px
+  .error
+    font-size 12px
+    margin-top 5px
+    color $color-error-red
