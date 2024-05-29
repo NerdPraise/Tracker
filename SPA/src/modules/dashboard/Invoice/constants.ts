@@ -307,7 +307,6 @@ export const a = `<!DOCTYPE html>
   </main>
 </html>
 `
-// console.log(JSON.stringify(a))
 
 export const paymentColumnDefs = [
   {
@@ -382,12 +381,3 @@ export const getContext = (invoice: IInvoice, user: IUser) => ({
     })),
   },
 })
-
-//  "theme": {
-//     "body": "#000",
-//     "accent": "#d7493a",
-//     "header": "#000",
-//     "footer_bg": "#e3e1dda3"
-//   }
-
-// console.log(JSON.stringify(a))

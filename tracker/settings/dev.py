@@ -35,4 +35,3 @@ LOGGING = {
         },
     },
 }
-print(TEMPLATE_DIR)
