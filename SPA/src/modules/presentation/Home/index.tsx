@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { CircleCheckBig } from 'lucide-react'
 
 import { Button, Nav, Card } from '_Home/components'
-import InvoiceDash from '_Images/invoice.png'
+import InvoiceDash from '_Images/invoice.svg'
 import { ROUTES } from '_Home/routing/routes'
 import { plans } from '_Home/constants'
 

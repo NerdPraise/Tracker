@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import ClassNames from 'classnames'
 
-import Man from '_Images/man.png'
-import Innovation from '_Images/innovation.png'
-import Puzzle from '_Images/puzzle.png'
+import Man from '_Images/man.svg'
+import Innovation from '_Images/innovation.svg'
+import Puzzle from '_Images/puzzle.svg'
 
 import styles from './Slider.module.styl'
 
