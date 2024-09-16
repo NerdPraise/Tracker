@@ -43,7 +43,7 @@ export const Overview = () => {
   }, [])
 
   return (
-    <SideBarLayout disableHide selectedKey={ROUTES.authenticatedRoutes.OVERVIEW.key}>
+    <SideBarLayout disableHide>
       <div className={styles.MoneyDash}>
         <div className={styles.title}>
           <div className={styles.overview}> Overview</div>

@@ -1,5 +1,12 @@
 import React, { MouseEventHandler } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 import ClassNames from 'classnames'
+import { motion } from 'framer-motion'
+import { LogOut } from 'lucide-react'
+
+import { useAppDispatch } from '_Home/common/hooks'
+import { logOutAction } from '_Home/modules/authentication/Login/redux/actions'
+import { ROUTES } from '_Home/routing/routes'
 
 import styles from './SideBar.module.styl'
 
@@ -13,7 +20,6 @@ interface SideBarProps {
   closeSide: VoidFunction
   disableHide?: boolean
   className?: string
-  selectedKey: string
 }
 
 export const SideBar = ({
@@ -24,11 +30,23 @@ export const SideBar = ({
   closeSide,
   disableHide,
   className,
-  selectedKey,
 }: SideBarProps) => {
+  const onChildClick = (callable: VoidFunction) => {
+    callable()
+    closeSide()
+  }
+  const location = useLocation().pathname
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+  const logOut = () => {
+    dispatch(logOutAction())
+    navigate(ROUTES.unauthenticatedRoutes.LOGIN.path)
+  }
+
   return (
     <div
-      className={ClassNames(className, styles.SideBarContainer, {
+      className={ClassNames(className, styles.SideBar, {
         [styles.show]: show,
         [styles.right]: position === 'right',
       })}
@@ -39,14 +57,27 @@ export const SideBar = ({
         </div>
       )}
       <div className={styles.children}>
-        {show &&
-          children?.map((child, ind) =>
-            React.cloneElement(child, {
-              className: ClassNames(styles.sidebar_child, { active: selectedKey === child.key }),
-              onClick: disableHide ? undefined : closeSide,
-              key: `side ${ind}`,
-            }),
-          )}
+        <ul>
+          {show &&
+            children?.map((child, ind) => (
+              <React.Fragment key={`side ${ind}`}>
+                {location.startsWith(child.props.to) && (
+                  <motion.li layoutId="active-pill" className={styles.active_cursor} />
+                )}
+                <li
+                  onClick={disableHide ? child.props.onClick : () => onChildClick(child.props.onClick)}
+                  className={ClassNames(styles.sidebar_child)}
+                >
+                  {child}
+                </li>
+              </React.Fragment>
+            ))}
+        </ul>
+
+        <div className={styles.logout} onClick={logOut}>
+          <LogOut size={19} />
+          &nbsp; Log out
+        </div>
       </div>
     </div>
   )

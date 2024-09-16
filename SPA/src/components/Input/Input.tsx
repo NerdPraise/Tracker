@@ -25,6 +25,9 @@ interface InputProps {
   icon?: Exclude<ReactChildren, () => JSX.Element>
   max?: number | string | undefined
   min?: number | string | undefined
+  maxlength?: number
+  placeholder?: string
+  disabled?: boolean
   // customValidation requires the proceeding two
   customValidation?: (value: string | number) => null | string
   error?: Record<string, string>
@@ -43,8 +46,10 @@ export const Input = ({
   setError = null,
   error = null,
   defaultValue,
+  disabled,
   icon,
   iconStyle,
+  placeholder,
   ...props
 }: PickProps<React.HTMLAttributes<HTMLInputElement>, InputProps>) => {
   const inputRef = useRef(null)
@@ -101,9 +106,11 @@ export const Input = ({
           name={name}
           onChange={onInputChange}
           type={type}
+          disabled={disabled}
           autoComplete={autoComplete}
           onBlur={onInputChange}
           defaultValue={defaultValue}
+          placeholder={placeholder}
           {...props}
         />
       </div>

@@ -1,0 +1,248 @@
+:local(.Home)
+  max-width 1700px
+  display flex
+  flex-direction column
+  width 100%
+  padding 0 80px 
+  margin-bottom 30px
+  .home__hero 
+    background $content-sidebar-gray
+    border-radius 15px
+    max-height 850px
+    .floating_dots
+      z-index 1
+    .hero_content
+      display flex
+      position relative
+      flex-direction column
+      padding 30px 15px
+      width 100%
+      z-index 2
+      align-items center
+      padding-top 80px
+      h1
+        font-size 85px
+        font-weight 800
+        max-width 950px
+        text-align center
+        line-height 78px
+        margin-bottom 22px
+      > p
+        font-size 14px
+        margin-bottom 25px
+        font-weight 400
+        color $color-less-white 
+      .hero__btn
+        font-size 16px
+        height 50px
+        width 150px
+        border-radius 7px
+      .hero__dash
+        background $color-theme-dark
+        position relative
+        padding 10px
+        margin-top 30px
+        max-width 1100px
+        max-height 500px
+        border-radius 20px
+        img 
+          width 100%
+          height 100%
+          border-radius 20px
+        .hero_fade
+          height: 200px;
+          width: 100%;
+          position: absolute;
+          bottom: -20%;
+          left 0
+          z-index 2
+          background linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #181c1e 62%, #181c1e 100%)
+  .home__features
+    z-index 4
+    margin-top 70px
+    h3
+      font-size 30px
+    .home__features_cards
+      display flex
+      flex-wrap wrap
+      justify-content space-between
+      margin-top 15px
+      align-items center
+      padding 0 50px
+      .features__card, .features__card_large
+        min-width 250px
+        width 100%
+        flex-basis 49%
+        height 550px
+        padding 35px 25px 0
+        margin-bottom 30px
+        border-radius 20px
+        .card__header 
+          font-size 25px
+          font-weight 600
+      .features__card_large
+        flex-basis 100%
+        height 400px
+
+  .home_pricing
+    margin-top 30px
+    display flex
+    flex-direction column
+    align-items center
+    .pricing_header
+      display flex
+      flex-direction column
+      align-items center
+      h3 
+        font-size 48px
+        margin-bottom 15px
+        text-align center
+    .pricing_cards
+      display flex
+      width 100%
+      max-width 1000px
+      position relative
+      align-items center
+      flex-wrap wrap
+      justify-content center
+      .mouse_halo
+        position absolute
+        opacity 0.8
+        transition all
+        z-index 999
+      .children
+        padding 30px
+      div.pricing_card
+        position relative
+        border-radius 30px
+        height 500px
+        width 310px
+        margin-left 20px
+        border none
+        margin-bottom 20px
+        &::before 
+          content: ''
+          width 311px
+          background linear-gradient(var(--deg, 115deg),
+            #8dfffe, $content-sidebar-gray, 
+            $content-sidebar-gray,$content-sidebar-gray, 
+            $content-sidebar-gray, $content-sidebar-gray 
+            )
+          border-radius 30px
+          position absolute
+          z-index -1
+          height 501px
+          top: -0.1%;
+          left: -0.1%;
+          transition 2s
+        h5
+          font-size 22px
+          font-weight 500
+          color #8dfffe
+          margin-bottom 8px      
+        .price
+          position relative
+          font-size 60px
+          margin-top 40px
+          font-weight 600
+          span
+            font-size 17px
+            position absolute
+            top 0
+            color #8dfffe
+        .recommended
+          position absolute
+          right 24px
+          top 16px
+          padding 7px 13px
+          font-size 10px
+          letter-spacing 2px
+          border-radius 15px
+          border 1px solid #4f535547
+          background #4f535547
+        .pricing_btn
+          width 100%
+          margin 35px 5px 35px
+          background #4f535547
+          border 1px solid #4f535547
+          border-radius 30px
+          &:hover
+            color #8dfffe
+          p
+            mix-blend-mode difference
+        .list_item
+          border-bottom 1px solid #85858540
+          padding-bottom 15px
+          display flex
+          align-items center
+          margin 15px 0 0
+          svg
+            margin-right 10px
+            color #8dfffe
+        &:nth-of-type(2)
+          height 535px
+          padding 3px 0
+          h5
+            color #c770fe
+          &::before 
+            height 536px
+            background linear-gradient(var(--deg, 115deg),
+            #c770fe, $content-sidebar-gray, 
+            $content-sidebar-gray,$content-sidebar-gray, 
+            $content-sidebar-gray, $content-sidebar-gray 
+            )
+          span
+            color #c770fe
+          .pricing_btn
+            background #c770fe
+            border 1px solid #c770fe
+            border-radius 30px
+            &:hover
+              color #c770fe
+            p
+              mix-blend-mode normal
+              color black
+          .list_item
+            svg
+              margin-right 10px
+              color #c770fe
+  
+  .floating_dots 
+    position absolute
+    top 0
+    left 0
+    width 100%
+    height 100%
+    pointer-events none
+    z-index 1
+    overflow hidden
+
+  .dot 
+    position absolute
+    bottom 0
+    width 3px
+    height 3px
+    background-color $color-less-white 
+    border-radius 50%
+    opacity 0
+    animation-name floatUp
+    animation-timing-function linear
+    animation-iteration-count infinite
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.7;
+      }
+    100% {
+      transform: translateY(-100vh);
+      opacity: 0;
+    }
+  }
+  @media screen and (max-width: 900px)
+    .home__features
+      .home__features_cards
+        padding 0

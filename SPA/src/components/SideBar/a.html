@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      main {
+        font-family: "Abel", sans-serif;
+        margin: 0;
+        padding: 0;
+        {{#theme.body}}
+        color: {{.}};
+        {{/theme.body}}
+
+      }
+      * {
+        box-sizing: border-box;
+      }
+      .invoice-container {
+        width: 100%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .invoice-container .body {
+        padding: 66px 80px 30px;
+        background-color: #fff;
+      }
+
+      .header {
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+        margin-bottom: 40px;
+        justify-content: center;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: clamp(4.2rem, 0.0025rem + 1.933vw, 5.3rem);
+        font-weight: 800;
+        letter-spacing: 14px;
+
+        {{#theme.header}}
+        color: {{.}};
+        {{/theme.header}}
+      }
+
+      .header .invoice_number {
+        margin: 20px 0 0;
+        font-size: 16px;
+        font-weight: 800;
+
+       {{#theme.accent}}
+        color: {{.}};
+        {{/theme.accent}}
+      }
+
+      .address {
+        max-width: 350px;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        margin-bottom: 3.125em;
+        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
+      }
+
+      .address .address_group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.125em;
+        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
+      }
+
+      .address .address_group.major > p:first-child {
+        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
+      }
+
+      .table-container {
+        font-family: "Cormorant", serif;
+        width: 100%;
+        border-collapse: collapse;
+        font-size: clamp(0.8125rem, 0.165rem + 0.75vw, 1rem);
+      }
+
+      .table-container tr {
+       border-bottom: 1.5px solid black;
+      }
+
+      .table-container tr td {
+        font-weight: 300;
+        padding: 1.3625em;
+      }
+      .table-container td:last-of-type, .table-container td:nth-of-type(4), .table-container th{
+        {{#theme.accent}}
+        color: {{.}};
+        {{/theme.accent}}
+      }
+
+
+      .table-container tr:last-of-type {
+          border-bottom: none;
+      }
+
+      .table-container th,
+      .table-container td {
+        min-width: 25%;
+        padding: 0.5em;
+        text-align: center;
+        min-width: 50px;
+      }
+
+      .table-container tr:last-of-type td {
+        font-size: clamp(0.9125rem, 0.125rem + 0.75vw, 1.3rem);
+        font-weight: 600;
+        font-family: "Abel", sans-serif;
+      }
+
+      .table-container th {
+        font-weight: 600;
+        font-size: clamp(0.8125rem, 0.165rem + 0.75vw, 1rem);
+        border: none;
+        border-bottom: 1.5px solid black;
+        margin-bottom: 0.9375em;
+        padding-bottom: 1.3625em;
+        font-family: "Abel", sans-serif;
+      }
+
+      .table-container td:first-of-type,
+      .table-container th:first-of-type {
+        text-align: left;
+        padding-left: 0;
+        width: 260px;
+      }
+
+      .table-container td:last-of-type,
+      .table-container th:last-of-type {
+        text-align: right;
+        padding-right: 0;
+      }
+      .footer {
+        padding: 10px 80px 20px;
+        font-weight: 300;
+        font-family: "Cormorant", serif;
+      }
+      .cormorant {
+        font-family: "Cormorant", serif;
+      }
+    </style>
+  </head>
+  <main>
+    <div class="invoice-container">
+      <div class="body">
+        <div class="header">
+          <h1>INVOICE</h1>
+          <p class="invoice_number"># {{invoice.inv_tag}}</p>
+        </div>
+        <div class="address">
+          <div class="address_group major">
+            <p>BILLED TO:</p>
+            <p>{{client}}</p>
+          </div>
+          <div class="address_group major">
+            <p>PAY TO:</p>
+            <p>
+              {{ user.name }}
+              <br />
+              {{user.address}}
+              <br />
+              {{user.extras}}
+            </p>
+          </div>
+          <div class="address_group cormorant">
+            <p>Bank</p>
+            <p>{{user.account}}</p>
+          </div>
+          <div class="address_group cormorant">
+            <p>Account Name</p>
+            <p>{{client}}</p>
+          </div>
+          <div class="address_group cormorant">
+            <p>Account Number</p>
+            <p>{{client}}</p>
+          </div>
+          <div class="address_group cormorant">
+            <p>ISSUE DATE:</p>
+            <p>{{invoice.issue_date}}</p>
+          </div>
+        </div>
+        <table class="table-container">
+          <thead>
+            <tr>
+              <th>DESCRIPTION</th>
+              <th>RATE</th>
+              <th>QTY/HRS.</th>
+              <th>AMOUNT</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#invoice.items}}
+            <tr>
+              <td>{{description}}</td>
+              <td>{{rate}}</td>
+              <td>{{qty}}</td>
+              <td>{{subtotal}}</td>
+            </tr>
+            {{/invoice.items}}
+            <tr>
+              <td>{{description}}</td>
+              <td>{{rate}}</td>
+              <td>{{qty}}</td>
+              <td>{{subtotal}}</td>
+            </tr>
+            <tr>
+              <td>TOTAL</td>
+              <td></td>
+              <td></td>
+              <td>{{invoice.currency}} {{invoice.total}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="footer">
+        Payment is required within 14 days of invoice date. Please send remittance to
+        hello@greatesite.com Thank you ro patronage
+      </div>
+    </div>
+  </main>
+</html>

@@ -1,0 +1,55 @@
+:local(.Contacts)
+  display flex
+  flex-direction column
+  .header
+    display flex
+    justify-content space-between
+    align-items center
+    margin-bottom 30px
+    height 50px
+    &_btn
+      display flex
+      width 230px
+      justify-content flex-end
+      > div
+        flex-basis 48%
+    
+    svg 
+        margin-right 3px
+  .contact_list
+    height 100px
+    .grid 
+      height 85vh
+      border none
+      :global(.ag-header-cell-resize)
+        z-index 0
+      :global(.ag-cell-focus)
+        border 1px solid transparent !important
+      :global(.ag-root-wrapper.ag-ltr.ag-layout-normal)
+        border none
+      :global(.ag-cell)
+        display flex
+        align-items center
+        font-size 13px
+      
+:local(.ContactModal)
+  form
+    padding 20px 30px
+    .input_group
+      padding 20px 0 35px
+      border-top 1.5px solid $color-light-ccc 
+      border-bottom 1.5px solid $color-light-ccc 
+      margin 20px 0
+      .label_name
+        margin-bottom 7px
+        font-weight 600
+        span 
+          color $color-red
+      input
+        height 50px
+    .send_btn > button
+      margin-left auto
+      font-size 17px
+      padding 13px 35px
+     
+

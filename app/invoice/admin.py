@@ -1,17 +1,18 @@
 from django.contrib import admin
 from django.db.models import JSONField
 
-from .models import Client, Invoice, InvoiceTemplate, Payment, Transaction
+from .models import Client, Invoice, InvoiceSettings, InvoiceTemplate, Payment, Transaction
 from .widgets import JSONFieldWidget
 
 admin.site.register(Transaction)
+admin.site.register(InvoiceSettings)
 
 
 class InvoiceAdmin(admin.ModelAdmin):
     formfield_overrides = {
         JSONField: {"widget": JSONFieldWidget},
     }
-    list_display = ["name", "narration", "issue_date", "due_date", "payment"]
+    list_display = ["name", "narration", "issue_date", "due_date", "payment", "uuid"]
     search_fields = ["name"]
 
     @admin.display

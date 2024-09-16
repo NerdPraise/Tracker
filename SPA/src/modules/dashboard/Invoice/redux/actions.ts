@@ -1,13 +1,11 @@
 import { camelize, snakify } from '_Home/common/utils'
-import { AuthenticatedAPI } from '_Home/store/api'
+import { API, AuthenticatedAPI } from '_Home/store/api'
 
 export const INVOICE_ACTION_TYPE = {
   GET_ALL_INVOICES_START: 'INVOICE_ACTION_TYPE/GET_ALL_INVOICES/START',
   GET_ALL_INVOICES_DONE: 'INVOICE_ACTION_TYPE/GET_ALL_INVOICES/DONE',
   GET_SINGLE_INVOICE_START: 'INVOICE_ACTION_TYPE/GET_SINGLE_INVOICE/START',
   GET_SINGLE_INVOICE_DONE: 'INVOICE_ACTION_TYPE/GET_SINGLE_INVOICE/DONE',
-  CREATE_INVOICE_START: 'INVOICE_ACTION_TYPE/CREATE_INVOICE/START',
-  CREATE_INVOICE_DONE: 'INVOICE_ACTION_TYPE/CREATE_INVOICE/DONE',
   GET_USER_CLIENT_START: 'INVOICE_ACTION_TYPE/GET_USER_CLIENT/START',
   GET_USER_CLIENT_DONE: 'INVOICE_ACTION_TYPE/GET_USER_CLIENT/DONE',
   CREATE_USER_CLIENT_START: 'INVOICE_ACTION_TYPE/CREATE_USER_CLIENT/START',
@@ -25,6 +23,13 @@ export const INVOICE_ACTION_TYPE = {
   SAVE_INVOICE_START: 'INVOICE_ACTION_TYPE/SAVE_INVOICE/START',
   SAVE_INVOICE_DONE: 'INVOICE_ACTION_TYPE/SAVE_INVOICE/DONE',
   CLEAR_INVOICE_STATUS_CODE: 'INVOICE_ACTION_TYPE/CLEAR_INVOICE_STATUS_CODE/DONE',
+  UPDATE_TEMPLATE_START: 'INVOICE_ACTION_TYPE/UPDATE_TEMPLATE/START',
+  UPDATE_TEMPLATE_DONE: 'INVOICE_ACTION_TYPE/UPDATE_TEMPLATE/DONE',
+  DELETE_USER_CLIENT_DONE: 'INVOICE_ACTION_TYPE/DELETE_USER_CLIENT/DONE',
+  DELETE_INVOICE_DONE: 'INVOICE_ACTION_TYPE/DELETE_INVOICE/DONE',
+  SEND_INVOICE_DONE: 'INVOICE_ACTION_TYPE/SEND_INVOICE/DONE',
+  GET_USER_INVOICE_SETTINGS_DONE: 'INVOICE_ACTION_TYPE/GET_USER_INVOICE_SETTINGS/DONE',
+  UPDATE_INVOICE_SETTINGS_DONE: 'INVOICE_ACTION_TYPE/UPDATE_INVOICE_SETTINGS/DONE',
 }
 
 export const getAllInvoices = () => (dispatch) => {
@@ -54,7 +59,7 @@ export const getSingleInvoice = (id) => (dispatch) => {
   dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
   dispatch({ type: INVOICE_ACTION_TYPE.GET_SINGLE_INVOICE_START })
 
-  AuthenticatedAPI.get(`invoice/${id}`)
+  API.get(`invoice/${id}/`)
     .then((response) => {
       dispatch({
         type: INVOICE_ACTION_TYPE.GET_SINGLE_INVOICE_DONE,
@@ -104,14 +109,22 @@ export const getAllTemplates = () => (dispatch) => {
     )
 }
 
-export const createInvoice = () => (dispatch) => {
-  dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
-  dispatch({ type: INVOICE_ACTION_TYPE.CREATE_INVOICE_START })
+export const saveTemplate = () => (dispatch, getState) => {
+  dispatch({
+    type: INVOICE_ACTION_TYPE.UPDATE_TEMPLATE_START,
+  })
 
-  AuthenticatedAPI.post(`invoices/`)
+  const data = snakify({
+    ...getState().invoices.invoice.selectedInvoice.template,
+    invoice: getState().invoices.invoice.selectedInvoice.uuid,
+  })
+  AuthenticatedAPI.put(
+    `invoice/templates/${getState().invoices.invoice.selectedInvoice.template.id}`,
+    JSON.stringify(data),
+  )
     .then((response) => {
       dispatch({
-        type: INVOICE_ACTION_TYPE.CREATE_INVOICE_DONE,
+        type: INVOICE_ACTION_TYPE.UPDATE_TEMPLATE_DONE,
         payload: {
           data: camelize(response.data),
         },
@@ -119,7 +132,7 @@ export const createInvoice = () => (dispatch) => {
     })
     .catch((err) =>
       dispatch({
-        type: INVOICE_ACTION_TYPE.CREATE_INVOICE_DONE,
+        type: INVOICE_ACTION_TYPE.UPDATE_TEMPLATE_DONE,
         payload: {
           errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
         },
@@ -149,21 +162,105 @@ export const getAllUserClient = () => (dispatch) => {
     )
 }
 
-export const createUserClient = (data) => (dispatch) => {
+export const getInvoiceSettings = () => (dispatch) => {
+  AuthenticatedAPI.get(`invoice-settings/`)
+    .then((response) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.GET_USER_INVOICE_SETTINGS_DONE,
+        payload: {
+          data: camelize(response.data),
+          statusCode: response.status,
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: INVOICE_ACTION_TYPE.GET_USER_INVOICE_SETTINGS_DONE,
+        payload: {
+          errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const updateInvoiceSettings = (id: string, data: FormData) => (dispatch) => {
+  AuthenticatedAPI.put(`invoice-settings/${id}`, data)
+    .then((response) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.UPDATE_INVOICE_SETTINGS_DONE,
+        payload: {
+          data: camelize(response.data),
+          statusCode: response.status,
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: INVOICE_ACTION_TYPE.UPDATE_INVOICE_SETTINGS_DONE,
+        payload: {
+          errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const createUserClient = (data: FormData) => (dispatch) => {
   dispatch({ type: INVOICE_ACTION_TYPE.CREATE_USER_CLIENT_START })
 
-  AuthenticatedAPI.post(`invoices/`)
+  AuthenticatedAPI.post(`clients/`, data)
     .then((response) => {
       dispatch({
         type: INVOICE_ACTION_TYPE.CREATE_USER_CLIENT_DONE,
         payload: {
           data: camelize(response.data),
+          status: response.status,
         },
       })
     })
     .catch((err) =>
       dispatch({
         type: INVOICE_ACTION_TYPE.CREATE_USER_CLIENT_DONE,
+        payload: {
+          errorMessage: err.response ? err.response.data : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const deleteUserClient = (id: number) => (dispatch) => {
+  AuthenticatedAPI.delete(`clients/${id}`)
+    .then((response) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.DELETE_USER_CLIENT_DONE,
+        payload: {
+          status: response.status,
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: INVOICE_ACTION_TYPE.DELETE_USER_CLIENT_DONE,
+        payload: {
+          errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const deleteInvoice = (id: number) => (dispatch) => {
+  AuthenticatedAPI.delete(`invoices/${id}/`)
+    .then((response) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.DELETE_INVOICE_DONE,
+        payload: {
+          status: response.status,
+          id,
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: INVOICE_ACTION_TYPE.DELETE_INVOICE_DONE,
         payload: {
           errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
         },
@@ -247,6 +344,7 @@ export const deleteTransactions = (uuid: string) => (dispatch) => {
 
 export const updateInvoice = (data: Record<string, string | number>) => (dispatch) => {
   dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
+
   dispatch({
     type: INVOICE_ACTION_TYPE.UPDATE_INVOICE,
     payload: { data },
@@ -267,13 +365,17 @@ export const setSelectedInvoice = (data: Record<'invoiceID' | 'type', string>) =
 export const saveInvoice = (uuid?: string) => (dispatch, getState) => {
   dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
   const { selectedInvoice } = getState().invoices.invoice
-  const data = snakify(selectedInvoice)
+  const data = snakify({
+    ...selectedInvoice,
+    client: selectedInvoice.client.id,
+    template: selectedInvoice.template.id,
+  })
 
   let request, url
   dispatch({ type: INVOICE_ACTION_TYPE.SAVE_INVOICE_START })
   if (uuid) {
     request = AuthenticatedAPI.patch
-    url = `invoice/${uuid}/`
+    url = `invoices/${uuid}/`
   } else {
     request = AuthenticatedAPI.post
     url = `invoices/`
@@ -294,6 +396,28 @@ export const saveInvoice = (uuid?: string) => (dispatch, getState) => {
         type: INVOICE_ACTION_TYPE.SAVE_INVOICE_DONE,
         payload: {
           statusCode: err.response.status,
+          errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const sendInvoiceToClient = (uuid: string) => (dispatch) => {
+  AuthenticatedAPI.get(`invoices/send_invoice_to_client/?invoice=${uuid}`)
+    .then((response) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.SEND_INVOICE_DONE,
+        payload: {
+          statusCode: response.status,
+          data: camelize(response.data),
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: INVOICE_ACTION_TYPE.SEND_INVOICE_DONE,
+        payload: {
+          data: [],
           errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
         },
       }),

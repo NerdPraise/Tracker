@@ -29,17 +29,20 @@ declare global {
     client: IClient
     template: ITemplate
     amount: number
+    dateSent: string | null
     currency: string
     payment: {
       status: string
       totalDue: number
     }
   }
+
   type ITheme = {
     footer_background?: string
     accent_color?: string
     color?: string
   }
+
   type ITemplate = {
     settings: { html: string; theme: IThemes }
     category: string
@@ -52,6 +55,7 @@ declare global {
     id: number
     name: string
     email: string
+    createdAt: string
   }
 
   type IUser = {
@@ -61,6 +65,31 @@ declare global {
     firstName: string
     lastName: string
     fullName: string
+    address: string
+    accountName: string
+    accountNumber: string
+    dateFormat: string
+    subscription: string
+    transaction: IUserTransaction
+    cardName: string
+    cardNumber: string
+    expiryDate: string
+    cvv: string
+  }
+
+  type IInvoiceSettings = {
+    id: number
+    defaultBank: string
+    defaultCurrency: string
+    accountName: string
+    accountNumber: string
+    dueAfter: number
+  }
+
+  type IUserTransaction = {
+    amount: number
+    date: string
+    subscription: string
   }
 
   const enum IStatusCode {

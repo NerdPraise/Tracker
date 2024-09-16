@@ -3,17 +3,16 @@ import ClassNames from 'classnames'
 import { CellClickedEvent } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { useNavigate } from 'react-router-dom'
+import { Users, Plus } from 'lucide-react'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { noRowRenderer } from '_Home/components/Grid/renderer'
 import { Button, Grid, Input } from '_Home/components'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
-import { ROUTES } from '_Home/routing/routes'
 import { capitalise } from '_Home/common/utils'
 
 import { getAllUserClient } from '../redux/actions'
 import { columnDefs } from '../constants'
-import Plus from '_Images/plus.svg?react'
 import styles from '../Invoice.module.styl'
 
 const tabs = ['all', 'draft', 'paid', 'pending', 'overdue']
@@ -27,7 +26,9 @@ export const InvoiceList = () => {
   const dispatch = useAppDispatch()
 
   const onCellClick = (event: CellClickedEvent<(typeof invoice.invoices)[0]>) => {
-    navigate(`/invoice/${event.data?.uuid}`)
+    if (event.column.getColId().toLowerCase() === 'name') {
+      navigate(`/invoice/${event.data?.uuid}`)
+    }
   }
 
   useEffect(() => {
@@ -42,28 +43,31 @@ export const InvoiceList = () => {
   )
 
   return (
-    <SideBarLayout selectedKey={ROUTES.authenticatedRoutes.INVOICE.key} disableHide>
+    <SideBarLayout disableHide>
       <div className={styles.InvoiceList}>
         <div className={styles.header}>
           <h2>Invoices</h2>
-          <Button
-            className={styles.track_button}
-            logo={<Plus fill="#fff" />}
-            text="Add Invoice"
-            onClick={() => navigate('add')}
-            left
-          />
+          <div className={styles.header_btn}>
+            <Button
+              className={styles.track_button}
+              text={
+                <>
+                  <Users size={18} />
+                  Clients
+                </>
+              }
+              onClick={() => navigate('./contacts')}
+            />
+            <Button
+              className={styles.track_button}
+              logo={<Plus fill="#fff" size={18} />}
+              text="Add Invoice"
+              onClick={() => navigate('add')}
+            />
+          </div>
         </div>
 
         <div className={styles.Tab}>
-          <div className={styles.filter}>
-            <Input
-              type="text"
-              name="filter"
-              onChange={(e) => setFilterText(e.target.value)}
-              labelName="Search"
-            />
-          </div>
           <div className={styles.tab_header}>
             {tabs.map((item) => (
               <div
@@ -76,16 +80,28 @@ export const InvoiceList = () => {
             ))}
           </div>
           <div className={styles.tab_body}>
+            <div className={styles.filter}>
+              <Input
+                type="text"
+                name="filter"
+                onChange={(e) => setFilterText(e.target.value)}
+                labelName="Search"
+                className={styles.filter_input}
+              />
+            </div>
             <div className={styles.invoice_list}>
               <Grid
                 className={`${styles.grid} ag-theme-customtracker`}
                 innerRef={gridRef}
+                pagination
                 columnDefs={columnDefs}
                 rowData={filteredRowData}
                 defaultColDef={{ sortable: true }}
                 quickFilterText={filterText}
                 onCellClicked={onCellClick}
-                overlayNoRowsTemplate={noRowRenderer(currentTab)}
+                paginationPageSize={10}
+                paginationPageSizeSelector={[10, 15, 20]}
+                overlayNoRowsTemplate={noRowRenderer(`${currentTab} invoice`)}
               />
             </div>
           </div>

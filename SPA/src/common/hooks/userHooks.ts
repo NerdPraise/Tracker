@@ -15,8 +15,8 @@ export const useUser = () => {
   }, [])
 
   return {
-    user,
     isLoggedIn,
     isCheckingLoginStatus,
+    user,
   }
 }

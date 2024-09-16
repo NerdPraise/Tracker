@@ -7,11 +7,10 @@ import django.utils.timezone
 from django.conf import settings
 from django.db import migrations, models
 
-import constants.fields
+import lib.fields
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -58,12 +57,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("month", constants.fields.MonthField(unique=True)),
+                ("month", lib.fields.MonthField(unique=True)),
                 (
                     "amount",
-                    models.BigIntegerField(
-                        help_text="Amount of money held into the month"
-                    ),
+                    models.BigIntegerField(help_text="Amount of money held into the month"),
                 ),
                 (
                     "user",

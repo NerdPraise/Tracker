@@ -31,10 +31,10 @@ export const AddInvoice = () => {
   }
 
   return (
-    <SideBarLayout selectedKey={ROUTES.authenticatedRoutes.INVOICE.key} disableHide>
+    <SideBarLayout disableHide>
       <div className={styles.InvoiceAdd}>
         <div className={styles.header}>
-          <h2>Create invoice</h2>
+          <h2>Create your invoice</h2>
           <p>Select your most preferred templates</p>
         </div>
         <div className={styles.templates}>

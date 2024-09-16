@@ -1,8 +1,16 @@
 import datetime
 
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
 
 def days(days):
     return datetime.timedelta(days=days)
+
+
+def send_mail_user(subject, template, message_context, to, from_user=None):
+    body = render_to_string(template, message_context)
+    send_mail(subject, body, from_user, to, fail_silently=False, html_message=body)
 
 
 class Month(object):
@@ -116,3 +124,9 @@ class Month(object):
 
     def strftime(self, fmt):
         return self._date.strftime(fmt)
+
+
+def mask_card_number(card_number: str) -> str:
+    if len(card_number) < 4:
+        return card_number  # Return as is if less than 4 digits
+    return "*" * (len(card_number) - 4) + card_number[-4:]

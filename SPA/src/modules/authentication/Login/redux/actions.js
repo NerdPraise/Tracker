@@ -9,6 +9,7 @@ export const LOGIN_ACTION_TYPES = {
 export const USER_ACTION_TYPES = {
   GET_USER_DETAILS_START: 'USER_ACTION_TYPES/GET_USER_DETAILS/START',
   GET_USER_DETAILS_DONE: 'USER_ACTION_TYPES/GET_USER_DETAILS/DONE',
+  LOG_OUT_USER: 'USER_ACTION_TYPES/LOG_OUT_USER/DONE',
 }
 
 export const loginAction = (loginData) => (dispatch) => {
@@ -16,7 +17,7 @@ export const loginAction = (loginData) => (dispatch) => {
 
   API.post('token/', loginData)
     .then((response) => {
-      const { access, refresh } = response.data
+      const { access, refresh, data } = response.data
       localStorage.setItem('ACCESS_TOKEN_KEY', access)
       localStorage.setItem('REFRESH_TOKEN_KEY', refresh)
 
@@ -58,4 +59,26 @@ export const getUserAction = () => (dispatch) => {
         },
       })
     })
+}
+
+export const loginGoogleUser = (response) => {
+  const { access, refresh } = response.data
+  localStorage.setItem('ACCESS_TOKEN_KEY', access)
+  localStorage.setItem('REFRESH_TOKEN_KEY', refresh)
+
+  return {
+    type: LOGIN_ACTION_TYPES.LOGIN_DONE,
+    payload: {
+      status: response.status,
+    },
+  }
+}
+
+export const logOutAction = () => (dispatch) => {
+  localStorage.removeItem('ACCESS_TOKEN_KEY')
+  localStorage.removeItem('REFRESH_TOKEN_KEY')
+
+  dispatch({
+    type: USER_ACTION_TYPES.LOG_OUT_USER,
+  })
 }

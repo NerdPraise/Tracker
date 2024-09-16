@@ -1,20 +1,62 @@
 :local(.container)
   display flex
   overflow-y hidden
-
-  .content
-    background $content-gray-dark
+  width 100%
+  flex-direction column
+  .nav 
+    height 75px
+    background $content-sidebar-gray
     width 100%
-    overflow-y scroll
-    height 100vh
+    display flex
+    justify-content space-between
+    padding 15px 25px
+    align-items center
+    svg
+      cursor pointer
+    .first
+      display flex
+      align-items center
+      max-width 225px
+      width 225px
+      justify-content space-between
+      .account_details
+        display flex
+        > div:nth-of-type(1)
+          height 42px
+          width 42px
+          border-radius 50%
+          background $content-gray-dark
+          margin-right 15px
+          display flex
+          align-items center
+          justify-content center
+        > div:nth-of-type(2)
+            .username
+              font-size 15px
+              width 100px
+              white-space nowrap
+              overflow hidden
+              text-overflow ellipsis
+            .email
+              font-size 13px
+              font-weight 100
+              white-space nowrap
+              width 100px
+              overflow hidden
+              text-overflow ellipsis
 
-    &_children
-      padding 35px 40px
+  .sidebar_e_content
+    display flex
+    .content
+      background $content-gray-dark
+      width 100%
+      overflow-y auto
+      height calc(100vh - 75px)
+
+      &_children
+        padding 35px 40px
 
     
 :local(.LayoutSide)
   padding-top 25px
-  :global(.active)
-    background $color-green
-    color $color-white-grey
-    box-shadow 3px 3px 20px 0px $color-green-mid
+

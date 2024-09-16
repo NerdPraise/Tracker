@@ -7,12 +7,18 @@
     align-items center
     margin-bottom 30px
     height 50px
+    &_btn
+      display flex
+      width 230px
+      justify-content space-between
+      > div
+        flex-basis 48%
+
     .track_button
       border-radius 6px
       padding 2px 12px
+      min-width 100px
       svg 
-        width 14px
-        height 15px
         margin-right 3px
       &:hover
         svg
@@ -20,9 +26,16 @@
   .invoice_list
     height 100px
     .grid 
-      height 550px
+      height 610px
+      border-bottom none
       :global(.ag-cell-focus)
         border 1px solid transparent !important
+      :global(.ag-root-wrapper.ag-ltr.ag-layout-normal)
+        border-bottom none
+        border-bottom-left-radius: 0
+        border-bottom-right-radius: 0
+      :global(.grid_click)
+        cursor pointer
   .export 
     display flex
     justify-content center
@@ -33,7 +46,7 @@
       text-align center
       border-radius 18px
       width fit-content
-      padding 1px 8px
+      padding 4px 8px
       cursor pointer
   
 
@@ -41,11 +54,17 @@
   .filter
     display flex
     justify-content right
-    margin-top 15px 
     > div
       height 70px
-      width 150px
+      width 230px
       margin-bottom 10px
+      flex-direction row
+      align-items center
+      input 
+        margin-left 12px
+      label
+        color $color-white-grey
+        margin 0
   .tab_header
     display flex
     background mix($color-global-dark, #fff, 93%)
@@ -68,13 +87,18 @@
 
   .tab_body
     background mix($color-global-dark, #fff, 79%)
-    height 600px
-    padding 30px
+    height 700px
+    padding 0 30px 30px
 
 
 :local(.InvoiceAdd)
   display flex
   flex-direction column
+  .header
+    margin-bottom 30px
+    height 50px
+    h2
+      margin-bottom 15px
   .templates
     margin-top 30px
     .template_name
@@ -83,7 +107,7 @@
       display flex
       flex-wrap nowrap
       height 250px
-      overflow-x scroll
+      overflow-x auto
       margin 20px 0 25px
       > div.template
         margin-right 30px
@@ -121,6 +145,9 @@
 :local(.InvoiceDetail)
   display flex
   flex-direction column
+  button
+    p
+      color #D2D5D9
   .header
     display flex
     justify-content space-between
@@ -130,11 +157,9 @@
     .edit_actions
       display flex
       justify-content space-between
-      max-width 250px
+      width 250px
       > button
-        &:first-of-type
-          margin-right 12px
-        font-size 11px
+          flex-basis 48%
         padding 4px 10px
   .details
     display flex
@@ -150,17 +175,18 @@
     .client_actions
       margin-left 25px
       min-width 450px
-      .preview
+      .extra_btn
         button
           padding 10px 50px
           font-size 18px
           margin auto
+          margin-bottom 18px
       .card
         padding 15px
         text-align center
         margin-bottom 40px
         height 220px
-        p
+        p.card_paid_text
           font-weight 500
           font-size 20px
           margin-bottom 25px
@@ -174,8 +200,6 @@
           button
             padding 10px 50px
             font-size 18px
-
-
 
 :local(.FrameDetailsModal)
   .send_to_client_form
@@ -194,7 +218,7 @@
       height 50px
   .send_btn > button
     margin-left auto
-    font-size 20px
+    font-size 17px
     padding 13px 35px
   .record_payment
     padding 20px 20px
@@ -227,7 +251,16 @@
         padding 15px
         max-width 450px
       .form_card
-        height 100%
+        height 800px
+        overflow-y auto
+        .btn_area
+          display flex
+          margin-bottom 2px
+          button
+            width 120px
+          button:first-of-type
+            margin-right 15px
+
         .edit_input_group
           .dots_container
             display flex
@@ -265,3 +298,24 @@
         > div
           flex-basis 48%
 
+:local(.InvoicePreview)
+  display flex
+  position relative
+  flex-direction column
+  height 100vh
+  > div
+    margin 20px auto
+  .banner
+    height 250px
+    width 350px
+    position absolute
+    right 35px
+    top 40px
+    padding 18px
+    border-radius 12px
+    box-shadow  -8px 7px 20px 0px mix($color-global-dark, #fff, 43%)
+    > button
+      margin-bottom 40px
+      padding 10px 50px
+      font-size 18px
+      width 100%

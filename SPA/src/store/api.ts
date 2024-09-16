@@ -1,13 +1,13 @@
 import axios from 'axios'
 
 export const API = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_BASE_URL,
+  baseURL: import.meta.env.VITE_BE_APP_BASE_URL,
   timeout: 30000,
   headers: { 'content-type': 'application/json' },
 })
 
 export const AuthenticatedAPI = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_BASE_URL,
+  baseURL: import.meta.env.VITE_BE_APP_BASE_URL,
   headers: { 'content-type': 'application/json' },
   timeout: 30000,
 })

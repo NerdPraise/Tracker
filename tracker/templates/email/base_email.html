@@ -1,0 +1,114 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;900&family=Questrial&display=swap" rel="stylesheet" />
+    <title></title>
+    <!--   [if mso]> 
+<noscript> 
+<xml> 
+<o:OfficeDocumentSettings> 
+<o:PixelsPerInch>96</o:PixelsPerInch> 
+</o:OfficeDocumentSettings> 
+</xml> 
+</noscript> 
+<![endif]   -->
+    <style>
+      table,
+      td,
+      div,
+      h1,
+      h2,
+      h3,
+      p {
+        font-family: Verdana, Segoe, sans-serif;
+      }
+      
+      table {
+        border: 1px solid transparent;
+      }
+    </style>
+  </head>
+
+  <body>
+    <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
+      <tr>
+        <td align="center" style="padding:0;">
+          <table role="presentation" style="width:602px;border-collapse:collapse;border:1px solid #transparent;border-spacing:0;text-align:left;">
+            {% block display_image %}
+              <tr>
+                <td align="center" bgcolor="#F4F4F4" background="https://res.cloudinary.com/nerdpraise/image/upload/v1683076866/email_background_blfog1.png" width="100%" height="250" valign="top" style="background:
+                            url('https://res.cloudinary.com/nerdpraise/image/upload/v1683076866/email_background_blfog1.png')
+                            center / contain no-repeat #F4F4F4; width:100%;">
+                  <!--   [if gte mso 9]>
+                            <v:image xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style=" border: 0;display: inline-block; width: 480pt; height: 300pt;" src="https://res.cloudinary.com/nerdpraise/image/upload/v1683076866/email_background_blfog1.png" />                <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style=" border: 0;display: inline-block;position: absolute; width: 480pt; height:300pt;">
+                            <v:fill  opacity="0%" color="#000000”  />
+                            <v:textbox inset="0,0,0,0">
+                            <![endif]   -->
+                  <div>
+                    <div style="font-size: 0;width:100%; padding: 0 15px">
+                      <table role=" presentation" width="100%" style="width:100%;" cellpadding="0" cellspacing="0" border="0" align="center">
+                        <tr>
+                          <td height="250" style="padding:0; color:white" width="350"></td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <!--   [if gte mso 9]>
+                                </v:textbox>
+                                </v:fill>
+                                </v:rect>
+                                </v:image>
+                            <![endif]   -->
+                </td>
+              </tr>
+            {% endblock display_image %}
+
+            <tr>
+              <td style="padding:0; background:#F4F4F4;">
+                {% block body %}
+
+                {% endblock %}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:25px 45px;background:#F2994A" align="center">
+                <div style="border: 1px solid white; margin:5px 0; width:93%"></div>
+                <p style="text-align:left; margin: 26px 0 15px; color:#595959; font-size:15px;font-weight:500">Please let us know if we can help you with anything!</p>
+                <div style="margin:10px 0 30px; text-align:left;color:#595959; font-size:14px;font-weight:300; font-style: italic;">
+                  <p style="padding:4px 0; font-size:13px; font-weight:300">Kind regards,</p>
+                  <p style="padding:px 0; font-size:13px; font-weight:300">Jollibase</p>
+                  <p style="padding:4px 0; font-size:13px; font-weight:300">support@jollibase.com</p>
+                  <p style="padding:4px 0; font-size:13px; font-weight:300">https://www.jollibase.com</p>
+                </div>
+                <div style="border: 1px solid white; margin:10px 0 0; width:90%"></div>
+                <p style="font-size:14px; color:white; padding:15px 0 10px; font-weight:500;">Connect with us</p>
+                <p style="font-size:13px; color:#737373; padding:5px 0 0;font-style:italic; font-weight:400;">Copyright © 2023 Jollibase Ltd, All rights reserved.</p>
+                <p style="font-size:13px; color:#737373; padding:5px; font-style:italic;font-weight:400;">We send service update information and special offers to registered users of Jollibase</p>
+                <p style="font-size:10px;color:white; padding:8px 0 0;">Our mailing address is:</p>
+                <p style="font-size:11px;color:white; padding:8px 0 0; font-weight:200;">Jollibase Ltd</p>
+                <p style="font-size:11px;font-weight:300;color:white; padding:8px 0 0; font-weight:200;">xxxxx</p>
+                <p style="font-size:11px;font-weight:300;color:white; padding:8px 0 0; font-weight:200;">xxxxx</p>
+                <p style="font-size:11px;font-weight:300;color:white; padding:8px 0 0; font-weight:200;">xxxxx</p>
+                <p style="font-size:12px; color:#737373; padding:20px 0 0; font-weight:200; font-weight:300;">Want to change how you receive these emails?</p>
+                <p style="font-size:12px; color:#737373; padding:5px 0 15px; font-weight:300;">
+                  You can
+                  <a href="/" style="color:#737373; text-decoration:underline;">update your preferences</a>
+                  or
+                  <a href="/" style="color:#737373; text-decoration:underline;">unsubsribe from this list</a>
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,30 +1,25 @@
 import { useEffect, useState } from 'react'
 import ClassNames from 'classnames'
 
-import BookImage from '_Images/book.webp'
-import CartImage from '_Images/cart.webp'
+import Man from '_Images/man.png'
+import Innovation from '_Images/innovation.png'
+import Puzzle from '_Images/puzzle.png'
 
 import styles from './Slider.module.styl'
 
-const sliderContent = [
+const sliderContent: Partial<Record<'image' | 'title' | 'description', string>>[] = [
   {
-    title: 'Easy To Navigate Tracking',
-    description: 'Welcome to the tracker god, where all your tracking can be done.',
-    image: BookImage,
+    image: Man,
   },
   {
-    title: 'Easy To Navigate Tracking 2',
-    description: 'Welcome to the tracker god, where all your tracking can be done.2',
-    image: CartImage,
+    image: Innovation,
   },
   {
-    title: 'Easy To Navigate Tracking 3',
-    description: 'Welcome to the tracker god, where all your tracking can be done.3',
-    image: '',
+    image: Puzzle,
   },
 ]
 
-export const Slider = () => {
+export const Slider = ({ className }: { className?: string }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
 
   useEffect(() => {
@@ -37,7 +32,7 @@ export const Slider = () => {
   }, [])
 
   return (
-    <div className={styles.Slider}>
+    <div className={ClassNames(styles.Slider, className)}>
       {sliderContent.map((item, index) => (
         <div
           className={ClassNames(styles.slider_item_content, { [styles.active]: index === currentIndex })}
@@ -46,11 +41,17 @@ export const Slider = () => {
           <div className={styles.image}>
             <img src={item.image} alt="hero" />
           </div>
-          <div className={styles.slider_item_title}>{item.title}</div>
-          <div className={styles.slider_item_description}>{item.description}</div>
-          <div>dots</div>
+          <div className={styles.slider_item_details}>
+            <div className={styles.slider_item_title}>{item?.title}</div>
+            <div className={styles.slider_item_description}>{item?.description}</div>
+          </div>
         </div>
       ))}
+      <div className={styles.dot_container}>
+        {sliderContent.map((item, index) => (
+          <div className={ClassNames(styles.dot, { [styles.active]: index === currentIndex })} />
+        ))}
+      </div>
     </div>
   )
 }

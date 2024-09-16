@@ -1,4 +1,5 @@
 import ClassNames from 'classnames'
+import { motion } from 'framer-motion'
 
 import { Portal } from '../Portal/Portal'
 
@@ -12,6 +13,12 @@ interface ModalProps {
   children: React.ReactNode
   handleClose: VoidFunction
 }
+
+const modalVariants = {
+  open: { opacity: 1, y: 0 },
+  closed: { opacity: 0, y: '-100%' },
+}
+
 export const Modal = ({ isVisible, title, width, className, children, handleClose }: ModalProps) => {
   const modalWidth = {
     sm: '300px',
@@ -28,10 +35,17 @@ export const Modal = ({ isVisible, title, width, className, children, handleClos
       <Portal>
         <div className={ClassNames(styles.Modal, className)}>
           <div className={styles.backdrop} onClick={handleClose}></div>
-          <div className={styles.modal} style={{ width: modalWidth }}>
+          <motion.div
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={modalVariants}
+            className={styles.modal}
+            style={{ width: modalWidth }}
+          >
             {title && <div className={styles.title}>{title}</div>}
             <div className={styles.modal_content}>{children}</div>
-          </div>
+          </motion.div>
         </div>
       </Portal>
     )

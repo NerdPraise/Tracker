@@ -1,38 +1,29 @@
 import ClassNames from 'classnames'
-import { cloneElement } from 'react'
+import { LoaderCircle } from 'lucide-react'
 import Export from '_Images/export.svg?react'
 
 import styles from './Button.module.styl'
 
 interface ButtonProps {
   className?: string
-  text?: string
+  text?: ReactChildren
   onClick: VoidFunction
   loading?: boolean
   disabled?: boolean
   logo?: React.ReactElement
-  left?: boolean
 }
 
-export const Button = ({ className, text, onClick, loading, disabled, logo, left }: ButtonProps) => {
-  const renderLogo = () => {
-    const Logo = logo
-    if (logo) {
-      return cloneElement(Logo as React.ReactElement, {
-        className: 'btn__logo',
-      })
-    }
-    return null
-  }
+export const Button = ({ className, text, onClick, loading, disabled, logo }: ButtonProps) => {
+  const Logo = logo
+
   return (
     <button
-      onClick={onClick}
+      onClick={!disabled ? onClick : null}
       disabled={disabled || loading}
       className={ClassNames(styles.Button, className, { disabled })}
     >
-      {left && renderLogo()}
-      {text}
-      {!left && renderLogo()}
+      {loading ? <LoaderCircle className={styles.loader} size={19} /> : logo}
+      <p className={styles.text}>{text}</p>
     </button>
   )
 }

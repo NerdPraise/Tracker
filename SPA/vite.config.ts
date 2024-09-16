@@ -15,14 +15,21 @@ export default defineConfig({
     alias: {
       _Home: resolve(root, ''),
       _Images: resolve(root, 'assets/img/'),
+      _Module: resolve(root, 'modules/'),
     },
   },
   css: {
+    modules: {
+      // scopeBehaviour: 'global',
+    },
     preprocessorOptions: {
       styl: {
         additionalData: `@import "${resolve(root, './assets/img/global.styl')}"`,
       },
     },
+  },
+  optimizeDeps: {
+    include: ['html2pdf.js'],
   },
   plugins: [
     react({

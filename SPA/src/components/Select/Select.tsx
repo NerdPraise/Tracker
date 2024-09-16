@@ -4,7 +4,7 @@ import { omit } from 'lodash'
 
 import style from './Select.module.styl'
 interface SelectProp {
-  label: Exclude<ReactChildren, () => JSX.Element>
+  label?: Exclude<ReactChildren, () => JSX.Element>
   onChange?: (e) => void
   customValidation?: (value: string) => null | string
   error?: Record<string, string>
@@ -39,6 +39,10 @@ const customStyles = {
     ...provided,
     height: '35px',
   }),
+  indicatorSeparator: (provided) => ({
+    ...provided,
+    background: '#757575',
+  }),
   option: (styles, { isFocused, isSelected }) => {
     return {
       ...styles,
@@ -63,6 +67,7 @@ export const Select = <
   customValidation = null,
   setError = null,
   error = null,
+  defaultValue,
   ...props
 }: Props<Option, IsMulti, Group> & SelectProp) => {
   const validate = (value: string) => {
@@ -92,6 +97,7 @@ export const Select = <
       <ReactSelect
         name={name}
         {...props}
+        defaultValue={defaultValue}
         classNamePrefix="select"
         onChange={changeHandler}
         styles={{ ...customStyles, ...props.styles }}

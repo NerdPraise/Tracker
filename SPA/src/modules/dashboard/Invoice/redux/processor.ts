@@ -6,14 +6,14 @@ type IProcessedTemplates = {
   recent: ITemplate[]
 }
 
-// TODO: Fix ts issues
 export const TemplatesProcessor = (templates: ITemplate[]): IProcessedTemplates => {
   const result = new DefaultDict(Array)
   templates.forEach((item) => {
     if (item.user) {
       result['recent'].push(item)
+    } else {
+      result[item.category.toLowerCase()].push(item)
     }
-    result[item.category.toLowerCase()].push(item)
   })
   return result as IProcessedTemplates
 }

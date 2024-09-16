@@ -1,21 +1,30 @@
-import { Overview } from '_Home/modules/dashboard/Overview'
-import { SignUp } from '_Home/modules/authentication/SignUp'
-import { Login } from '_Home/modules/authentication/Login'
-import { BudgetStudio } from '_Home/modules/dashboard/BudgetStudio'
-import { Track } from '_Home/modules/dashboard/Track'
-import { InvoiceEdit, InvoiceList, AddInvoice, InvoiceDetail } from '_Home/modules/dashboard/Invoice'
-import { getAllTemplatesLoader } from '_Home/modules/dashboard/Invoice/loaders'
+import { Outlet } from 'react-router'
+
+import { Overview } from '_Module/dashboard/Overview'
+import { SignUp } from '_Module/authentication/SignUp'
+import { Login } from '_Module/authentication/Login'
+import { BudgetStudio } from '_Module/dashboard/BudgetStudio'
+import { Track } from '_Module/dashboard/Track'
+import { InvoiceEdit, InvoiceList, AddInvoice, InvoiceDetail } from '_Module/dashboard/Invoice'
+import { getAllTemplatesLoader } from '_Module/dashboard/Invoice/loaders'
 import { UnauthenticatedLayout } from '_Home/layout/UnauthenticatedLayout'
+import { InvoicePreview } from '_Module/dashboard/Invoice/InvoiceDetail/InvoicePreview'
+import Settings from '_Module/dashboard/Settings/Settings'
+import Home from '_Module/presentation/Home'
+import Contacts from '_Module/dashboard/Invoice/Contacts/Contacts'
+import Subscription from '_Home/modules/dashboard/Settings/Subscription'
 
 import { ROUTES } from '_Home/routing/routes'
 
 import { AuthenticatedWrapper } from './AuthenticatedWrapper'
+import InvoiceSettings from '_Home/modules/dashboard/Settings/InvoiceSettings'
+import GeneralSettings from '_Home/modules/dashboard/Settings/GeneralSettings'
+import Billing from '_Home/modules/dashboard/Settings/Billing'
 
 const BaseRouter = [
   {
     path: '/',
     element: '',
-
     children: [
       {
         element: <AuthenticatedWrapper />,
@@ -34,12 +43,40 @@ const BaseRouter = [
             element: <Track />,
           },
           {
-            path: ROUTES.authenticatedRoutes.INVOICE.path,
+            path: '/settings',
+            element: <Settings />,
+            children: [
+              {
+                path: '/settings/general',
+                element: <GeneralSettings />,
+                index: true,
+              },
+              {
+                path: '/settings/invoice',
+                element: <InvoiceSettings />,
+              },
+              {
+                path: '/settings/billing',
+                element: <Billing />,
+              },
+              {
+                path: '/settings/subscription',
+                element: <Subscription />,
+              },
+            ],
+          },
+          {
+            path: ROUTES.authenticatedRoutes.INVOICES.path,
             loader: getAllTemplatesLoader,
             children: [
               {
-                path: ROUTES.authenticatedRoutes.INVOICE.path,
+                path: ROUTES.authenticatedRoutes.INVOICES.path,
                 element: <InvoiceList />,
+                index: true,
+              },
+              {
+                path: ROUTES.authenticatedRoutes.CONTACTS.path,
+                element: <Contacts />,
                 index: true,
               },
               {
@@ -72,6 +109,23 @@ const BaseRouter = [
           {
             path: ROUTES.unauthenticatedRoutes.SIGNUP.path,
             element: <SignUp />,
+          },
+        ],
+      },
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        element: (
+          <div style={{ height: '100vh', width: '100vw', backgroundColor: 'white' }}>
+            <Outlet />
+          </div>
+        ),
+        children: [
+          {
+            path: ROUTES.externalRoutes.PREVIEW.path,
+            element: <InvoicePreview />,
           },
         ],
       },

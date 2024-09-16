@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { createReducer } from '@reduxjs/toolkit'
+import { createReducer, Reducer } from '@reduxjs/toolkit'
 
-import { StatusCode } from '_Home/common/utils'
+import { parseErrorFromResponse, StatusCode } from '_Home/common/utils'
 
 import { INVOICE_ACTION_TYPE } from './actions'
 
@@ -11,11 +11,15 @@ type InvoiceState = {
     loading: boolean
     invoices: IInvoice[]
     selectedInvoice: IInvoice | null
+    preview: IInvoice | null
     statusCode: IStatusCode
+    hasTemplateChanged: boolean
   }
   client: {
     loading: boolean
     clients: IClient[]
+    statusCode: IStatusCode
+    errorMessage: string
   }
   template: {
     loading: boolean
@@ -31,6 +35,11 @@ type InvoiceState = {
       mode: string
     }[]
   }
+  invoiceSettings: {
+    loading: boolean
+    statusCode: IStatusCode
+    settings: IInvoiceSettings | null
+  }
 }
 
 const initialState: InvoiceState = {
@@ -39,10 +48,15 @@ const initialState: InvoiceState = {
     loading: false,
     invoices: [],
     selectedInvoice: null,
+    preview: null,
+    hasTemplateChanged: false,
+    statusCode: StatusCode.CLEARED,
   },
   client: {
     loading: false,
     clients: [],
+    statusCode: StatusCode.CLEARED,
+    errorMessage: '',
   },
   template: {
     loading: false,
@@ -54,9 +68,14 @@ const initialState: InvoiceState = {
     transactions: [],
     statusCode: StatusCode.CLEARED,
   },
+  invoiceSettings: {
+    loading: false,
+    statusCode: StatusCode.CLEARED,
+    settings: null,
+  },
 }
 
-export const invoiceReducer = createReducer(initialState, (invoice) => {
+export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState, (invoice) => {
   invoice
     .addCase(INVOICE_ACTION_TYPE.GET_ALL_INVOICES_START, (state, _) => {
       state.invoice.loading = true
@@ -90,6 +109,15 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
       state.template.selectedTemplate = state.template.templates.find(
         (item) => item.uuid === action.payload.data,
       )
+    })
+    .addCase(INVOICE_ACTION_TYPE.CREATE_USER_CLIENT_START, (state, _) => {
+      state.client.loading = true
+    })
+    .addCase(INVOICE_ACTION_TYPE.CREATE_USER_CLIENT_DONE, (state, action) => {
+      state.client.loading = false
+      action.payload.data && state.client.clients.push(action.payload.data)
+      state.client.statusCode = action.payload.status
+      state.client.errorMessage = parseErrorFromResponse(action.payload.errorMessage || '')
     })
     .addCase(INVOICE_ACTION_TYPE.SET_SELECTED_INVOICE_DONE, (state, action) => {
       switch (action.payload.type) {
@@ -134,16 +162,23 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
       state.transaction.transactions = action.payload.data
       state.errorMessage = action.payload.errorMessage || ''
     })
-    .addCase(INVOICE_ACTION_TYPE.DELETE_TRANSACTION_START, (state, action) => {
+    .addCase(INVOICE_ACTION_TYPE.DELETE_TRANSACTION_START, (state, _) => {
       state.transaction.loading = true
     })
-    .addCase(INVOICE_ACTION_TYPE.SAVE_INVOICE_START, (state, action) => {
+    .addCase(INVOICE_ACTION_TYPE.SAVE_INVOICE_START, (state, _) => {
       state.invoice.loading = true
     })
     .addCase(INVOICE_ACTION_TYPE.SAVE_INVOICE_DONE, (state, action) => {
       state.invoice.loading = false
       state.invoice.statusCode = action.payload.statusCode
       state.invoice.selectedInvoice = action.payload.data
+    })
+    .addCase(INVOICE_ACTION_TYPE.GET_SINGLE_INVOICE_START, (state, action) => {
+      state.invoice.loading = true
+    })
+    .addCase(INVOICE_ACTION_TYPE.GET_SINGLE_INVOICE_DONE, (state, action) => {
+      state.invoice.loading = false
+      state.invoice.preview = action.payload.data
     })
     .addCase(INVOICE_ACTION_TYPE.DELETE_TRANSACTION_DONE, (state, action) => {
       state.transaction.loading = false
@@ -154,6 +189,21 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
         invoice['payment'] = invoice.invoiceItems.reduce((acc, cur) => acc + cur.amount, 0)
         state.transaction.transactions = []
       }
+    })
+    .addCase(INVOICE_ACTION_TYPE.UPDATE_TEMPLATE_START, (state, action) => {
+      state.invoice.loading = true
+      state.invoice.statusCode = StatusCode.CLEARED
+    })
+    .addCase(INVOICE_ACTION_TYPE.UPDATE_TEMPLATE_DONE, (state, action) => {
+      state.invoice.loading = false
+      state.invoice.selectedInvoice.template = action.payload.data
+      state.invoice.hasTemplateChanged = false
+      state.invoice.statusCode = StatusCode.SUCCESS
+    })
+    .addCase(INVOICE_ACTION_TYPE.DELETE_INVOICE_DONE, (state, action) => {
+      state.invoice.loading = false
+      state.invoice.statusCode = StatusCode.SUCCESS
+      state.invoice.invoices = state.invoice.invoices.filter((item) => item.uuid !== action.payload.id)
     })
     .addCase(INVOICE_ACTION_TYPE.UPDATE_INVOICE, (state, action) => {
       let { selectedInvoice } = state.invoice
@@ -167,6 +217,7 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
         case 'theme':
           const { color, name: colorName } = action.payload.data
           selectedInvoice.template.settings.theme[colorName] = color
+          state.invoice.hasTemplateChanged = true
           break
 
         case 'delete':
@@ -196,5 +247,17 @@ export const invoiceReducer = createReducer(initialState, (invoice) => {
         default:
           break
       }
+    })
+    .addCase(INVOICE_ACTION_TYPE.SEND_INVOICE_DONE, (state, action) => {
+      state.invoice.statusCode = action.payload.statusCode
+      state.invoice.selectedInvoice = action.payload.data
+    })
+    .addCase(INVOICE_ACTION_TYPE.GET_USER_INVOICE_SETTINGS_DONE, (state, action) => {
+      state.invoiceSettings.settings = action.payload.data[0]
+      state.invoiceSettings.statusCode = action.payload.statusCode
+    })
+    .addCase(INVOICE_ACTION_TYPE.UPDATE_INVOICE_SETTINGS_DONE, (state, action) => {
+      state.invoiceSettings.settings = action.payload.data
+      state.invoiceSettings.statusCode = action.payload.statusCode
     })
 })

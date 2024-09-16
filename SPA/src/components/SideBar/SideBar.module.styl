@@ -1,12 +1,13 @@
-:local(.SideBarContainer)
-  height 100vh
+:local(.SideBar)
+  height calc(100vh - 75px)
   background  $content-sidebar-gray
   width 40px
+  position relative
   transition ease-in 0.2s
 
   &.show
-    min-width 300px
-    width 300px
+    min-width 250px
+    width 250px
   
   &.right
     top 0
@@ -25,16 +26,40 @@
     display flex
     flex-direction column
     padding 25px
-
-    .sidebar_child
-      display flex
-      align-items center
-      margin-bottom 15px
-      padding 20px 10px
-      border-radius 10px
-      cursor pointer
+    position relative
+    height 100%
+    ul
+      padding 0
+      list-style none
+      .sidebar_child
+        z-index 10
+        position relative
+        a, > div
+          display flex
+          align-items center
+          margin-bottom 15px
+          padding 15px 10px
+          border-radius 10px
+          cursor pointer
+          color $color-white-grey
+          transition ease 0.5s
+          text-decoration none
+          font-size 15px
+          svg
+            margin-right 15px
+    .active_cursor
+      background $color-purple
       color $color-white-grey
-      transition ease 0.5s
-      text-decoration none
-      svg
-        margin-right 15px
+      box-shadow 3px 3px 20px 0px $color-purple-mid
+      height 53px
+      width 200px
+      border-radius 10px
+      position absolute
+      opacity 1
+      z-index 0
+  .logout
+    position absolute
+    bottom 70px
+    cursor pointer
+    display flex
+    align-items center

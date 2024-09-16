@@ -9,7 +9,8 @@
     "skipLibCheck": true,
     "paths":{
         "_Home/*": ["./*"],
-        "_Images/*": ["./assets/img/*"]
+        "_Images/*": ["./assets/img/*"],
+        "_Module/*": ["./modules/*"]
     },
   "types": ["vite-plugin-svgr/client"]
   },

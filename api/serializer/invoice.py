@@ -1,15 +1,18 @@
 from functools import reduce
+
 from rest_framework import serializers
 
-from app.invoice.models import Client, Invoice, InvoiceTemplate, Payment, Transaction
+from app.invoice.models import Client, Invoice, InvoiceSettings, InvoiceTemplate, Payment, Transaction
 
 
 class ClientSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
-
     class Meta:
         model = Client
-        fields = ("id", "name", "email")
+        fields = "__all__"
+        extra_kwargs = {"user": {"read_only": True}}
+
+    def create(self, validated_data):
+        return super().create({**validated_data, "user": self.context["request"].user})
 
 
 class InvoiceItemsSerializer(serializers.Serializer):
@@ -55,55 +58,61 @@ class TransactionSerializer(serializers.ModelSerializer):
 class InvoiceTemplateSerializer(serializers.ModelSerializer):
     settings = serializers.JSONField()
     image = serializers.ImageField(read_only=True)
+    invoice = serializers.SlugRelatedField(queryset=Invoice.objects, slug_field="uuid", write_only=True)
 
     class Meta:
         model = InvoiceTemplate
         fields = "__all__"
 
+    def update(self, instance, validated):
+        user = self.context["request"].user
+        invoice = validated["invoice"]
+        template, created = InvoiceTemplate.objects.update_or_create(
+            user=user,
+            invoice=validated["invoice"],
+            defaults={"settings": validated["settings"], "user": user},
+        )
+
+        if created:
+            invoice.template = template
+            invoice.save()
+
+        return template
+
 
 class InvoiceSerializer(serializers.ModelSerializer):
     payment = PaymentSerializer(read_only=True)
-    client = ClientSerializer()
+    client = serializers.PrimaryKeyRelatedField(queryset=Client.objects, required=True)
+    template = serializers.PrimaryKeyRelatedField(queryset=InvoiceTemplate.objects)
     invoice_items = InvoiceItemsSerializer(many=True, allow_empty=False, required=True)
     user = serializers.CharField(read_only=True)
     amount = serializers.SerializerMethodField()
-    template = InvoiceTemplateSerializer(required=False)
 
     class Meta:
         model = Invoice
-        exclude = ("created_at", "updated_at")
+        exclude = ("updated_at",)
 
     def create(self, validated):
-        user = self.context["request"].user
-        client = validated.pop("client")
-        template_data = validated.pop("template")
-        invoice = Invoice.objects.create(**validated, user=user)
-        invoice.client = Client.objects.get(**client)
-        existing_template, _ = InvoiceTemplate.objects.get_or_create(**template_data, defaults={"user": user})
-        invoice.template = existing_template
-        invoice.save()
-        return invoice
-
-    def update(self, instance, validated):
-        user = self.context["request"].user
-        client = validated.pop("client")
-        if instance.client.id != client.get("id"):
-            instance.client = Client.objects.get(**client)
-
-        # Update template if necessary
-        template_data = validated.pop("template")
-        settings = template_data.get("settings")
-        if settings["theme"] != instance.template.settings.get("theme"):
-            template, _ = InvoiceTemplate.objects.update_or_create(
-                user=user,
-                invoice=instance,
-                defaults={"settings": settings, "user": user},
-            )
-            instance.template = template
-
-        instance = super().update(instance, validated)
-        instance.save()
-        return instance
+        return Invoice.objects.create(**validated, user=self.context["request"].user)
 
     def get_amount(self, instance):
         return reduce(lambda a, b: a + (b["quantity"]) * b["unit_price"], instance.invoice_items, 0)
+
+    def to_representation(self, instance):
+        invoice = super().to_representation(instance)
+        client = invoice.pop("client")
+        template = invoice.pop("template")
+        client_serializer = ClientSerializer(Client.objects.get(pk=client))
+        template_serializer = InvoiceTemplateSerializer(InvoiceTemplate.objects.get(pk=template))
+        return {**invoice, "client": client_serializer.data, "template": template_serializer.data}
+
+
+class InvoiceSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvoiceSettings
+        fields = "__all__"
+        extra_kwargs = {"user": {"read_only": True}}
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        return super().update(instance, {**validated_data, "user": user})

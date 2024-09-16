@@ -1,27 +1,27 @@
-import { hsvaToHex } from '@uiw/color-convert'
+import { Trash2 } from 'lucide-react'
 
-import { StatusRenderer } from '_Home/components/Grid/renderer'
+import { ActionsCellRenderer, StatusRenderer } from '_Home/components/Grid/renderer'
 import { capitalise } from '_Home/common/utils'
+
+import { deleteInvoice, deleteUserClient } from './redux/actions'
 
 export const columnDefs = [
   {
     headerName: '',
-    valueGetter: (params) => `${params.data.name}`,
-    maxWidth: 110,
+    valueGetter: 'node.rowIndex + 1',
+    width: 3,
     flex: 0,
   },
   {
-    headerName: 'Description',
-    field: 'description',
-    suppressSizeToFit: true,
-    minWidth: 150,
-    flex: 2,
+    headerName: 'Name',
+    field: 'name',
+    flex: 1,
+    cellClass: 'grid_click',
   },
   {
     headerName: 'Client',
     field: 'client.name',
-    maxWidth: 150,
-    suppressSizeToFit: true,
+    flex: 1,
   },
   {
     headerName: 'Amount',
@@ -56,6 +56,12 @@ export const columnDefs = [
     cellRenderer: StatusRenderer,
     maxWidth: 100,
   },
+  {
+    field: 'actions',
+    cellRenderer: ActionsCellRenderer,
+    maxWidth: 120,
+    cellRendererParams: { DeleteBtn: Trash2, deleteAction: deleteInvoice },
+  },
 ]
 
 export const a = `<!DOCTYPE html>
@@ -64,21 +70,28 @@ export const a = `<!DOCTYPE html>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Invoice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300&family=Roboto:wght@400;500;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap"
       rel="stylesheet"
     />
     <style>
-      main {
-        font-family: Lato, sans-serif;
+      main#main {
+        font-family: "Abel", sans-serif !important;
         margin: 0;
         padding: 0;
-        background-color: #f9f9f9;
         {{#theme.body}}
         color: {{.}};
         {{/theme.body}}
-
       }
+
+      main#main div,
+      main#main h1,
+      main#main p,
+      {
+        font-family: "Abel", sans-serif;
+      }
+    
       * {
         box-sizing: border-box;
       }
@@ -88,178 +101,220 @@ export const a = `<!DOCTYPE html>
       }
 
       .invoice-container .body {
-        padding: 66px 80px;
+        padding: 66px 80px 30px;
         background-color: #fff;
       }
+
       .header {
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: end;
         margin-bottom: 40px;
+        justify-content: center;
       }
-      .header img {
-        width: 6.25em;
-      }
+
       .header h1 {
+        font-family: "Abel", sans-serif;
         margin: 0;
-        font-size: clamp(1.5rem, 0.0025rem + 1.933vw, 2.3rem);
+        font-size: clamp(4.2rem, 0.0025rem + 1.933vw, 5.3rem);
         font-weight: 800;
+        letter-spacing: 14px;
+
         {{#theme.header}}
         color: {{.}};
         {{/theme.header}}
       }
+
+      .header .invoice_number {
+        font-family: "Abel", sans-serif;
+        margin: 20px 0 0;
+        font-size: 16px;
+        font-weight: 800;
+
+       {{#theme.accent}}
+        color: {{.}};
+        {{/theme.accent}}
+      }
+
       .address {
+        max-width: 350px;
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        flex-direction: column;
         margin-bottom: 3.125em;
         font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
       }
-      .address .client p {
-        font-weight: 600;
-        font-size: clamp(1rem, 0.0025rem + 1.333vw, 1.35rem);
-        margin-bottom: 1.555em;
+
+      .address .address_group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.125em;
+        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
       }
-      .address .client div {
-        margin-bottom: 0.45em;
+
+      .address .address_group div {
+        flex-basis:48%;
       }
-      .address .client span {
-        font-weight: 600;
+
+      .address .address_group.major p {
+        font-family: "Abel", sans-serif;
       }
-      .address .user-detail {
-        text-align: right;
+
+      .address .address_group p {
+        font-family: "Cormorant", serif;
+        margin-bottom: 8px;
+        font-size: 16px;
       }
-      .address .user-detail div {
-        margin-bottom: 0.3125em;
+
+      .address .address_group.major > div:first-child p {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 3px;
       }
 
       .table-container {
+        font-family: "Cormorant", serif !important;
         width: 100%;
         border-collapse: collapse;
         font-size: clamp(0.8125rem, 0.165rem + 0.75vw, 1rem);
       }
-      .table-container tr:first-of-type td {
-        padding-top: 1.5625em;
+
+      .table-container tr {
+       border-bottom: 1.5px solid black;
       }
-      .table-container td {
-        font-weight: 600;
+
+      .table-container tr td {
+        font-weight: 300;
+        padding: 1.3625em;
       }
-      .table-container td:last-of-type, .table-container td:nth-of-type(4) {
+      .table-container td:last-of-type, .table-container td:nth-of-type(4), .table-container th{
         {{#theme.accent}}
         color: {{.}};
         {{/theme.accent}}
       }
-      .table-container td:last-of-type {
-        min-width: 80px;
+
+
+      .table-container tr:last-of-type {
+          border-bottom: none;
       }
+
       .table-container th,
       .table-container td {
+        min-width: 25%;
         padding: 0.5em;
         text-align: center;
         min-width: 50px;
       }
-      .table-container th {
-        color: #808080;
-        font-weight: 400;
-        font-size:clamp(0.75rem, 0.165rem + 0.75vw, 0.87rem);
-        border: none;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 0.9375em;
+
+      .table-container tr:last-of-type td {
+        font-size: 20px;
+        font-weight: 600;
+        font-family: "Abel", sans-serif;
       }
+
+      .table-container th {
+        font-size: 20px;
+        font-weight: 800;
+        border: none;
+        border-bottom: 1.5px solid black;
+        margin-bottom: 0.9375em;
+        padding-bottom: 1.3625em;
+        font-family: "Abel", sans-serif;
+      }
+
       .table-container td:first-of-type,
       .table-container th:first-of-type {
         text-align: left;
         padding-left: 0;
         width: 260px;
       }
+
       .table-container td:last-of-type,
       .table-container th:last-of-type {
         text-align: right;
         padding-right: 0;
       }
       .footer {
-        {{#theme.footerBg}}
-          background: {{.}};
-        {{/theme.footerBg}}
-        height: 21.875em;
-        padding: 4.375em 80px 4.375em;
+        padding: 10px 0 30px;
+        font-weight: 300;
+        font-family: "Cormorant", serif;
       }
-      .footer-header,
-      .footer-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .footer-header {
-        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.87rem);
-        color: #808080;
-        width: 100%;
-      }
-      .third {
-        flex-basis: 33%;
-      }
-      .third.end {
-        text-align: right;
-      }
-      .footer-item {
-        margin: 1.5625em 0;
-      }
-      .footer-item .account_details {
-        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
-      }
-      .footer-item .due_item {
-        font-size: clamp(1rem, 0.0025rem + 1.333vw, 1.375rem);
-      }
-      .footer-item .total_item {
-        font-size: clamp(1.2rem, 0.0025rem + 1.333vw, 1.675rem);
-        {{#theme.accent}}
-        color: {{.}};
-        {{/theme.accent}}
-        font-weight: 700;
-        padding-right: 0;
-      }
-      hr {
-        border: 0.7px solid #ccc;
-        border-style: solid;
-        border-bottom: none;
-      }
-      .footer-msg {
-        margin-top: 2.5em;
-      }
-      .footer-msg {
-        font-size: 1.0625em;
+      #cormorant {
+        font-family: "Cormorant", serif;
       }
     </style>
   </head>
-  <main>
+  <main id="main">
     <div class="invoice-container">
       <div class="body">
         <div class="header">
-        {{#logo}}
-        <img src="{{.}}" alt="Your Logo" />
-        {{/logo}}
           <h1>INVOICE</h1>
+          <p class="invoice_number"># {{invoice.inv_tag}}</p>
         </div>
         <div class="address">
-          <div class="client">
-            <p>{{client}}</p>
-            <div>Date Issued: <span>{{invoice.issue_date}}</span></div>
-            <div>Invoice No: <span>{{invoice.inv_tag}}</span></div>
+          <div class="address_group major">
+            <div>
+              <p>BILLED TO:</p>
+            </div>
+            <div>
+              <p>{{client}}</p>
+            </div>
           </div>
-          <div class="user-detail">
-            <div>{{ user.name }}</div>
-            <div>{{user.address}}</div>
-            <div>{{user.city}}, {{user.country}}</div>
-            <div>{{user.extras}}</div>
+          <div class="address_group major">
+            <div>
+            <p>PAY TO:</p>
+            </div>
+            <div>
+            <p>
+              {{ user.name }}
+              <br />
+              {{user.address}}
+              <br />
+              {{user.extras}}
+            </p>
+            </div>
+          </div>
+          <div class="address_group" id="cormorant">
+            <div>
+            <p>Bank</p>
+          </div>
+            <div>
+            <p>{{user.bank}}</p>
+          </div>
+          </div>
+          <div class="address_group" id="cormorant">
+            <div>
+            <p>Account Name</p>
+          </div>
+            <div>
+            <p>{{user.account_name}}</p>
+          </div>
+          </div>
+          <div class="address_group" id="cormorant">
+            <div>
+            <p>Account Number</p>
+          </div>
+            <div>
+            <p>{{user.account_number}}</p>
+          </div>
+          </div>
+          <div class="address_group" id="cormorant">
+            <div>
+            <p>ISSUE DATE:</p>
+          </div>
+            <div>
+            <p>{{invoice.issue_date}}</p>
+          </div>
           </div>
         </div>
-        <table class="table-container">
+        <table class="table-container" id="cormorant">
           <thead>
             <tr>
               <th>DESCRIPTION</th>
               <th>RATE</th>
-              <th>QTY.</th>
-              <th>SUBTOTAL</th>
-              <th>TOTAL</th>
+              <th>QTY/HRS.</th>
+              <th>AMOUNT</th>
             </tr>
           </thead>
           <tbody>
@@ -269,38 +324,18 @@ export const a = `<!DOCTYPE html>
               <td>{{rate}}</td>
               <td>{{qty}}</td>
               <td>{{subtotal}}</td>
-              <td></td>
             </tr>
             {{/invoice.items}}
             <tr>
-              <td></td>
-              <td></td>
+              <td>TOTAL</td>
               <td></td>
               <td></td>
               <td>{{invoice.currency}} {{invoice.total}}</td>
             </tr>
           </tbody>
         </table>
-      </div>
-      <div class="footer">
-        <div class="footer-header">
-          <div class="third">BANK INFO</div>
-          <div class="third">DUE BY</div>
-          <div class="third end">TOTAL DUE</div>
-        </div>
-        <hr />
-        <div class="footer-item">
-          <div class="third">
-            <div class="account_details">{{user.account}}</div>
-          </div>
-          <div class="third due_item">
-            <div>{{invoice.due_date}}</div>
-          </div>
-          <div class="third total_item end">{{invoice.currency}} {{invoice.total_due}}</div>
-        </div>
-        <hr />
-        <div class="footer-msg">
-          <div class="thanks">❤️ Thank you!</div>
+        <div class="footer">
+          {{invoice.description}}
         </div>
       </div>
     </div>
@@ -345,14 +380,16 @@ interface ITheme {
   color?: string
 }
 
-export const getContext = (invoice: IInvoice, user: IUser) => ({
+export const getContext = (invoice: IInvoice, user: IUser, invoiceSettings: IInvoiceSettings) => ({
   logo: '',
   user: {
     name: user?.fullName,
-    address: 'Some address',
+    address: user?.address,
     city: 'some city',
     country: 'NG',
-    account: 'Some text bla bla bla bla ',
+    bank: invoiceSettings?.defaultBank,
+    account_name: invoiceSettings?.accountName,
+    account_number: invoiceSettings?.accountNumber,
   },
   client: invoice?.client?.name,
   theme: {
@@ -362,15 +399,18 @@ export const getContext = (invoice: IInvoice, user: IUser) => ({
     body: invoice?.template?.settings.theme?.body,
   },
   invoice: {
+    description: invoice?.description,
     issue_date: invoice?.issueDate,
     due_date: invoice?.dueDate,
     total: function total() {
-      return this.invoice.items?.reduce((acc, cur) => acc + cur.subtotal(), 0)
+      return parseInt(
+        this.invoice.items?.reduce((acc, cur) => acc + cur.subtotal(), 0),
+      )?.toLocaleString()
     },
-    total_due: invoice?.payment.totalDue,
+    total_due: invoice?.payment.totalDue?.toLocaleString(),
     status: capitalise(invoice?.payment.status),
     inv_tag: invoice?.name,
-    currency: invoice?.currency,
+    currency: invoice?.currency || invoiceSettings?.defaultCurrency,
     items: invoice?.invoiceItems.map((item) => ({
       description: item.description,
       rate: item.unitPrice,
@@ -381,3 +421,39 @@ export const getContext = (invoice: IInvoice, user: IUser) => ({
     })),
   },
 })
+
+export const contactColumnDefs = [
+  {
+    headerName: '',
+    valueGetter: 'node.rowIndex + 1',
+    width: 3,
+    flex: 0,
+  },
+  {
+    headerName: 'Name',
+    field: 'name',
+    flex: 1,
+  },
+  {
+    headerName: 'Email',
+    field: 'email',
+    flex: 1,
+  },
+  {
+    headerName: 'Created On',
+    field: 'createdAt',
+    valueFormatter: (params) => {
+      return new Intl.DateTimeFormat('en-GB', {
+        dateStyle: 'long',
+      }).format(new Date(params.value))
+    },
+  },
+  {
+    field: 'actions',
+    cellRenderer: ActionsCellRenderer,
+    maxWidth: 120,
+    cellRendererParams: { deleteAction: deleteUserClient },
+  },
+]
+
+console.log(JSON.stringify(a))

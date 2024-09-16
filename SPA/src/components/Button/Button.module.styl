@@ -1,24 +1,33 @@
 :local(.Button)
   padding 8px 15px
-  border-radius 3px
+  border-radius 5px
   border none
   min-height 40px
-  background $color-green 
+  background $color-purple 
   color $color-solid-white
   transition ease 0.7s
   cursor pointer
   display flex
-  border 1px solid $color-green 
+  border 1px solid $color-purple 
   align-items center
-
+  justify-content center
+  svg
+    margin-right 5px
+    &.loader
+      animation rotate 5s linear infinite alternate
   &:hover:not([disabled])
-    border 1px solid $color-green 
+    border 1px solid $color-purple 
     background transparent
-    color $color-green 
+    color $color-purple 
   &:disabled
     background rgb(151, 151, 151) !important
     cursor not-allowed
     border 1px solid rgb(151, 151, 151)
+
+  p.text
+    display flex
+    align-items center
+
 
    
 :local(.ExportButton)
@@ -37,3 +46,9 @@
             border none
         svg 
             fill #ccc
+
+
+@keyframes rotate {
+  from {transform: rotateZ(0);}
+  to {transform: rotateZ(360deg);}
+}

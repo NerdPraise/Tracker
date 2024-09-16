@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from constants.fields import MonthField
+from lib.fields import MonthField
 
 User = get_user_model()
 

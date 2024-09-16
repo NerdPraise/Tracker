@@ -173,11 +173,7 @@ export const BudgetStudio = () => {
   )
 
   return (
-    <SideBarLayout
-      selectedKey={ROUTES.authenticatedRoutes.BUDGET.key}
-      disableHide
-      extraContent={extraContent}
-    >
+    <SideBarLayout disableHide extraContent={extraContent}>
       <div className={styles.Budget}>
         <div className="header-date">
           <div className="date">

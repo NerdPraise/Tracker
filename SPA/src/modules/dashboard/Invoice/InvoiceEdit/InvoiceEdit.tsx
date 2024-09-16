@@ -1,46 +1,49 @@
-import ClassNames from 'classnames'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { useMatch, useNavigate, useParams } from 'react-router-dom'
+import ClassNames from 'classnames'
 import { Plus, Trash2 } from 'lucide-react'
 import Wheel from '@uiw/react-color-wheel'
-import { useMemo, useState } from 'react'
+import LoadingBar from 'react-top-loading-bar'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
-import { ROUTES } from '_Home/routing/routes'
 import { Button, Card, Input, Modal, Select, TextArea } from '_Home/components'
 import { StatusCode } from '_Home/common/utils'
 
 import { FrameDetails } from '../common/FrameDetails'
 import { getContext, a } from '../constants'
-import { useEffect } from 'react'
-import { saveInvoice, setSelectedInvoice, updateInvoice } from '../redux/actions'
+import {
+  saveInvoice,
+  setSelectedInvoice,
+  updateInvoice,
+  saveTemplate,
+  setSelectedTemplate,
+} from '../redux/actions'
 import styles from '../Invoice.module.styl'
 
-const options = [
-  { value: 'BT', label: 'Bank Transfer' },
-  { value: 'CS', label: 'Cash' },
-  { value: 'OT', label: 'Others' },
-]
 const defaultColorSection = {
   'Footer Bg': 'footerBg',
   Header: 'header',
   Accent: 'accent',
   Body: 'body',
 }
+
 export const InvoiceEdit = () => {
   const {
-    invoice: { invoices, selectedInvoice, statusCode, loading },
+    invoice: { invoices, selectedInvoice, statusCode, loading, hasTemplateChanged },
+    invoiceSettings: { settings },
     client: { clients },
   } = useAppSelector((state) => state.invoices)
   const { user } = useAppSelector((state) => state.user)
+  const dispatch = useAppDispatch()
   const isAddRoute = useMatch('invoice/add/:id')
   const invoiceID = useParams().invoiceId
   const [displayColor, setDisplayColor] = useState<string>('')
   const [currentInvoiceItem, setCurrentInvoiceItem] = useState<number>(0)
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
   const dispatchedUpdateInvoice = (data: Record<string, string | number>) =>
     dispatch(updateInvoice(data))
+  const loadingRef = useRef(null)
 
   const invoiceItems = selectedInvoice?.invoiceItems
   const templateSettings = selectedInvoice?.template?.settings
@@ -50,12 +53,15 @@ export const InvoiceEdit = () => {
       if (statusCode === StatusCode.CREATED) {
         navigate(`../../invoice/${selectedInvoice?.uuid}`)
       } else if (statusCode === StatusCode.SUCCESS) {
+        // For templates
+        loadingRef.current?.complete()
       }
     }
   }, [selectedInvoice, statusCode])
 
   useEffect(() => {
     if (isAddRoute) {
+      dispatch(setSelectedTemplate(isAddRoute.params.id))
       dispatch(setSelectedInvoice({ invoiceID, type: 'new' }))
     } else {
       dispatch(setSelectedInvoice({ invoiceID, type: 'exist' }))
@@ -65,6 +71,11 @@ export const InvoiceEdit = () => {
   const onHandleAdd = () => {
     setCurrentInvoiceItem(invoiceItems?.length)
     dispatchedUpdateInvoice({ section: 'add' })
+  }
+
+  const onHandleSaveTemplate = () => {
+    loadingRef.current?.continuousStart()
+    dispatch(saveTemplate())
   }
 
   const onHandleGenericChange = (e) => {
@@ -84,6 +95,7 @@ export const InvoiceEdit = () => {
     dispatchedUpdateInvoice(data)
   }
   const onHandleSave = () => {
+    loadingRef.current?.continuousStart()
     dispatch(saveInvoice(selectedInvoice.uuid))
   }
 
@@ -93,15 +105,23 @@ export const InvoiceEdit = () => {
     setCurrentInvoiceItem(0)
   }
 
-  const context = useMemo(() => getContext(selectedInvoice, user), [selectedInvoice])
+  const context = useMemo(() => getContext(selectedInvoice, user, settings), [selectedInvoice, settings])
   const handleClose = () => {}
 
   const onClickInputColor = (value: string) => {
     setDisplayColor(value)
   }
+  const options = clients.map((item) => ({
+    label: item.name,
+    value: item.id,
+  }))
+
+  const defaultOption = options.find(
+    (item) => item.label === selectedInvoice?.client?.name && item.value === selectedInvoice?.client?.id,
+  )
 
   return (
-    <SideBarLayout selectedKey={ROUTES.authenticatedRoutes.INVOICE.key} disableHide>
+    <SideBarLayout disableHide>
       <div className={styles.InvoiceEdit}>
         <div className={styles.header}>
           <h2>Edit Invoice {selectedInvoice?.name}</h2>
@@ -111,9 +131,18 @@ export const InvoiceEdit = () => {
           <div className={styles.frame}>
             <FrameDetails template={templateSettings?.html || ''} context={context} />
           </div>
+
           <div className={styles.form}>
             <Card className={styles.form_card} childrenClassName={styles.form_card_children}>
-              <Button onClick={onHandleSave} text="Save" />
+              <LoadingBar ref={loadingRef} color="#c770fe" />
+              <div className={styles.btn_area}>
+                <Button onClick={onHandleSave} text="Save" />
+                <Button
+                  onClick={onHandleSaveTemplate}
+                  text="Save Template"
+                  disabled={!hasTemplateChanged || !selectedInvoice?.uuid.length}
+                />
+              </div>
               <div className="input_group">
                 <TextArea
                   placeholder="Write short description for invoice"
@@ -132,7 +161,7 @@ export const InvoiceEdit = () => {
                 />
                 {displayColor && (
                   <Wheel
-                    color={templateSettings?.theme?.[displayColor || '#fff']}
+                    color={templateSettings?.theme?.[displayColor] || '#fff'}
                     onChange={(color) => onHandleColorChange(color.hex, displayColor, 'theme')}
                   />
                 )}
@@ -163,14 +192,8 @@ export const InvoiceEdit = () => {
               <div className={styles.edit_input_group}>
                 <Select
                   label="Client"
-                  defaultValue={{
-                    label: selectedInvoice?.client?.name,
-                    value: selectedInvoice?.client?.id,
-                  }}
-                  options={clients.map((item) => ({
-                    label: item.name,
-                    value: item.id,
-                  }))}
+                  defaultValue={defaultOption}
+                  options={options}
                   onChange={(e) => onHandleGenericChange({ id: e, section: 'client' })}
                 />
                 <div className={styles.halves}>

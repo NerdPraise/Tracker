@@ -1,0 +1,41 @@
+:local(.Nav)
+  display flex
+  justify-content space-between
+  align-items center
+  padding 10px 
+  height 70px
+  .nav_menu
+    flex-basis 20%
+    display flex
+    ul 
+      list-style none
+      justify-content space-between
+      display flex
+      width 100%
+      position relative
+      padding 0
+      li 
+        position relative
+        z-index 10
+        padding 8px 0
+        a
+          margin 0 10px
+          z-index 10
+          color unset
+      .active_menu
+        background $content-sidebar-gray
+        border-radius 15px
+        position absolute
+        opacity 1
+        mix-blend-mode difference
+        z-index -1
+        inset 0
+  .nav_login
+    display flex
+    max-width 100px
+    align-items center
+    a
+      color $color-light-ccc
+    > span
+      margin-left 20px
+

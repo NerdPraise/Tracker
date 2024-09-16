@@ -12,7 +12,7 @@ export const Track = () => {
   const handleTrackSubmit = () => {}
   const [showTrackModal, setShowTrackModal] = useState<boolean>()
   return (
-    <SideBarLayout disableHide selectedKey={ROUTES.authenticatedRoutes.TRACK.key}>
+    <SideBarLayout disableHide>
       <div className={styles.Track}>
         <div className={styles.header}>
           <h2>Track Spending</h2>

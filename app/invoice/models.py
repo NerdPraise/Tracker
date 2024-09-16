@@ -8,6 +8,13 @@ from django.db.models.signals import post_save
 User = get_user_model()
 
 
+class CurrencyChoices(models.TextChoices):
+    USD = "USD"
+    NGN = "NGN"
+    EUR = "EUR"
+    GBP = "GBP"
+
+
 class TimeStampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -17,12 +24,6 @@ class TimeStampedModel(models.Model):
 
 
 class Invoice(TimeStampedModel):
-    class CurrencyChoices(models.TextChoices):
-        USD = "USD"
-        NGN = "NGN"
-        EUR = "EUR"
-        GBP = "GBP"
-
     name = models.CharField(max_length=255, null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     client = models.ForeignKey("Client", on_delete=models.SET_NULL, null=True)
@@ -34,6 +35,7 @@ class Invoice(TimeStampedModel):
     currency = models.CharField(choices=CurrencyChoices.choices, default=CurrencyChoices.USD, max_length=20)
     template = models.ForeignKey("InvoiceTemplate", on_delete=models.PROTECT, null=True)
     invoice_items = models.JSONField(default=list, null=False, blank=False)
+    date_sent = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"INVOICE {self.name} Email={self.user.email}"
@@ -56,8 +58,24 @@ class Invoice(TimeStampedModel):
             instance.payment.total_due = updated_amount - already_paid
             instance.payment.save()
 
+    class Meta:
+        ordering = ("-created_at",)
+
 
 post_save.connect(Invoice.create_payment_fk, Invoice)
+
+
+class InvoiceSettings(models.Model):
+    prefix = models.CharField(max_length=150, default="INV")
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    default_currency = models.CharField(choices=CurrencyChoices.choices, default=CurrencyChoices.USD, max_length=20)
+    default_bank = models.CharField(max_length=150)
+    account_name = models.CharField(max_length=150)
+    account_number = models.CharField(max_length=150)
+    due_after = models.PositiveSmallIntegerField(default=10)
+
+    def __str__(self) -> str:
+        return self.user.email
 
 
 class InvoiceTemplate(models.Model):
@@ -75,13 +93,16 @@ class InvoiceTemplate(models.Model):
         return f"{self.uuid}"
 
 
-class Client(models.Model):
+class Client(TimeStampedModel):
     name = models.CharField(max_length=255)
     email = models.EmailField()
     user = models.ForeignKey(User, related_name="clients", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        constraints = (models.UniqueConstraint(fields=["user", "email"], name="unique-user-clients"),)
 
 
 class Payment(TimeStampedModel):
@@ -97,10 +118,12 @@ class Payment(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if self.id:
-            if self.total_due:
+            if not self.total_due:
+                self.status = Payment.StatusChoices.PAID
+            elif self.invoice.date_sent:
                 self.status = Payment.StatusChoices.PENDING
             else:
-                self.status = Payment.StatusChoices.PAID
+                self.status = Payment.StatusChoices.DRAFT
         return super().save(*args, **kwargs)
 
 

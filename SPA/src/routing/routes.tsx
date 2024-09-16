@@ -1,29 +1,62 @@
-import { BarChart3, BookOpenText, Receipt, TrainTrack } from 'lucide-react'
+import { BarChart3, BookOpenText, Cog, Receipt, TrainTrack } from 'lucide-react'
 
 interface routes {
   authenticatedRoutes: {
-    [key: string]: { path: string; key: string; menu: boolean; logo?: ReactChildren }
+    [key: string]: {
+      path: string
+      key: string
+      menu: boolean
+      logo?: ReactChildren
+      permission: string | null
+    }
   }
   unauthenticatedRoutes: {
+    [key: string]: { path: string; key: string }
+  }
+  externalRoutes: {
     [key: string]: { path: string; key: string }
   }
 }
 
 export const ROUTES: routes = {
   authenticatedRoutes: {
-    OVERVIEW: { path: '/overview', key: 'OVERVIEW', menu: true, logo: <BarChart3 /> },
-    BUDGET: { path: '/budget-studio', key: 'BUDGET_STUDIO', menu: true, logo: <Receipt /> },
-    TRACK: { path: '/track', key: 'TRACK', menu: true, logo: <TrainTrack /> },
-    INVOICE: { path: '/invoice', key: 'INVOICE', menu: true, logo: <BookOpenText /> },
-    ADD_INVOICE: { path: '/invoice/add', key: 'ADD_INVOICE', menu: false },
-    ADD_TEMPLATE: { path: '/invoice/add/:templateId', key: 'ADD_TEMPLATE', menu: false },
-    EDIT_INVOICE: { path: '/invoice/edit/:invoiceId', key: 'EDIT_INVOICE', menu: false },
-    INVOICE_DETAIL: { path: '/invoice/:invoiceId', key: 'INVOICE_DETAIL', menu: false },
+    OVERVIEW: {
+      path: '/overview',
+      key: 'OVERVIEW',
+      menu: true,
+      logo: <BarChart3 />,
+      permission: '',
+    },
+    BUDGET: {
+      path: '/budget-studio',
+      key: 'BUDGET_STUDIO',
+      menu: true,
+      logo: <Receipt />,
+      permission: 'view-budget',
+    },
+    TRACK: {
+      path: '/track',
+      key: 'TRACK',
+      menu: true,
+      logo: <TrainTrack />,
+      permission: 'view-track',
+    },
+    INVOICES: { path: '/invoice', key: 'INVOICE', menu: true, logo: <BookOpenText />, permission: '' },
+    SETTINGS: { path: '/settings', key: 'SETTINGS', menu: true, logo: <Cog />, permission: '' },
+    ADD_INVOICE: { path: '/invoice/add', key: 'ADD_INVOICE', menu: false, permission: '' },
+    CONTACTS: { path: '/invoice/contacts', key: 'CONTACTS', menu: false, permission: '' },
+    ADD_TEMPLATE: { path: '/invoice/add/:templateId', key: 'ADD_TEMPLATE', menu: false, permission: '' },
+    EDIT_INVOICE: { path: '/invoice/edit/:invoiceId', key: 'EDIT_INVOICE', menu: false, permission: '' },
+    INVOICE_DETAIL: { path: '/invoice/:invoiceId', key: 'INVOICE_DETAIL', menu: false, permission: '' },
   },
   unauthenticatedRoutes: {
     HOME: { path: '/', key: 'HOME' },
     ABOUT: { path: '/about', key: 'ABOUT' },
     LOGIN: { path: '/login', key: 'LOGIN' },
     SIGNUP: { path: '/register', key: 'SIGNUP' },
+    SIGNUP_SUB: { path: '/register/subscribe', key: 'SIGNUP' },
+  },
+  externalRoutes: {
+    PREVIEW: { path: '/preview/:invoiceId', key: 'PREVIEW' },
   },
 }

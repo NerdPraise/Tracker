@@ -1,30 +1,36 @@
 import { useNavigate, useParams } from 'react-router-dom'
+import { debounce } from 'lodash'
 import { ChevronDown, CalendarCheck2 } from 'lucide-react'
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
-import { ROUTES } from '_Home/routing/routes'
 import { Button, Card, Grid, Input, Modal, Select } from '_Home/components'
-import { StatusCode, capitalise, isFormValid } from '_Home/common/utils'
+import { StatusCode, htmlToPdf, isFormValid } from '_Home/common/utils'
 
-import { createInvoiceTransaction, deleteTransactions, setSelectedInvoice } from '../redux/actions'
+import {
+  createInvoiceTransaction,
+  deleteTransactions,
+  sendInvoiceToClient,
+  setSelectedInvoice,
+} from '../redux/actions'
 import { FrameDetails } from '../common/FrameDetails'
-import styles from '../Invoice.module.styl'
 import { paymentColumnDefs, a, getContext } from '../constants'
-import { useEffect } from 'react'
 import { getInvoiceTransactions } from '../redux/actions'
+import styles from '../Invoice.module.styl'
 
 const options = [
   { value: 'BT', label: 'Bank Transfer' },
   { value: 'CS', label: 'Cash' },
   { value: 'OT', label: 'Others' },
 ]
+
 const customStyles = {
   control: (base) => ({
     ...base,
     height: 50,
   }),
+
   indicatorsContainer: (provided) => ({
     ...provided,
     height: '50px',
@@ -33,12 +39,13 @@ const customStyles = {
 
 export const InvoiceDetail = () => {
   const {
-    invoice: { invoices, selectedInvoice },
+    invoice: { invoices, selectedInvoice, statusCode: invoiceStatus },
     errorMessage,
+    invoiceSettings: { settings },
     transaction: { loading: transLoading, transactions, statusCode },
   } = useAppSelector((state) => state.invoices)
   const { user } = useAppSelector((state) => state.user)
-  const sendFormRef = useRef<HTMLFormElement>(null)
+  const [loading, setLoading] = useState(false)
   const reportFormRef = useRef<HTMLFormElement>(null)
   const [isSendToClient, setIsSendToClient] = useState<boolean>(false)
   const [isRecordPayment, setIsRecordPayment] = useState<boolean>(false)
@@ -47,55 +54,78 @@ export const InvoiceDetail = () => {
   const dispatch = useAppDispatch()
   const invoiceID = useParams().invoiceId
   const templateSettings = selectedInvoice?.template?.settings
+  const debouncedSendToClient = debounce(() => dispatch(sendInvoiceToClient(selectedInvoice.uuid)), 2000)
+  const debouncedRecordPayment = debounce(
+    (formData: FormData) => dispatch(createInvoiceTransaction(formData)),
+    2000,
+  )
 
   useEffect(() => {
     if (!transLoading && statusCode === StatusCode.CREATED) {
       setIsRecordPayment(false)
     }
-  }, [statusCode])
+    if (invoiceStatus === StatusCode.SUCCESS) {
+      setIsSendToClient(false)
+    }
+    setLoading(false)
+  }, [statusCode, invoiceStatus])
 
   useEffect(() => {
     dispatch(getInvoiceTransactions(invoiceID))
   }, [])
 
   useEffect(() => {
-    dispatch(setSelectedInvoice({ invoiceID, type: 'exist' }))
+    if (!(selectedInvoice && selectedInvoice.uuid === invoiceID)) {
+      dispatch(setSelectedInvoice({ invoiceID, type: 'exist' }))
+    }
   }, [invoices])
 
-  const context = useMemo(() => getContext(selectedInvoice, user), [selectedInvoice])
+  const context = useMemo(() => getContext(selectedInvoice, user, settings), [selectedInvoice, settings])
 
-  const onHandleReportPayment = () => {
+  const onHandleRecordtPayment = () => {
+    setLoading(true)
     const formData = new FormData(reportFormRef.current)
     formData.append('invoice', selectedInvoice.uuid)
-    dispatch(createInvoiceTransaction(formData))
+    debouncedRecordPayment(formData)
   }
+
   const onHandleMarkUpaid = () => {
     dispatch(deleteTransactions(selectedInvoice.uuid))
   }
+
   const handleClose = () => {
     setIsRecordPayment(false)
     setIsSendToClient(false)
   }
 
-  const onHandleSendToClient = () => {
-    const formData = new FormData(sendFormRef.current)
-    // dispatch(createInvoiceTransaction(formData))
+  const handleSendToClient = () => {
+    setLoading(true)
+    debouncedSendToClient()
+  }
+
+  const handleDownloadInvoice = () => {
+    const invoiceToBeDownloaded = document.getElementById('frame')
+    htmlToPdf(invoiceToBeDownloaded)
   }
 
   const gridData = transactions?.map((item) => ({ ...item, client: selectedInvoice?.client }))
   const clientHasPaidAll = !Number(selectedInvoice?.payment.totalDue)
 
   return (
-    <SideBarLayout selectedKey={ROUTES.authenticatedRoutes.INVOICE.key} disableHide>
+    <SideBarLayout disableHide>
       <div className={styles.InvoiceDetail}>
         <div className={styles.header}>
           <h2>Invoice {selectedInvoice?.name}</h2>
           <div className={styles.edit_actions}>
             <Button text="Edit Invoice" onClick={() => navigate(`../edit/${invoiceID}`)} />
             <Button
-              text="More actions"
+              text={
+                <>
+                  More
+                  <ChevronDown width="13" height="10" />
+                </>
+              }
               onClick={() => null}
-              logo={<ChevronDown width="13" height="10" />}
             />
           </div>
         </div>
@@ -115,33 +145,57 @@ export const InvoiceDetail = () => {
           </div>
           <div className={styles.client_actions}>
             <Card className={styles.card}>
-              {!clientHasPaidAll ? (
-                <div className={styles.card_paid}>
-                  <p>Send Invoice to client via email to get paid faster</p>
-                  <Button text="Send to Client" onClick={() => setIsSendToClient(true)} />
-                </div>
-              ) : (
-                <div className={styles.card_paid}>
-                  <p>Congrats!!🎉 Your invoice is all paid for</p>
-                  <Button text="Send Receipt" onClick={() => setIsSendToClient(true)} />
-                </div>
-              )}
+              <div className={styles.card_paid}>
+                {!clientHasPaidAll && !selectedInvoice?.dateSent && (
+                  <>
+                    <p className={styles.card_paid_text}>
+                      Send invoice to client via email to get paid faster
+                    </p>
+                    <Button text="Send to Client" onClick={() => setIsSendToClient(true)} />
+                  </>
+                )}
+
+                {selectedInvoice?.dateSent && !clientHasPaidAll && (
+                  <>
+                    <p className={styles.card_paid_text}>
+                      Congrats!!🎉 Your invoice is in the hands of your client
+                    </p>
+                    <Button text="Send Reminder" onClick={() => setIsSendToClient(true)} />
+                  </>
+                )}
+
+                {selectedInvoice?.dateSent && clientHasPaidAll && (
+                  <>
+                    <p className={styles.card_paid_text}>Congrats!!🎉 Your invoice is all paid for</p>
+                    <Button text="Send Receipt" onClick={() => setIsSendToClient(true)} />
+                  </>
+                )}
+              </div>
             </Card>
             <Card className={styles.card}>
-              {clientHasPaidAll ? (
-                <div className={styles.card_paid}>
-                  <p>Wish to reverse invoice payment? Click below button.</p>
-                  <Button text="Mark Unpaid" onClick={onHandleMarkUpaid} />
-                </div>
-              ) : (
-                <div className={styles.card_paid}>
-                  <p>Client already paid? Click below to record an offline payment</p>
-                  <Button text="Record Payment" onClick={() => setIsRecordPayment(true)} />
-                </div>
-              )}
+              <div className={styles.card_paid}>
+                {clientHasPaidAll ? (
+                  <>
+                    <p className={styles.card_paid_text}>
+                      Wish to reverse invoice payment? Click below button.
+                    </p>
+                    <Button text="Mark Unpaid" onClick={onHandleMarkUpaid} />
+                  </>
+                ) : (
+                  <>
+                    <p className={styles.card_paid_text}>
+                      Client already paid? Click below to record an offline payment
+                    </p>
+                    <Button text="Record Payment" onClick={() => setIsRecordPayment(true)} />
+                  </>
+                )}
+              </div>
             </Card>
-            <div className={styles.preview}>
-              <Button text="Preview as Client" onClick={() => null} />
+            <div className={styles.extra_btn}>
+              <a href={`/preview/${selectedInvoice?.uuid}`} target="_blank">
+                <Button text="Preview as Client" onClick={null} />
+              </a>
+              <Button text="Download Invoice" onClick={handleDownloadInvoice} />
             </div>
           </div>
         </div>
@@ -167,7 +221,7 @@ export const InvoiceDetail = () => {
                 />
               </div>
               <div className={styles.send_btn}>
-                <Button text="Send Invoice" onClick={onHandleSendToClient} />
+                <Button text="Send Invoice" onClick={handleSendToClient} loading={loading} />
               </div>
             </div>
           )}
@@ -226,12 +280,11 @@ export const InvoiceDetail = () => {
               <div className={styles.send_btn}>
                 <Button
                   text="Record Payment"
-                  onClick={onHandleReportPayment}
+                  onClick={onHandleRecordtPayment}
                   disabled={!!Object.keys(error).length || !isFormValid(reportFormRef)}
-                  loading={transLoading}
+                  loading={loading}
                 />
               </div>
-              {!!isFormValid(reportFormRef) && 'True'}
               <div className="error-message">{errorMessage}</div>
             </div>
           )}

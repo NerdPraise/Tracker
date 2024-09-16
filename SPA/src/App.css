@@ -1,3 +1,8 @@
+:root {
+  --light: white;
+  --dark: #181c1e;
+}
+
 body {
   margin: 0px;
   color: #d2d5d9;
@@ -8,6 +13,7 @@ body {
 * {
   box-sizing: border-box;
 }
+input,
 button,
 h1,
 h2,
@@ -19,9 +25,11 @@ p {
   font-family: 'Lato', sans-serif;
   margin: 0;
 }
-
+a {
+  text-decoration: none;
+}
 .error-message {
-  color: #cf6679;
+  color: #cf6679 !important;
   padding-top: 10px;
   font-size: 15px;
 }
@@ -29,7 +37,7 @@ p {
 .error {
   font-size: 12px;
   margin-top: 5px;
-  color: #cf6679;
+  color: #cf6679 !important;
 }
 
 .ag-theme-customtracker {
@@ -132,4 +140,22 @@ img {
 .select__single-value {
   min-height: 1px !important;
   color: #d2d5d9 !important;
+}
+
+.small {
+  font-size: 14px;
+  margin-bottom: 25px;
+  font-weight: 400;
+  color: #bebebe;
+}
+
+.already {
+  color: #bebebe;
+  font-weight: 300;
+  font-size: 14px;
+  margin-top: 15px;
+}
+
+.already a {
+  color: #c770fe;
 }

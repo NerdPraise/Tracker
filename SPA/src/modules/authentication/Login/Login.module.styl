@@ -5,14 +5,67 @@
   max-width 600px
   width 100%
   margin-top -65px
+  
   .header 
-    color #a7a9ac
-    text-align center
     h2
       font-size 42px
       margin-bottom 10px
+    p.tagline
+      font-size 14px
+      margin-bottom 25px
+      font-weight 400
+      color $color-less-white 
   input 
-    padding 10px
     margin-bottom 10px
+    width inherit
+    height 50px
+    padding 8px 8px 8px 20px
+    background #212427
+    font-size 17px
+    border none
+    &:focus
+      border 1px solid #968AC6
+    .sign_input
+      height 50px
+      margin 8px 0
+  
+  .divider
+    display flex
+    align-items center
+    font-weight 300
+    font-size 13px
+    margin-top 25px
+    color $color-less-white 
+    &::before, &::after 
+      flex 1
+      content ''
+      padding 0.4px
+      background-color $color-light-ccc
+    &::before
+      margin-right 20px
+    &::after 
+      margin-left 20px
+  .other_signup
+    display flex
+    justify-content center
+    margin-top 35px
+    > div
+      flex-basis 44%
+      border 1px solid $color-light-ccc 
+      padding 13px
+      display flex
+      align-items center
+      justify-content center
+      border-radius 4px
+      cursor pointer
+      svg
+        height 30px
+  .form_btn
+    margin-top 15px
+    height 50px
+    font-size 18px
   .error_message
     color $color-error-red
+    font-size 13px
+    margin-top 10px
+

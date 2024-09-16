@@ -1,12 +1,18 @@
+import { Link } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router'
+import { useGoogleLogin } from '@react-oauth/google'
 
+import { API } from '_Home/store/api'
 import { ROUTES } from '_Home/routing/routes'
 import { Button, Input } from '_Home/components'
 import { isFormValid } from '_Home/common/utils'
 import { useUser, useAppSelector, useAppDispatch } from '_Home/common/hooks'
 
+import Google from '_Images/google.svg?react'
+
 import { signUpAction } from './redux/actions'
+import { loginGoogleUser } from '_Module/authentication/Login/redux/actions'
 import styles from './SignUp.module.styl'
 
 export const SignUp = () => {
@@ -17,82 +23,90 @@ export const SignUp = () => {
   const [formError, setFormError] = useState<Record<string, string>>({})
   const formRef = useRef<HTMLFormElement>(null)
 
-  const validatePassword = () => {
-    const form = formRef.current
-    const password = (form.elements.namedItem('password1') as HTMLInputElement).value
-    const otherPassword = (form.elements.namedItem('password2') as HTMLInputElement).value
-
-    if (password !== otherPassword) {
-      return 'Password is not the same'
-    }
-    return ''
-  }
-
   const onSubmit = () => {
     const form = formRef.current
     const formData = new FormData(form)
 
     dispatch(signUpAction(formData))
   }
+  const googleLogin = useGoogleLogin({
+    flow: 'auth-code',
+    onSuccess: async (response) => {
+      API.post('auth/google/', JSON.stringify({ code: response.code })).then((response) =>
+        dispatch(loginGoogleUser(response)),
+      )
+    },
+    onError: (err) => console.log(err),
+  })
 
   useEffect(() => {
     if (isLoggedIn && !isCheckingLoginStatus) {
-      const redirectPath = ROUTES.authenticatedRoutes.OVERVIEW.path
-      navigate(redirectPath)
+      navigate('/settings/subscription')
     }
   }, [isLoggedIn])
 
   return (
-    <div className={styles.SignUpContainer}>
-      <h3>Register</h3>
+    <div className={styles.SignUp}>
+      <h3>Create an account</h3>
+      <p className={styles.tagline}>Create, Send, and Manage Invoices in Seconds – Get Paid Faster!</p>
+
       <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
+        <div className={styles.form_group}>
+          <Input
+            name="firstName"
+            error={formError}
+            setError={setFormError}
+            type="text"
+            placeholder="First Name"
+            className={styles.sign_input}
+          />
+          <Input
+            name="lastName"
+            error={formError}
+            setError={setFormError}
+            type="text"
+            placeholder="Last Name"
+            className={styles.sign_input}
+          />
+        </div>
         <Input
           type="email"
           error={formError}
           setError={setFormError}
-          labelName="Email"
+          placeholder="Email"
           autoComplete="email"
           name="email"
           className={styles.sign_input}
         />
-        <Input
-          name="username"
-          error={formError}
-          setError={setFormError}
-          type="text"
-          autoComplete="username"
-          labelName="Username"
-          className={styles.sign_input}
-        />
+
         <Input
           name="password1"
           error={formError}
           setError={setFormError}
           type="password"
           autoComplete="new-password"
-          labelName="Password"
-          className={styles.sign_input}
-        />
-        <Input
-          name="password2"
-          type="password"
-          autoComplete="new-password"
-          labelName="Password again"
-          customValidation={validatePassword}
-          error={formError}
-          setError={setFormError}
+          placeholder="Password"
           className={styles.sign_input}
         />
         <Button
           loading={loading}
           disabled={!!Object.keys(formError).length || !isFormValid(formRef)}
           onClick={onSubmit}
-          text="SignUp"
+          className={styles.form_btn}
+          text="Create account"
         />
       </form>
-      {/* {!loading && (errorMessage || 'passwordError') && (
-          <div className={styles.error-message}>{'passwordError'}</div>
-        )} */}
+
+      <div className={styles.divider}>Or register with</div>
+      <div className={styles.other_signup}>
+        <div onClick={googleLogin}>
+          <Google />
+          GOOGLE
+        </div>
+      </div>
+      <p className="already">
+        Already have an account? <Link to={ROUTES.unauthenticatedRoutes.LOGIN.path}> Log in</Link>
+      </p>
     </div>
   )
 }

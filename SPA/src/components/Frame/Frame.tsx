@@ -11,7 +11,7 @@ interface FrameProps {
 
 export const Frame = ({ template, context, className }: FrameProps) => {
   return (
-    <div className={ClassNames(style.Frame, className)}>
+    <div className={ClassNames(style.Frame, className)} id="frame">
       <div dangerouslySetInnerHTML={{ __html: Mustache.render(template, context) }} />
     </div>
   )

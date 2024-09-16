@@ -1,4 +1,6 @@
 import { camelCase, snakeCase, isArray, transform, isObject } from 'lodash'
+import html2pdf from 'html2pdf.js/dist/html2pdf.bundle.min'
+
 export const getFirstTwoLetters = (word: string) => {
   if (typeof word !== 'string') {
     return ''
@@ -51,7 +53,7 @@ export const isFormValid = (formRef) => {
 export const parseErrorFromResponse = (error: Record<string, string>) => {
   return Object.entries(error).reduce((prev, current) => {
     const [key, value] = current
-    return prev + `${key}: ${value} <br>`
+    return prev + `${key.charAt(0).toUpperCase()}${key.slice(1)}: ${value} <br>`
   }, '')
 }
 
@@ -114,4 +116,34 @@ export class DefaultDicts<K, V> {
     this.map.set(key, val)
     return val
   }
+}
+
+export const hasPermission = (permissions: string[], permission) => {
+  if (permission === '' || permissions.includes(permission)) {
+    return true
+  }
+  return false
+}
+
+export const htmlToPdf = (element, options = {}) => {
+  // Default options for the PDF
+  // Get the actual dimensions of the element
+  const elementWidth = element.scrollWidth
+  const elementHeight = element.scrollHeight
+
+  // Default options for the PDF
+  const defaultOptions = {
+    margin: 0, // Set margins to 0 to capture the full content
+    filename: 'document.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      windowHeight: elementHeight,
+    },
+    jsPDF: { unit: 'px', format: [elementWidth, elementHeight], orientation: 'portrait' },
+  }
+
+  const mergedOptions = { ...defaultOptions, ...options }
+
+  html2pdf().set(mergedOptions).from(element).save()
 }

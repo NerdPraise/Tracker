@@ -14,6 +14,7 @@ from datetime import timedelta
 from pathlib import Path
 
 from decouple import config
+from kombu import Queue
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_json_widget",
     "tracker",
+    "app.pricing",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
@@ -143,3 +145,15 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
+
+CELERY_BROKER_URL = config("REDIS_URL", default="redis://localhost:6379/")
+CELERY_TASK_QUEUES = (
+    # need to define default queue here or exception would be raised
+    Queue("default"),
+    Queue("high_priority"),
+    Queue("low_priority"),
+)
+
+FE_URL = config("FE_URL", default="http://localhost:5173")
+GOOGLE_OAUTH2_CLIENT_ID = config("GOOGLE_OAUTH2_CLIENT_ID")
+GOOGLE_OAUTH2_CLIENT_SECRET = config("GOOGLE_OAUTH2_CLIENT_SECRET")
