@@ -2,11 +2,22 @@
   display flex
   width 100%
   max-width 1700px
+  flex-direction column
+  padding 0 80px 
+  overflow hidden
+  height 100vh
+  .nav_top
+    height 70px
+    padding 10px
+  .logo
+    height 100%
+    width 40px
+    padding 5px 0
   .content
     background $color-theme-dark
     width 100%
     flex-direction row
-    height 100vh
+    height 100%
     overflow-y auto
     display flex
     .content_sidebar
@@ -17,8 +28,18 @@
       align-items center
       padding 12px
     .content_children
+      margin-top 15px
       display flex
       flex-basis 50%
       justify-content center
       align-items center
       padding 0 40px
+  @media screen and (max-width: 600px)
+    padding 0 13px
+    .content
+      .content_sidebar
+        display none
+      .content_children
+        width 100%
+        flex-basis 100%
+        padding 0 10px

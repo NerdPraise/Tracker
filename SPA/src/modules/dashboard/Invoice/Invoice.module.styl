@@ -20,9 +20,6 @@
       min-width 100px
       svg 
         margin-right 3px
-      &:hover
-        svg
-          fill $color-green 
   .invoice_list
     height 100px
     .grid 
@@ -319,3 +316,34 @@
       padding 10px 50px
       font-size 18px
       width 100%
+
+:local(.payment_tab)
+  display flex
+  justify-content space-between
+  .first
+    flex-basis 30%
+  .second
+    flex-basis 66%
+
+  .trigger
+    all unset
+    height 40px
+    padding 10px
+    display flex
+    justify-content space-between
+    width 250px
+    border 1px solid $color-light-ccc
+    font-size 12px
+    display flex
+    align-items center
+    margin-bottom 12px
+    border-radius 9px
+    cursor pointer
+    .pricing
+      text-align right
+      .small
+        font-size 9px
+        margin-top 4px
+
+
+

@@ -24,7 +24,7 @@ def get_monthly_track(user, month=None):
     month = parse_date(month) or Month.from_date(datetime.now())
     if month > Month.from_date(datetime.now()):
         # If month is ahead of today's date
-        return None
+        return (None, None)
     return MonthTrack.objects.get_or_create(month=month, user=user)
 
 

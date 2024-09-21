@@ -3,12 +3,13 @@ import ClassNames from 'classnames'
 import { CellClickedEvent } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { useNavigate } from 'react-router-dom'
-import { Users, Plus } from 'lucide-react'
+import { Root, List, Trigger, Content } from '@radix-ui/react-tabs'
+import { Users, Plus, Lock } from 'lucide-react'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { noRowRenderer } from '_Home/components/Grid/renderer'
-import { Button, Grid, Input } from '_Home/components'
-import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
+import { Button, Grid, Input, Modal } from '_Home/components'
+import { useAppDispatch, useAppSelector, useUser } from '_Home/common/hooks'
 import { capitalise } from '_Home/common/utils'
 
 import { getAllUserClient } from '../redux/actions'
@@ -22,6 +23,8 @@ export const InvoiceList = () => {
   const [currentTab, setCurrentTab] = useState<string>('all')
   const [filterText, setFilterText] = useState<string>('')
   const { invoice } = useAppSelector((state) => state.invoices)
+  const [noInvoiceModalShow, setNoInvoiceModalShow] = useState<boolean>(false)
+  const { user } = useUser()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
@@ -42,6 +45,23 @@ export const InvoiceList = () => {
     currentTab !== 'all' ? item.payment?.status === currentTab : item,
   )
 
+  const hasInvoiceForCurrentMonth = invoice.invoices.filter((item) => {
+    const date = new Date(item.createdAt)
+    const currentDate = new Date()
+    return date.getMonth() === currentDate.getMonth()
+  }).length
+  const canCreateInvoiceThisMonth = !(
+    hasInvoiceForCurrentMonth && user.subscription.toLowerCase() === 'free'
+  )
+
+  const onClickAddInvoice = () => {
+    if (!canCreateInvoiceThisMonth) {
+      setNoInvoiceModalShow(true)
+    } else {
+      navigate('add')
+    }
+  }
+
   return (
     <SideBarLayout disableHide>
       <div className={styles.InvoiceList}>
@@ -60,9 +80,9 @@ export const InvoiceList = () => {
             />
             <Button
               className={styles.track_button}
-              logo={<Plus fill="#fff" size={18} />}
+              logo={canCreateInvoiceThisMonth ? <Plus fill="#fff" size={18} /> : <Lock size={18} />}
               text="Add Invoice"
-              onClick={() => navigate('add')}
+              onClick={onClickAddInvoice}
             />
           </div>
         </div>
@@ -110,6 +130,38 @@ export const InvoiceList = () => {
           <p onClick={() => onExport()}>Export all invoice</p>
         </div>
       </div>
+      <Modal width="lg" isVisible={noInvoiceModalShow} handleClose={() => setNoInvoiceModalShow(false)}>
+        <div className={styles.payment_tab}>
+          <div className={styles.first}>
+            <h2>Empower your financial decision & take your finances to another level</h2>
+            <p>Trusted by humans worldwide.</p>
+            <Root defaultValue="general" orientation="vertical">
+              <List className={styles.tab_list}>
+                <Trigger className={styles.trigger} value="premium">
+                  <div>Premium</div>
+                  <div className={styles.pricing}>
+                    <p>$9.99 / month</p>
+                    <p className={styles.small}>Billed monthly</p>
+                  </div>
+                </Trigger>
+                <Trigger className={styles.trigger} value="all_time">
+                  <div>All Time</div>
+                  <div className={styles.pricing}>
+                    <p>$300 / month</p>
+                    <p className={styles.small}>Billed monthly</p>
+                  </div>
+                </Trigger>
+              </List>
+              <Content value="premium" className={styles.tab_content}>
+                premium
+              </Content>
+              <Content value="all_time" className={styles.tab_content}>
+                all time
+              </Content>
+            </Root>
+          </div>
+        </div>
+      </Modal>
     </SideBarLayout>
   )
 }

@@ -41,6 +41,7 @@ export const Overview = () => {
   const onBtnExport = useCallback(() => {
     gridRef.current?.api.exportDataAsCsv()
   }, [])
+  console.log(categoryList)
 
   return (
     <SideBarLayout disableHide>

@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Lock, BellRing, Settings } from 'lucide-react'
+import Lottie from 'react-lottie'
 
+import animationData from '_Home/assets/lottie/coming_soon.json'
 import { Backdrop, SideBar, Modal } from '_Home/components'
 import { getFirstTwoLetters, hasPermission } from '_Home/common/utils'
 import { capitalise } from '_Home/common/utils'
@@ -84,8 +86,24 @@ export const SideBarLayout = ({ backdrop, children, disableHide, extraContent }:
         isVisible={showDisabledInfo}
         width="md"
         handleClose={() => setShowDisabledInfo((prev) => !prev)}
+        className={styles.ModalSide}
       >
-        You don't have permission to view this area. To do so, upgrade your plan
+        <Lottie
+          options={{
+            loop: true,
+            autoplay: true,
+            animationData: animationData,
+            rendererSettings: {
+              preserveAspectRatio: 'xMidYMid slice',
+            },
+          }}
+          height={400}
+          style={{
+            padding: '60px 60px 0 60px',
+            fontFamily: "'Lato', sans-serif",
+          }}
+        />
+        <div className={styles.coming}>Construction is ongoing</div>
       </Modal>
       {extraContent}
     </div>

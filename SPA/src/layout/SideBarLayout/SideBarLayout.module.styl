@@ -3,6 +3,8 @@
   overflow-y hidden
   width 100%
   flex-direction column
+  .lottie
+    padding 60px
   .nav 
     height 75px
     background $content-sidebar-gray
@@ -56,7 +58,13 @@
       &_children
         padding 35px 40px
 
-    
 :local(.LayoutSide)
   padding-top 25px
 
+:local(.ModalSide)
+  display flex
+  flex-direction column
+  align-items center
+  .coming
+    text-align center
+    width 100%

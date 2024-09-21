@@ -45,11 +45,12 @@ export const useMoneyDash = () => {
       }))
     : genericChartData
 
-  const categoryList = transactions.reduce((acc, curr) => {
+  const categoryList = transactions?.reduce((acc, curr) => {
     const category_name = curr.category ? curr.category.name : 'Unspecified' // Enforce categories on all transactions
     acc[category_name] = (acc[category_name] || 0) + curr.amount
     return acc
   }, {} as Record<string, number>)
+  console.log(transactions)
 
   const transactionList = transactions?.length ? (
     transactions?.map((tran) => (

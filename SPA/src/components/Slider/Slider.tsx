@@ -49,7 +49,10 @@ export const Slider = ({ className }: { className?: string }) => {
       ))}
       <div className={styles.dot_container}>
         {sliderContent.map((item, index) => (
-          <div className={ClassNames(styles.dot, { [styles.active]: index === currentIndex })} />
+          <div
+            className={ClassNames(styles.dot, { [styles.active]: index === currentIndex })}
+            key={index}
+          />
         ))}
       </div>
     </div>

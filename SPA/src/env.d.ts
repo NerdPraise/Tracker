@@ -30,6 +30,7 @@ declare global {
     template: ITemplate
     amount: number
     dateSent: string | null
+    createdAt: string
     currency: string
     payment: {
       status: string

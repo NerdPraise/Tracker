@@ -1,11 +1,22 @@
-import { Slider } from '_Home/components/'
+import { Link } from 'react-router-dom'
 import { Outlet } from 'react-router'
+
+import { Slider } from '_Home/components/'
+
+import LOGO from '_Images/useinvoice.png'
 
 import styles from './UnauthenticatedLayout.module.styl'
 
 export const UnauthenticatedLayout = () => {
   return (
     <div className={styles.container}>
+      <div className={styles.nav_top}>
+        <div className={styles.logo}>
+          <Link to="/">
+            <img src={LOGO} alt="LOGO" />
+          </Link>
+        </div>
+      </div>
       <div className={styles.content}>
         <div className={styles.content_sidebar}>
           <Slider />

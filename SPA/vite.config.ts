@@ -11,6 +11,7 @@ export default defineConfig({
     // Relative to the root
     outDir: '../dist',
   },
+  assetsInclude: ['**/*.lottie'],
   resolve: {
     alias: {
       _Home: resolve(root, ''),

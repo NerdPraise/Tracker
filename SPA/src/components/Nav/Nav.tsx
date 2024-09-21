@@ -1,16 +1,21 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Sun, Moon } from 'lucide-react'
+import { Sun, Moon, Menu, X } from 'lucide-react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
+import LOGO from '_Images/useinvoice.png'
+
 import styles from './Nav.module.styl'
+
 const NavMenu = [
   { path: 'features', name: 'Features' },
   { path: 'pricing', name: 'Pricing' },
   { path: 'about', name: 'About' },
 ]
+
 export const Nav = () => {
   const [lightMode, setLightMode] = useState<boolean>(false)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const goToSection = (id: string) => {
     document.getElementById(id).scrollIntoView({ behavior: 'smooth' })
   }
@@ -36,14 +41,19 @@ export const Nav = () => {
         backgroundColor,
         y,
         zIndex: 1000,
-        padding: '0px 15px',
+        padding: '0px 0px',
         boxShadow,
         transition: 'all 0.3s ease',
       }}
     >
       <div className={styles.Nav}>
-        <div>LOGO</div>
-        <div className={styles.nav_menu}>
+        <div className={styles.logo}>
+          <img src={LOGO} alt="LOGO" />
+        </div>
+        <div className={styles.hamburger} onClick={() => setIsMenuOpen((prev) => !prev)}>
+          {isMenuOpen ? <X /> : <Menu />}
+        </div>
+        <div className={`${styles.nav_menu} ${isMenuOpen ? styles.show : styles.hide}`}>
           <ul>
             {NavMenu.map((item) => (
               <>
