@@ -3,7 +3,7 @@ import { Outlet } from 'react-router'
 
 import { Slider } from '_Home/components/'
 
-import LOGO from '_Images/useinvoice.png'
+import LOGO from '_Images/useinvoice.svg'
 
 import styles from './UnauthenticatedLayout.module.styl'
 
