@@ -4,7 +4,8 @@ from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.serializer.accounts import ChangePasswordSerializer, UserProfileSerializer, UserSerializer
+from api.serializer.accounts import (ChangePasswordSerializer,
+                                     UserProfileSerializer, UserSerializer)
 from app.accounts.models import User, UserProfile
 
 from .google import get_user_google_info

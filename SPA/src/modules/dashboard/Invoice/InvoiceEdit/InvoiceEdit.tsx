@@ -1,14 +1,15 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
-import { useMatch, useNavigate, useParams } from 'react-router-dom'
+import { useMatch, useNavigate, useParams, Link } from 'react-router-dom'
 import ClassNames from 'classnames'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, MoveLeft } from 'lucide-react'
 import Wheel from '@uiw/react-color-wheel'
 import LoadingBar from 'react-top-loading-bar'
+import { color as colorFunc, hexToHsva, ColorResult } from '@uiw/color-convert'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
-import { Button, Card, Input, Modal, Select, TextArea } from '_Home/components'
-import { StatusCode } from '_Home/common/utils'
+import { Button, Card, Input, Modal, Select, TextArea, Dropdown } from '_Home/components'
+import { convertStringToColor, StatusCode } from '_Home/common/utils'
 
 import { FrameDetails } from '../common/FrameDetails'
 import { getContext, a } from '../constants'
@@ -39,9 +40,10 @@ export const InvoiceEdit = () => {
   const isAddRoute = useMatch('invoice/add/:id')
   const invoiceID = useParams().invoiceId
   const [displayColor, setDisplayColor] = useState<string>('')
+  const [colors, setColors] = useState<Record<string, string>>({})
   const [currentInvoiceItem, setCurrentInvoiceItem] = useState<number>(0)
   const navigate = useNavigate()
-  const dispatchedUpdateInvoice = (data: Record<string, string | number>) =>
+  const dispatchedUpdateInvoice = (data: Record<string, string | number | ColorResult>) =>
     dispatch(updateInvoice(data))
   const loadingRef = useRef(null)
 
@@ -82,7 +84,7 @@ export const InvoiceEdit = () => {
     dispatchedUpdateInvoice(e)
   }
 
-  const onHandleColorChange = (color: string, name: string, section: string) => {
+  const onHandleColorChange = (color: ColorResult, name: string, section: string) => {
     dispatchedUpdateInvoice({
       color,
       name,
@@ -109,7 +111,11 @@ export const InvoiceEdit = () => {
   const handleClose = () => {}
 
   const onClickInputColor = (value: string) => {
-    setDisplayColor(value)
+    if (displayColor === value) {
+      setDisplayColor('')
+    } else {
+      setDisplayColor(value)
+    }
   }
   const options = clients.map((item) => ({
     label: item.name,
@@ -120,11 +126,18 @@ export const InvoiceEdit = () => {
     (item) => item.label === selectedInvoice?.client?.name && item.value === selectedInvoice?.client?.id,
   )
 
+  console.log(hexToHsva(templateSettings?.theme?.[displayColor] || '#fff'))
+
   return (
     <SideBarLayout disableHide>
       <div className={styles.InvoiceEdit}>
         <div className={styles.header}>
-          <h2>Edit Invoice {selectedInvoice?.name}</h2>
+          <h2>
+            <Link to={`../${invoiceID}`}>
+              <MoveLeft />
+            </Link>
+            Edit Invoice {selectedInvoice?.name}
+          </h2>
           <div className={styles.edit_actions}></div>
         </div>
         <div className={styles.details}>
@@ -159,21 +172,34 @@ export const InvoiceEdit = () => {
                     })
                   }
                 />
-                {displayColor && (
-                  <Wheel
-                    color={templateSettings?.theme?.[displayColor] || '#fff'}
-                    onChange={(color) => onHandleColorChange(color.hex, displayColor, 'theme')}
-                  />
-                )}
-
                 <div className={styles.halves}>
                   {Object.entries(defaultColorSection).map(([k, v]) => (
                     <Input
                       icon={
-                        <div
-                          style={{ width: '100%', height: '100%' }}
-                          onClick={() => onClickInputColor(v)}
-                        ></div>
+                        <Dropdown
+                          className={styles.formDropdown}
+                          open={displayColor === v}
+                          modal={false}
+                          trigger={
+                            <div
+                              style={{ width: '100%', height: '100%' }}
+                              onClick={() => onClickInputColor(v)}
+                            />
+                          }
+                          items={[
+                            {
+                              child: (
+                                <Wheel
+                                  color={
+                                    templateSettings?.theme?.[`${displayColor}__hsva`] ||
+                                    hexToHsva(templateSettings?.theme?.[displayColor] || '#fff')
+                                  }
+                                  onChange={(color) => onHandleColorChange(color, displayColor, 'theme')}
+                                />
+                              ),
+                            },
+                          ]}
+                        />
                       }
                       iconStyle={{
                         backgroundColor: templateSettings?.theme[v],
@@ -183,7 +209,9 @@ export const InvoiceEdit = () => {
                       name={v}
                       labelName={`${k} Color`}
                       value={templateSettings?.theme[v]}
-                      onChange={(e) => onHandleColorChange(e.target.value, v, 'theme')}
+                      onChange={(e) =>
+                        onHandleColorChange(colorFunc(convertStringToColor(e.target.value)), v, 'theme')
+                      }
                     />
                   ))}
                 </div>

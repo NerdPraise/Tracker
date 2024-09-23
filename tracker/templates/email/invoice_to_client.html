@@ -9,7 +9,7 @@
       <button style="background:#F2994A;border:none; padding:15px 25px; border-radius: 8px;"><a style="color:#fff" href="http://{{ host }}/preview/{{ uuid }}?client={{ client_email }}">See Invoice</a></button>
     </div>
     <p style="margin:10px 0px; font-size: 14px;">
-      <a style="color: #87255b;" href="http://{{ host }}/preview/{{ uuid }}?client={{ client_email }}">http://{{ host }}/preview/{{ uuid }}?client={{ client_email }}</a>
+      <a style="color: #87255b;" href="http://{{ host }}/{{ invoice_code }}?client={{ client_email }}">http://{{ host }}/{{ invoice_code }}?client={{ client_email }}</a>
     </p>
   </div>
 {% endblock %}

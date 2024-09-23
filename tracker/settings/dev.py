@@ -1,5 +1,8 @@
 from .base import *  # noqa
 
+from decouple import config
+
+
 DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True
 LOGGING = {
@@ -36,4 +39,13 @@ LOGGING = {
     },
 }
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
+    }
+}

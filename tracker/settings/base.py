@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django_json_widget",
     "tracker",
     "app.pricing",
+    "drf_yasg",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
@@ -100,17 +101,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
-    }
-}
-
 ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
 
 # Internationalization
@@ -157,3 +147,22 @@ CELERY_TASK_QUEUES = (
 FE_URL = config("FE_URL", default="http://localhost:5173")
 GOOGLE_OAUTH2_CLIENT_ID = config("GOOGLE_OAUTH2_CLIENT_ID")
 GOOGLE_OAUTH2_CLIENT_SECRET = config("GOOGLE_OAUTH2_CLIENT_SECRET")
+
+# DRF SWAGGER SETTINGS
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"},
+    },
+    "USE_SESSION_AUTH": False,
+}
+
+EMAIL_BACKEND = "django_ses.SESBackend"
+
+# Django SES
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+AWS_SES_REGION_NAME = config("AWS_SES_REGION_NAME")
+AWS_SES_REGION_ENDPOINT = config("AWS_SES_REGION_ENDPOINT")
+
+USE_SES_V2 = True
+AWS_SES_FROM_EMAIL = "noreply.useinvoice.co"

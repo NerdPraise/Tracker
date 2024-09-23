@@ -1,4 +1,6 @@
+import hashlib
 import uuid
+from datetime import datetime
 from functools import reduce
 
 from django.contrib.auth import get_user_model
@@ -126,6 +128,9 @@ class Payment(TimeStampedModel):
                 self.status = Payment.StatusChoices.DRAFT
         return super().save(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"Payment for {self.invoice.uuid}"
+
 
 class Transaction(TimeStampedModel):
     class ModeChoices(models.TextChoices):
@@ -137,3 +142,19 @@ class Transaction(TimeStampedModel):
     amount = models.PositiveBigIntegerField()
     payment_date = models.DateField()
     mode = models.CharField(choices=ModeChoices.choices, max_length=2)
+
+
+class InvoiceMessageCode(TimeStampedModel):
+    invoice = models.OneToOneField(Invoice, on_delete=models.DO_NOTHING)
+    code = models.CharField(max_length=150)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.code = self.generate_unique_string(self.invoice.uuid)
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def generate_unique_string(invoice_uuid: uuid.UUID) -> str:
+        current_datetime = datetime.now().isoformat()
+        unique_string = f"{invoice_uuid}-{current_datetime}"
+        return hashlib.sha256(unique_string.encode()).hexdigest()

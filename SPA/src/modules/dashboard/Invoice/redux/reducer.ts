@@ -88,6 +88,12 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
       state.invoice.invoices = action.payload.data || []
       state.errorMessage = action.payload.errorMessage || ''
       state.statusCode = StatusCode.CLEARED
+      // If selected invoice exist, refresh it upon getting all invoice
+      if (!!state.invoice.selectedInvoice) {
+        state.invoice.selectedInvoice = state.invoice.invoices.find(
+          (item) => item.uuid === state.invoice.selectedInvoice.uuid,
+        )
+      }
     })
     .addCase(INVOICE_ACTION_TYPE.GET_USER_CLIENT_START, (state, _) => {
       state.client.loading = true
@@ -184,11 +190,6 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
       state.transaction.loading = false
       state.transaction.statusCode = action.payload.statusCode
       state.errorMessage = action.payload.errorMessage || ''
-      if (action.payload.statusCode === StatusCode.NO_CONTENT) {
-        let invoice = state.invoice.selectedInvoice
-        invoice['payment'] = invoice.invoiceItems.reduce((acc, cur) => acc + cur.amount, 0)
-        state.transaction.transactions = []
-      }
     })
     .addCase(INVOICE_ACTION_TYPE.UPDATE_TEMPLATE_START, (state, action) => {
       state.invoice.loading = true
@@ -216,7 +217,8 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
 
         case 'theme':
           const { color, name: colorName } = action.payload.data
-          selectedInvoice.template.settings.theme[colorName] = color
+          selectedInvoice.template.settings.theme[colorName] = color.hex
+          selectedInvoice.template.settings.theme[`${colorName}__hsva`] = color.hsva
           state.invoice.hasTemplateChanged = true
           break
 

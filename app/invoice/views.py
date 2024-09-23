@@ -2,6 +2,8 @@ import datetime
 
 from django.conf import settings
 from django.db.models import Q
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, permissions, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,7 +17,7 @@ from api.serializer.invoice import (
 )
 from lib.tasks import send_mail_async
 
-from .models import Client, Invoice, InvoiceSettings, InvoiceTemplate, Transaction
+from .models import Client, Invoice, InvoiceMessageCode, InvoiceSettings, InvoiceTemplate, Transaction
 
 
 class InvoiceViewSet(viewsets.ModelViewSet):
@@ -39,6 +41,8 @@ class InvoiceViewSet(viewsets.ModelViewSet):
         client = invoice.client.email
         user = invoice.user
 
+        message_code, _ = InvoiceMessageCode.objects.get_or_create(invoice=invoice)
+
         email_kwargs = {
             "subject": f"{user.get_full_name()} sent an invoice",
             "template": "email/invoice_to_client.html",
@@ -46,7 +50,7 @@ class InvoiceViewSet(viewsets.ModelViewSet):
                 "username": user.username,
                 "host": host,
                 "client_email": client,
-                "uuid": uuid,
+                "invoice_code": message_code.code,
             },
             "to": [client],
         }
@@ -55,6 +59,10 @@ class InvoiceViewSet(viewsets.ModelViewSet):
         invoice.save()
         serializer = self.serializer_class(invoice)
         return Response(serializer.data, status=200)
+
+    @action(detail=False)
+    def get_data_for_invoice(self, request):
+        pass
 
 
 class InvoicePreviewView(generics.RetrieveAPIView):
@@ -86,6 +94,18 @@ class TransactionAPIView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = Transaction.objects.all()
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                "invoice",
+                in_=openapi.IN_QUERY,
+                description="invoice uuid",
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_UUID,
+            )
+        ],
+        responses={200: TransactionSerializer(many=True)},
+    )
     def get(self, request):
         uuid = request.GET.get("invoice")
         try:
@@ -124,9 +144,11 @@ class TransactionAPIView(views.APIView):
             return Response("Invoice doesn't exist", status=400)
 
         payment = invoice.payment
+        invoice.date_sent = None
         payment.total_due = invoice.get_amount()
         payment.save()
         payment.transactions.all().delete()
+        invoice.save()
         return Response(status=204)
 
 

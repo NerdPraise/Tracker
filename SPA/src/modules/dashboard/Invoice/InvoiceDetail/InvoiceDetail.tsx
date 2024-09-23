@@ -1,7 +1,8 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { debounce } from 'lodash'
-import { ChevronDown, CalendarCheck2 } from 'lucide-react'
+import { ChevronDown, CalendarCheck2, MoveLeft } from 'lucide-react'
 import { useMemo, useRef, useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
@@ -115,7 +116,12 @@ export const InvoiceDetail = () => {
     <SideBarLayout disableHide>
       <div className={styles.InvoiceDetail}>
         <div className={styles.header}>
-          <h2>Invoice {selectedInvoice?.name}</h2>
+          <h2>
+            <Link to="..">
+              <MoveLeft />
+            </Link>
+            Invoice {selectedInvoice?.name}
+          </h2>
           <div className={styles.edit_actions}>
             <Button text="Edit Invoice" onClick={() => navigate(`../edit/${invoiceID}`)} />
             <Button
@@ -146,29 +152,31 @@ export const InvoiceDetail = () => {
           <div className={styles.client_actions}>
             <Card className={styles.card}>
               <div className={styles.card_paid}>
-                {!clientHasPaidAll && !selectedInvoice?.dateSent && (
-                  <>
-                    <p className={styles.card_paid_text}>
-                      Send invoice to client via email to get paid faster
-                    </p>
-                    <Button text="Send to Client" onClick={() => setIsSendToClient(true)} />
-                  </>
-                )}
-
-                {selectedInvoice?.dateSent && !clientHasPaidAll && (
-                  <>
-                    <p className={styles.card_paid_text}>
-                      Congrats!!🎉 Your invoice is in the hands of your client
-                    </p>
-                    <Button text="Send Reminder" onClick={() => setIsSendToClient(true)} />
-                  </>
-                )}
-
-                {selectedInvoice?.dateSent && clientHasPaidAll && (
+                {!clientHasPaidAll ? (
+                  !selectedInvoice?.dateSent ? (
+                    <>
+                      <p className={styles.card_paid_text}>
+                        Send invoice to client via email to get paid faster
+                      </p>
+                      <Button text="Send to Client" onClick={() => setIsSendToClient(true)} />
+                    </>
+                  ) : (
+                    <>
+                      <p className={styles.card_paid_text}>
+                        Congrats!!🎉 Your invoice is in the hands of your client
+                      </p>
+                      <Button text="Send Reminder" onClick={() => setIsSendToClient(true)} />
+                    </>
+                  )
+                ) : selectedInvoice?.dateSent ? (
                   <>
                     <p className={styles.card_paid_text}>Congrats!!🎉 Your invoice is all paid for</p>
                     <Button text="Send Receipt" onClick={() => setIsSendToClient(true)} />
                   </>
+                ) : (
+                  <p className={styles.card_paid_text}>
+                    Invoice is paid for, but you haven't sent the invoice
+                  </p>
                 )}
               </div>
             </Card>
@@ -267,7 +275,7 @@ export const InvoiceDetail = () => {
                     icon={selectedInvoice.currency}
                     type="number"
                     max={selectedInvoice.amount}
-                    defaultValue={selectedInvoice.payment.totalDue}
+                    defaultValue={selectedInvoice?.payment.totalDue}
                     name="amount"
                     customValidation={(value) =>
                       Number(value) > selectedInvoice.amount

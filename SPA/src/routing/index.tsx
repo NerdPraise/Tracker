@@ -127,6 +127,10 @@ const BaseRouter = [
             path: ROUTES.externalRoutes.PREVIEW.path,
             element: <InvoicePreview />,
           },
+          {
+            path: ROUTES.externalRoutes.CLIENT_PREVIEW.path,
+            element: <InvoicePreview />,
+          },
         ],
       },
     ],

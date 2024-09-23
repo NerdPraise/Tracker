@@ -3,7 +3,8 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from api.serializer.pricing import UserSubscriptionSerializer, UserTransactionSerializer
+from api.serializer.pricing import (UserSubscriptionSerializer,
+                                    UserTransactionSerializer)
 
 from .models import UserSubscription, UserTransaction
 

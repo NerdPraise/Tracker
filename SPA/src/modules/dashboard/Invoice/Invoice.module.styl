@@ -96,6 +96,8 @@
     height 50px
     h2
       margin-bottom 15px
+      display flex
+      align-items center
   .templates
     margin-top 30px
     .template_name
@@ -151,6 +153,13 @@
     align-items center
     margin-bottom 30px
     height 50px
+    h2
+      display flex
+      align-items center
+      a
+        margin-right 10px
+        color inherit
+        display flex
     .edit_actions
       display flex
       justify-content space-between
@@ -236,6 +245,13 @@
     align-items center
     margin-bottom 30px
     height 50px
+    h2
+      display flex
+      align-items center
+      a
+        margin-right 10px
+        color inherit
+        display flex
   .details
     display flex
     .frame 
@@ -246,7 +262,6 @@
       height 100%
       .form_card_children
         padding 15px
-        max-width 450px
       .form_card
         height 800px
         overflow-y auto
@@ -294,6 +309,14 @@
         flex-wrap wrap
         > div
           flex-basis 48%
+  @media screen and (max-width:768px) 
+     .details
+        flex-direction column
+        .form 
+          margin-left 0px
+          margin-top 25px
+          min-width 450px
+          height 100%
 
 :local(.InvoicePreview)
   display flex
@@ -345,5 +368,5 @@
         font-size 9px
         margin-top 4px
 
-
-
+:local(.formDropdown)
+  height 220px

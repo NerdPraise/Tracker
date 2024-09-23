@@ -1,4 +1,5 @@
 import ClassNames from 'classnames'
+import { debounce as debounceFunc } from 'lodash'
 import { ChangeEvent, useRef } from 'react'
 import { omit } from 'lodash'
 
@@ -28,6 +29,7 @@ interface InputProps {
   maxlength?: number
   placeholder?: string
   disabled?: boolean
+  debounce?: boolean
   // customValidation requires the proceeding two
   customValidation?: (value: string | number) => null | string
   error?: Record<string, string>
@@ -39,6 +41,7 @@ export const Input = ({
   type,
   labelName,
   autoComplete,
+  debounce,
   name,
   onChange,
   className,
@@ -65,7 +68,11 @@ export const Input = ({
         errorMessage && setError((prevState) => ({ ...prevState, [name]: errorMessage }))
       }
     }
-    onChange?.(e)
+    if (debounce) {
+      debounceFunc(() => onChange?.(e), 1500)()
+    } else {
+      onChange?.(e)
+    }
   }
 
   const validate = (value) => {

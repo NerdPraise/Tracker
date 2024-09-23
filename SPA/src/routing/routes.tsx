@@ -58,5 +58,6 @@ export const ROUTES: routes = {
   },
   externalRoutes: {
     PREVIEW: { path: '/preview/:invoiceId', key: 'PREVIEW' },
+    CLIENT_PREVIEW: { path: 'client/:invoiceCode', key: 'PREVIEW' },
   },
 }

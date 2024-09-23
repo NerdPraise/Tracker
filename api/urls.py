@@ -1,4 +1,8 @@
+from decouple import config
 from django.urls import path
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -12,6 +16,17 @@ router.register(r"invoices", invoice_views.InvoiceViewSet, basename="invoice")
 router.register(r"subscriptions", UserSubscriptionViewSet)
 router.register(r"transactions", UserTransactionViewSet)
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Xcrow API",
+        default_version="v1",
+        description="Number 1 Escrow service in the world",
+        contact=openapi.Contact(email="xcrow@xcrow.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
     # GET TOKEN
@@ -61,3 +76,18 @@ urlpatterns = [
     path("invoice/payment/", invoice_views.TransactionAPIView.as_view(), name="invoice-payment-list-create"),
     path("invoice/<str:uuid>/", invoice_views.InvoicePreviewView.as_view(), name="invoice-retrieve"),
 ] + router.urls
+
+if config("ENVIRONMENT") == "dev":
+    urlpatterns += [
+        # SWAGGER
+        path(
+            "swagger<format>/",
+            schema_view.without_ui(cache_timeout=0),
+            name="schema-json",
+        ),
+        path(
+            "swagger/",
+            schema_view.with_ui("swagger", cache_timeout=0),
+            name="schema-swagger-ui",
+        ),
+    ]

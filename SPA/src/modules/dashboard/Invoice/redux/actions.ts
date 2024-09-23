@@ -1,3 +1,5 @@
+import { ColorResult } from '@uiw/color-convert'
+
 import { camelize, snakify } from '_Home/common/utils'
 import { API, AuthenticatedAPI } from '_Home/store/api'
 
@@ -281,6 +283,7 @@ export const createInvoiceTransaction = (data) => (dispatch) => {
         type: INVOICE_ACTION_TYPE.CREATE_TRANSACTION_DONE,
         payload: {
           data: camelize(response.data),
+          amount: data['amount'],
           statusCode: response.status,
         },
       })
@@ -342,7 +345,7 @@ export const deleteTransactions = (uuid: string) => (dispatch) => {
     )
 }
 
-export const updateInvoice = (data: Record<string, string | number>) => (dispatch) => {
+export const updateInvoice = (data: Record<string, string | number | ColorResult>) => (dispatch) => {
   dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
 
   dispatch({
@@ -404,6 +407,28 @@ export const saveInvoice = (uuid?: string) => (dispatch, getState) => {
 
 export const sendInvoiceToClient = (uuid: string) => (dispatch) => {
   AuthenticatedAPI.get(`invoices/send_invoice_to_client/?invoice=${uuid}`)
+    .then((response) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.SEND_INVOICE_DONE,
+        payload: {
+          statusCode: response.status,
+          data: camelize(response.data),
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: INVOICE_ACTION_TYPE.SEND_INVOICE_DONE,
+        payload: {
+          data: [],
+          errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const getAllDataForInvoiceView = (invoiceCode: string) => (dispatch) => {
+  AuthenticatedAPI.get(`invoices/send_invoice_to_client/?invoice=${invoiceCode}`)
     .then((response) => {
       dispatch({
         type: INVOICE_ACTION_TYPE.SEND_INVOICE_DONE,

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Sun, Moon, Menu, X } from 'lucide-react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
-import LOGO from '_Images/useinvoice.png'
+import LOGO from '_Images/useinvoice.svg'
 
 import styles from './Nav.module.styl'
 

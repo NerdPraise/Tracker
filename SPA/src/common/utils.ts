@@ -147,3 +147,21 @@ export const htmlToPdf = (element, options = {}) => {
 
   html2pdf().set(mergedOptions).from(element).save()
 }
+
+export const convertStringToColor = (color: string): string | undefined => {
+  if (!CSS.supports('color', color) || color === '') {
+    return undefined
+  }
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')
+
+  if (!context) {
+    throw new Error('Unable to get canvas context')
+  }
+
+  context.fillStyle = color
+  context.fillRect(0, 0, 1, 1)
+  const pixel = context.getImageData(0, 0, 1, 1).data
+
+  return `#${((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1)}`
+}

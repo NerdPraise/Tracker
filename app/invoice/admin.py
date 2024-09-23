@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.db.models import JSONField
 
-from .models import Client, Invoice, InvoiceSettings, InvoiceTemplate, Payment, Transaction
+from .models import (Client, Invoice, InvoiceSettings, InvoiceTemplate,
+                     Payment, Transaction)
 from .widgets import JSONFieldWidget
 
 admin.site.register(Transaction)

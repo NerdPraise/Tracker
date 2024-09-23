@@ -4,13 +4,13 @@ import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 import { Button } from '_Home/components'
 import { FrameDetails } from '../common/FrameDetails'
 import { useEffect, useMemo } from 'react'
-import { getInvoiceSettings, getSingleInvoice } from '../redux/actions'
+import { getInvoiceSettings, getSingleInvoice, getAllDataForInvoiceView } from '../redux/actions'
 import { getContext } from '../constants'
 
 import styles from '../Invoice.module.styl'
 
 export const InvoicePreview = () => {
-  const invoiceID = useParams().invoiceId
+  const { invoiceId, invoiceCode } = useParams()
   const {
     invoice: { preview },
     invoiceSettings: { settings },
@@ -19,11 +19,14 @@ export const InvoicePreview = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(getSingleInvoice(invoiceID))
-    dispatch(getInvoiceSettings())
-  }, [invoiceID])
-
-  console.log(settings)
+    if (invoiceId) {
+      dispatch(getSingleInvoice(invoiceId))
+      dispatch(getInvoiceSettings())
+    }
+    if (invoiceCode) {
+      getAllDataForInvoiceView(invoiceCode)
+    }
+  }, [invoiceId, invoiceCode])
 
   const templateSettings = preview?.template?.settings
   const context = useMemo(() => getContext(preview, user, settings), [preview, settings])
