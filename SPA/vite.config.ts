@@ -7,6 +7,7 @@ const root = resolve(__dirname, 'src')
 
 export default defineConfig({
   root: 'src',
+  publicDir: '../public',
   build: {
     // Relative to the root
     outDir: '../dist',
