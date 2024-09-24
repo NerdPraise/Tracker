@@ -82,6 +82,7 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
     })
     .addCase(INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE, (state, _) => {
       state.invoice.statusCode = StatusCode.CLEARED
+      state.invoiceSettings.statusCode = StatusCode.CLEARED
     })
     .addCase(INVOICE_ACTION_TYPE.GET_ALL_INVOICES_DONE, (state, action) => {
       state.invoice.loading = false

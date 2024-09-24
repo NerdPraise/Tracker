@@ -40,7 +40,6 @@ export const InvoiceEdit = () => {
   const isAddRoute = useMatch('invoice/add/:id')
   const invoiceID = useParams().invoiceId
   const [displayColor, setDisplayColor] = useState<string>('')
-  const [colors, setColors] = useState<Record<string, string>>({})
   const [currentInvoiceItem, setCurrentInvoiceItem] = useState<number>(0)
   const navigate = useNavigate()
   const dispatchedUpdateInvoice = (data: Record<string, string | number | ColorResult>) =>

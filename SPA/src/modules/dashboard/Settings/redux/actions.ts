@@ -12,6 +12,9 @@ export const SETTINGS_ACTION_TYPE = {
 
 export const saveUserDetails =
   (data: Partial<Record<keyof IUser, string>>, isUser?: boolean) => (dispatch) => {
+    dispatch({
+      type: SETTINGS_ACTION_TYPE.CLEAR_STATUS_CODE,
+    })
     let updatedData
     if (isUser) {
       updatedData = { user: data }
@@ -26,6 +29,7 @@ export const saveUserDetails =
           type: SETTINGS_ACTION_TYPE.SAVE_USER_DETAIL_DONE,
           payload: {
             data: camelize(response.data),
+            statusCode: response.status,
           },
         })
       })
@@ -33,6 +37,7 @@ export const saveUserDetails =
         dispatch({
           type: SETTINGS_ACTION_TYPE.SAVE_USER_DETAIL_DONE,
           payload: {
+            statusCode: err.response.status,
             errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
           },
         }),

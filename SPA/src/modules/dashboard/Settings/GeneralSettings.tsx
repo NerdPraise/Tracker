@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import LoadingBar from 'react-top-loading-bar'
 import ClassNames from 'classnames'
 
 import { Button, Input, Select } from '_Home/components'
@@ -34,13 +35,16 @@ const GeneralSettings = () => {
     timezone: user?.timezone,
     dateFormat: user?.dateFormat,
   })
-  const { loading, statusCode } = useAppSelector((state) => state.settings)
+  // const { loading: invoiceLoading, statusCode } = useAppSelector((state) => state.invoices)
+  const { loading: settingsLoading, statusCode } = useAppSelector((state) => state.settings)
+  const loadingRef = useRef(null)
 
   useEffect(() => {
-    if (!loading && statusCode === StatusCode.SUCCESS) {
+    if (!settingsLoading && statusCode === StatusCode.SUCCESS) {
+      loadingRef.current?.complete()
       setEditField('')
     }
-  }, [statusCode, loading])
+  }, [statusCode, settingsLoading])
 
   const validatePassword = () => {
     const form = formRef.current as HTMLFormElement
@@ -54,15 +58,18 @@ const GeneralSettings = () => {
   }
 
   const handleSaveSelect = (name: string, value: string) => {
+    loadingRef.current?.continuousStart()
     dispatch(saveUserDetails({ [name]: value }))
   }
   const handleChangePassword = () => {
+    loadingRef.current?.continuousStart()
     const form = formRef.current
     const formData = new FormData(form)
     dispatch(changePasswordAction(formData))
   }
 
   const handleSaveInput = (name: keyof IUser) => {
+    loadingRef.current?.continuousStart()
     dispatch(saveUserDetails({ [name]: inputValues[name] }, true))
     setEditField(null)
   }
@@ -128,6 +135,7 @@ const GeneralSettings = () => {
 
   return (
     <div className={styles.General}>
+      <LoadingBar ref={loadingRef} color="#c770fe" />
       <div className={styles.basic}>
         <h5>Basic</h5>
         {basic_fields.map(renderField)}

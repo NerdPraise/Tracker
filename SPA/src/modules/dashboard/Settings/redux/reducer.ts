@@ -39,4 +39,8 @@ export const settingsReducer: Reducer<SettingState> = createReducer(initialState
       state.loading = false
       state.statusCode = action.payload.statusCode
     })
+    .addCase(SETTINGS_ACTION_TYPE.SAVE_USER_DETAIL_DONE, (state, action) => {
+      state.loading = false
+      state.statusCode = action.payload.statusCode
+    })
 })

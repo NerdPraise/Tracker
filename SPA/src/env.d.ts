@@ -79,12 +79,13 @@ declare global {
   }
 
   type IInvoiceSettings = {
-    id: number
+    id: string
     defaultBank: string
     defaultCurrency: string
     accountName: string
     accountNumber: string
     dueAfter: number
+    prefix: string
   }
 
   type IUserTransaction = {

@@ -186,6 +186,8 @@ export const getInvoiceSettings = () => (dispatch) => {
 }
 
 export const updateInvoiceSettings = (id: string, data: FormData) => (dispatch) => {
+  dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
+
   AuthenticatedAPI.put(`invoice-settings/${id}`, data)
     .then((response) => {
       dispatch({
