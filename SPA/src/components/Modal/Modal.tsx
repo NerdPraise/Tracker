@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Portal } from '../Portal/Portal'
 
 import styles from './Modal.module.styl'
+import { CSSProperties } from 'react'
 
 interface ModalProps {
   isVisible: boolean
@@ -12,6 +13,7 @@ interface ModalProps {
   className?: string
   children: React.ReactNode
   handleClose: VoidFunction
+  extraStyles?: CSSProperties
 }
 
 const modalVariants = {
@@ -19,7 +21,15 @@ const modalVariants = {
   closed: { opacity: 0, y: '-100%' },
 }
 
-export const Modal = ({ isVisible, title, width, className, children, handleClose }: ModalProps) => {
+export const Modal = ({
+  isVisible,
+  title,
+  width,
+  className,
+  children,
+  handleClose,
+  extraStyles,
+}: ModalProps) => {
   const modalWidth = {
     sm: '300px',
     md: '600px',
@@ -41,7 +51,7 @@ export const Modal = ({ isVisible, title, width, className, children, handleClos
             exit="closed"
             variants={modalVariants}
             className={styles.modal}
-            style={{ width: modalWidth }}
+            style={{ width: modalWidth, ...extraStyles }}
           >
             {title && <div className={styles.title}>{title}</div>}
             <div className={styles.modal_content}>{children}</div>

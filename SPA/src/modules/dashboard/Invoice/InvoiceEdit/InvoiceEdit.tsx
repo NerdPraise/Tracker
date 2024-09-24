@@ -133,7 +133,7 @@ export const InvoiceEdit = () => {
       <div className={styles.InvoiceEdit}>
         <div className={styles.header}>
           <h2>
-            <Link to={`../${invoiceID}`}>
+            <Link to={invoiceID ? `../${invoiceID}` : '../add'}>
               <MoveLeft />
             </Link>
             Edit Invoice {selectedInvoice?.name}

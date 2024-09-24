@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Plus, LoaderCircle } from 'lucide-react'
+import { Plus, MoveLeft } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import { Button, Modal, Input, Grid } from '_Home/components'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
@@ -32,7 +33,12 @@ const Contacts = () => {
     <SideBarLayout disableHide>
       <div className={styles.Contacts}>
         <div className={styles.header}>
-          <h2>Contacts</h2>
+          <h2>
+            <Link to="..">
+              <MoveLeft />
+            </Link>
+            Contacts
+          </h2>
           <div className={styles.header_btn}>
             <Button
               className={styles.track_button}

@@ -4,7 +4,7 @@ import { CellClickedEvent } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { useNavigate } from 'react-router-dom'
 import { Root, List, Trigger, Content } from '@radix-ui/react-tabs'
-import { Users, Plus, Lock } from 'lucide-react'
+import { Users, Plus, Lock, Check } from 'lucide-react'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { noRowRenderer } from '_Home/components/Grid/renderer'
@@ -14,6 +14,7 @@ import { capitalise } from '_Home/common/utils'
 
 import { getAllUserClient } from '../redux/actions'
 import { columnDefs } from '../constants'
+import { PricingDeets } from '_Home/modules/presentation/Home/constants'
 import styles from '../Invoice.module.styl'
 
 const tabs = ['all', 'draft', 'paid', 'pending', 'overdue']
@@ -130,12 +131,21 @@ export const InvoiceList = () => {
           <p onClick={() => onExport()}>Export all invoice</p>
         </div>
       </div>
-      <Modal width="lg" isVisible={noInvoiceModalShow} handleClose={() => setNoInvoiceModalShow(false)}>
+      <Modal
+        width="lg"
+        isVisible={noInvoiceModalShow}
+        extraStyles={{ width: 850 }}
+        handleClose={() => setNoInvoiceModalShow(false)}
+      >
         <div className={styles.payment_tab}>
           <div className={styles.first}>
             <h2>Empower your financial decision & take your finances to another level</h2>
             <p>Trusted by humans worldwide.</p>
-            <Root defaultValue="general" orientation="vertical">
+            <p>
+              Join the paid wagon and enjoy the various pros of the best invoice generator and
+              customiser.
+            </p>
+            <Root defaultValue="premium" orientation="vertical" className={styles.tab_root}>
               <List className={styles.tab_list}>
                 <Trigger className={styles.trigger} value="premium">
                   <div>Premium</div>
@@ -152,12 +162,52 @@ export const InvoiceList = () => {
                   </div>
                 </Trigger>
               </List>
-              <Content value="premium" className={styles.tab_content}>
-                premium
-              </Content>
-              <Content value="all_time" className={styles.tab_content}>
-                all time
-              </Content>
+              <div className={styles.tab_content_cont}>
+                <Content value="premium" className={styles.tab_content}>
+                  <div>
+                    <h5 className={styles.title}>Premium</h5>
+                    <p className={styles.for}>For small businesses and solo freelancers</p>
+                    <p className={styles.price}>$9.99</p>
+                    <p className={styles.month}>per month</p>
+                    <p className={styles.features}>Features you will love</p>
+                    <div className={styles.offers}>
+                      {PricingDeets[1].offers.map((item) => (
+                        <p>
+                          <Check size={16} stroke="#00ddb3" />
+                          {item}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                  <Button
+                    className={styles.tab_btn}
+                    onClick={() => navigate('../settings/subscribe')}
+                    text="Get the Premium package today"
+                  />
+                </Content>
+                <Content value="all_time" className={styles.tab_content}>
+                  <div>
+                    <h5 className={styles.title}>All Time</h5>
+                    <p className={styles.for}>For Everyone</p>
+                    <p className={styles.price}>$250</p>
+                    <p className={styles.month}>ALL TIME</p>
+                    <p className={styles.features}>Features you will love</p>
+                    <div className={styles.offers}>
+                      {PricingDeets[2].offers.map((item) => (
+                        <p>
+                          <Check size={16} stroke="#00ddb3" />
+                          {item}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                  <Button
+                    className={styles.tab_btn}
+                    onClick={() => navigate('../settings/subscribe')}
+                    text="Get the All Time package today"
+                  />
+                </Content>
+              </div>
             </Root>
           </div>
         </div>

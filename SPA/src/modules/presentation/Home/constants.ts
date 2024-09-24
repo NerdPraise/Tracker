@@ -29,50 +29,34 @@ export const PricingDeets = [
     name: 'Free',
     description: "Explore the limit of what's possible",
     price: 0.0,
-    offers: ['Customisable Invoices', 'One invoice per month'],
+    offers: ['Customisable Invoices', 'One invoice per month', 'Up to 4 customers/clients'],
   },
   {
     name: 'Premium',
     description: 'Perfect for freelancers and small business in need of multiple invoicing',
     price: 9.99,
-    offers: ['Everything from Free', 'Unlimited invoices per month', 'Advanced Customisation'],
+    offers: [
+      'Everything from Free',
+      'Unlimited invoices per month',
+      'Advanced Customisation',
+      'Add unlimited customers/clients.',
+      'Access from anywhere.',
+      'Send via email, SMS, or by manually sharing a link.',
+      'Accept payments with stripe/paystack',
+      'Access to new features',
+    ],
     recommended: true,
   },
   {
     name: 'All time',
     description: "Explore the limit of what's possible",
-    price: 300.0,
+    price: 250.0,
     offers: [
+      'All the features from Premium',
       'All time access - one time payment',
-      'Unlimited invoices per month',
       '24/7 customer support',
+      'No monthly subscription',
+      'Add custom fields to any invoice or contract.',
     ],
   },
 ]
-
-const a = `
-Send unlimited invoices, estimates, and contracts.
-
-Create unlimited user accounts.
-
-Add unlimited customers.
-
-Access from anywhere.
-
-Send via email, SMS, or by manually sharing a link.
-
-Accept payments 24/7.
-
-Create milestone-based payment schedules.
-
-Offer options with multi-package estimates.
-
-Auto-convert accepted estimates to invoices.
-
-Track open and completed projects.
-
-Create and reuse custom invoice templates.
-
-Add custom fields to any invoice or contract.
-
-Send multiple invoices at once.`

@@ -344,9 +344,13 @@
   display flex
   justify-content space-between
   .first
-    flex-basis 30%
-  .second
-    flex-basis 66%
+    width 100%
+    h2 
+      max-width 400px
+    > p
+      max-width 385px
+      font-size 14px
+      margin-top 13px
 
   .trigger
     all unset
@@ -362,11 +366,59 @@
     margin-bottom 12px
     border-radius 9px
     cursor pointer
+    &[data-state='active']
+      border 1px solid #c770fe
     .pricing
       text-align right
       .small
         font-size 9px
         margin-top 4px
+  .tab_root
+    display flex
+    align-items center
+    justify-content space-between
+    width 100%
+    margin-top -70px
+    .tab_btn
+      width 100%
+      position absolute
+      bottom 0
+    .tab_content_cont
+      margin-left 10px
+      width 430px
+      border-radius 12px
+      height 500px
+      padding 20px
+      background $color-theme-dark
+      > div
+        position relative
+        height 100%
+      h5 
+        font-size 25px
+        margin-bottom 5px
+      p.for
+        font-size 15px
+        margin-bottom 20px
+        color #838181
+      .price
+        font-size 30px
+      .month
+        font-size 13px
+        color #838181
+      .features
+        font-weight bold
+        margin 25px 0 15px
+      .offers
+        display flex
+        flex-wrap wrap
+        p
+          display flex
+          align-items center
+          flex-basis 49%
+          margin-bottom 15px
+          font-size 14px
+          svg 
+            margin-right 5px
 
 :local(.formDropdown)
   height 220px
