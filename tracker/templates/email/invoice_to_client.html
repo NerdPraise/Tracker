@@ -2,14 +2,16 @@
 
 {% block body %}
   <div style="padding:20px 15px">
-    <p style="margin-bottom:10px">Hello</p>
+    <p style="margin-bottom:10px; font-size: 13px">Hello, {{ client_name }}</p>
 
-    <p style="margin-bottom:10px">INVOICE</p>
-    <div style="text-align: center;">
-      <button style="background:#F2994A;border:none; padding:15px 25px; border-radius: 8px;"><a style="color:#fff" href="http://{{ host }}/preview/{{ uuid }}?client={{ client_email }}">See Invoice</a></button>
+    <p style="margin-bottom:10px; font-size: 13px">We’re reaching out on behalf of {{ username }} to let you know that your invoice for their service is ready. You can view and download your invoice by clicking the link below:</p>
+    <div style="text-align: center; margin: 24px 0;">
+      <button style="background:#7B50C6;border:none; padding:15px 25px; border-radius: 8px;"><a style="color:#fff; text-decoration: none;" href="{{ host }}/{{ invoice_code }}?client={{ client_email }}">See Invoice</a></button>
     </div>
-    <p style="margin:10px 0px; font-size: 14px;">
-      <a style="color: #87255b;" href="http://{{ host }}/{{ invoice_code }}?client={{ client_email }}">http://{{ host }}/{{ invoice_code }}?client={{ client_email }}</a>
+    <p style="margin:10px 0px; font-size: 13px;">
+      You can also copy paste the below link in to your browser to access the invoice.
+      <a style="color: #87255b;" href="{{ host }}/{{ invoice_code }}?client={{ client_email }}">{{ host }}/{{ invoice_code }}</a>
     </p>
+    <p style="margin:10px 0px; font-size: 13px;">Thank you for your prompt attention to this matter!</p>
   </div>
 {% endblock %}

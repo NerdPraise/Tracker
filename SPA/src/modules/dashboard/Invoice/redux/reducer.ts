@@ -178,7 +178,9 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
     .addCase(INVOICE_ACTION_TYPE.SAVE_INVOICE_DONE, (state, action) => {
       state.invoice.loading = false
       state.invoice.statusCode = action.payload.statusCode
+      const { template } = state.invoice.selectedInvoice
       state.invoice.selectedInvoice = action.payload.data
+      state.invoice.selectedInvoice.template = template
     })
     .addCase(INVOICE_ACTION_TYPE.GET_SINGLE_INVOICE_START, (state, action) => {
       state.invoice.loading = true
@@ -243,9 +245,10 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
             (item) => item.id === clientId,
           )
           break
+
         case 'others':
-          const { field, res } = action.payload.data
-          state.invoice.selectedInvoice[field] = res
+          const { field, resVal } = action.payload.data
+          state.invoice.selectedInvoice[field] = resVal
           break
         default:
           break

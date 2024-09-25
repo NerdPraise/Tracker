@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "tracker",
     "app.pricing",
     "drf_yasg",
+    "django_celery_results",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
@@ -156,7 +157,7 @@ SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": False,
 }
 
-EMAIL_BACKEND = "django_ses.SESBackend"
+# EMAIL_BACKEND = "django_ses.SESBackend"
 
 # Django SES
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
@@ -165,4 +166,6 @@ AWS_SES_REGION_NAME = config("AWS_SES_REGION_NAME")
 AWS_SES_REGION_ENDPOINT = config("AWS_SES_REGION_ENDPOINT")
 
 USE_SES_V2 = True
-AWS_SES_FROM_EMAIL = "noreply.useinvoice.co"
+AWS_SES_FROM_EMAIL = "noreply@useinvoice.co"
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", "django-db")
+CELERY_RESULT_EXTENDED = True

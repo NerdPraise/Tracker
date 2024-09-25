@@ -90,4 +90,5 @@ if config("ENVIRONMENT") == "dev":
             schema_view.with_ui("swagger", cache_timeout=0),
             name="schema-swagger-ui",
         ),
+        path("in", invoice_views.AS.as_view()),
     ]

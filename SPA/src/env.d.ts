@@ -76,6 +76,7 @@ declare global {
     cardNumber: string
     expiryDate: string
     cvv: string
+    timezone: string
   }
 
   type IInvoiceSettings = {

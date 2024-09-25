@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.db.models import Q
 from drf_yasg import openapi
@@ -16,8 +17,12 @@ from api.serializer.invoice import (
     TransactionSerializer,
 )
 from lib.tasks import send_mail_async
+from lib.utils import send_mail_user
 
 from .models import Client, Invoice, InvoiceMessageCode, InvoiceSettings, InvoiceTemplate, Transaction
+
+
+User = get_user_model()
 
 
 class InvoiceViewSet(viewsets.ModelViewSet):
@@ -38,21 +43,22 @@ class InvoiceViewSet(viewsets.ModelViewSet):
             return Response(status=404)
 
         invoice = invoice[0]
-        client = invoice.client.email
+        client = invoice.client
         user = invoice.user
 
         message_code, _ = InvoiceMessageCode.objects.get_or_create(invoice=invoice)
 
         email_kwargs = {
-            "subject": f"{user.get_full_name()} sent an invoice",
+            "subject": f"Your Invoice from {user.get_full_name()} is ready",
             "template": "email/invoice_to_client.html",
             "message_context": {
-                "username": user.username,
+                "username": user.get_full_name(),
                 "host": host,
-                "client_email": client,
+                "client_name": client.name,
+                "client_email": client.email,
                 "invoice_code": message_code.code,
             },
-            "to": [client],
+            "to": [client.email],
         }
         send_mail_async.apply_async(kwargs=email_kwargs, queue="high_priority")
         invoice.date_sent = datetime.date.today()
@@ -63,6 +69,30 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def get_data_for_invoice(self, request):
         pass
+
+
+class AS(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        user = User.objects.get(email="praiseajayi2@gmail.com")
+        host = settings.FE_URL
+        client = user.clients.first()
+
+        email_kwargs = {
+            "subject": f"Your Invoice from {user.get_full_name()} is ready",
+            "template": "email/invoice_to_client.html",
+            "message_context": {
+                "username": user.get_full_name(),
+                "host": host,
+                "client_name": client.name,
+                "client_email": client.email,
+                "invoice_code": "sssssss",
+            },
+            "to": [client.email],
+        }
+        send_mail_user(**email_kwargs)
+        return Response(200)
 
 
 class InvoicePreviewView(generics.RetrieveAPIView):

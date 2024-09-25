@@ -1,3 +1,4 @@
+import React from 'react'
 import ClassNames from 'classnames'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
@@ -17,11 +18,11 @@ export const Dropdown = ({ trigger, items, className, open, modal }: DropdownPro
 
     <DropdownMenu.Portal>
       <DropdownMenu.Content className={ClassNames(styles.Content, className)}>
-        {items.map((item) => (
-          <>
+        {items.map((item, index) => (
+          <React.Fragment key={`${item.label} ${index}`}>
             {item?.label && <DropdownMenu.Label>{item?.label}</DropdownMenu.Label>}
             <DropdownMenu.Item className={styles.Item}>{item.child}</DropdownMenu.Item>
-          </>
+          </React.Fragment>
         ))}
       </DropdownMenu.Content>
     </DropdownMenu.Portal>

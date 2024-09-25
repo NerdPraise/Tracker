@@ -181,7 +181,7 @@ export const InvoiceList = () => {
                   </div>
                   <Button
                     className={styles.tab_btn}
-                    onClick={() => navigate('../settings/subscribe')}
+                    onClick={() => navigate('../../settings/subscription')}
                     text="Get the Premium package today"
                   />
                 </Content>
@@ -203,7 +203,7 @@ export const InvoiceList = () => {
                   </div>
                   <Button
                     className={styles.tab_btn}
-                    onClick={() => navigate('../settings/subscribe')}
+                    onClick={() => navigate('../../settings/subscription')}
                     text="Get the All Time package today"
                   />
                 </Content>

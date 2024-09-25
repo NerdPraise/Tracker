@@ -8,7 +8,7 @@ import { color as colorFunc, hexToHsva, ColorResult } from '@uiw/color-convert'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
-import { Button, Card, Input, Modal, Select, TextArea, Dropdown } from '_Home/components'
+import { Button, Card, Input, Select, TextArea, Dropdown } from '_Home/components'
 import { convertStringToColor, StatusCode } from '_Home/common/utils'
 
 import { FrameDetails } from '../common/FrameDetails'
@@ -28,6 +28,8 @@ const defaultColorSection = {
   Accent: 'accent',
   Body: 'body',
 }
+
+const currencyOptions = [{ label: 'USD', value: 'USD' }]
 
 export const InvoiceEdit = () => {
   const {
@@ -124,8 +126,8 @@ export const InvoiceEdit = () => {
   const defaultOption = options.find(
     (item) => item.label === selectedInvoice?.client?.name && item.value === selectedInvoice?.client?.id,
   )
-
-  console.log(hexToHsva(templateSettings?.theme?.[displayColor] || '#fff'))
+  const defaultCurrencyOption = currencyOptions.find((item) => item.label === selectedInvoice?.currency)
+  console.log(defaultCurrencyOption)
 
   return (
     <SideBarLayout disableHide>
@@ -166,14 +168,15 @@ export const InvoiceEdit = () => {
                   onChange={(e) =>
                     onHandleGenericChange({
                       field: e.target.name,
-                      res: e.target.value,
+                      resVal: e.target.value,
                       section: 'others',
                     })
                   }
                 />
                 <div className={styles.halves}>
-                  {Object.entries(defaultColorSection).map(([k, v]) => (
+                  {Object.entries(defaultColorSection).map(([k, v], index) => (
                     <Input
+                      key={index}
                       icon={
                         <Dropdown
                           className={styles.formDropdown}
@@ -232,20 +235,20 @@ export const InvoiceEdit = () => {
                     onChange={(e) =>
                       onHandleGenericChange({
                         field: e.target.name,
-                        res: e.target.value,
+                        resVal: e.target.value,
                         section: 'others',
                       })
                     }
                   />
-                  <Input
-                    type="text"
-                    name="currency"
-                    labelName="Currency"
-                    defaultValue={selectedInvoice?.currency}
+                  <Select
+                    className={styles.select}
+                    label="Currency"
+                    defaultValue={defaultCurrencyOption}
+                    options={currencyOptions}
                     onChange={(e) =>
                       onHandleGenericChange({
-                        field: e.target.name,
-                        res: e.target.value,
+                        field: 'currency',
+                        resVal: e,
                         section: 'others',
                       })
                     }
@@ -309,14 +312,6 @@ export const InvoiceEdit = () => {
               </div>
             </Card>
           </div>
-          <Modal
-            className={styles.FrameDetailsModal}
-            isVisible={false}
-            handleClose={handleClose}
-            width="md"
-          >
-            s
-          </Modal>
         </div>
       </div>
     </SideBarLayout>

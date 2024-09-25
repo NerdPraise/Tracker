@@ -395,6 +395,7 @@ export const saveInvoice = (uuid?: string) => (dispatch, getState) => {
           data: camelize(response.data),
         },
       })
+      !uuid.length && dispatch(saveTemplate())
     })
     .catch((err) =>
       dispatch({
