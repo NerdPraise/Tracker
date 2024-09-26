@@ -1,8 +1,9 @@
 import * as RadioGroup from '@radix-ui/react-radio-group'
 import { useState } from 'react'
+import { Info } from 'lucide-react'
 
 import { useUser, useAppSelector } from '_Home/common/hooks'
-import { Button, Input, Grid } from '_Home/components'
+import { Button, Input, Grid, HelpToolTip } from '_Home/components'
 
 import styles from './Settings.module.styl'
 import { noRowRenderer } from '_Home/components/Grid/renderer'
@@ -82,16 +83,21 @@ const Billing = () => {
                 <RadioGroup.Indicator className={styles.RadioGroupIndicator} />
               </RadioGroup.Item>
               <label className={styles.Label}>
-                <p>Send to the existing email</p>
-                <small>{user?.email}</small>
+                <div>
+                  <p>Send to the existing email</p>
+                  <small>{user?.email}</small>
+                </div>
+                <HelpToolTip delay={0} helpMessage="To change, upgrade to a paid plan" />
               </label>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <RadioGroup.Item className={styles.RadioGroupItem} value="comfortable">
-                <RadioGroup.Indicator className={styles.RadioGroupIndicator} />
-              </RadioGroup.Item>
-              <label className={styles.Label}>Add a new email</label>
-            </div>
+            {user.subscription.toLowerCase() !== 'free' && (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <RadioGroup.Item className={styles.RadioGroupItem} value="comfortable">
+                  <RadioGroup.Indicator className={styles.RadioGroupIndicator} />
+                </RadioGroup.Item>
+                <label className={styles.Label}>Add a new email </label>
+              </div>
+            )}
           </RadioGroup.Root>
         </div>
       </div>

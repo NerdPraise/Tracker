@@ -17,6 +17,7 @@ DATABASES = {
 }
 
 AWS_REGION_NAME = config("AWS_SES_REGION_NAME")
+EMAIL_BACKEND = "django_ses.SESBackend"
 
 STORAGES = {
     "default": {

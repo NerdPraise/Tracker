@@ -157,7 +157,6 @@ SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": False,
 }
 
-# EMAIL_BACKEND = "django_ses.SESBackend"
 
 # Django SES
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")

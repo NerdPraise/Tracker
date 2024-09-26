@@ -207,6 +207,8 @@
     flex-direction column
     .Label
       padding-left 10px
+      display flex
+      align-items center
       small
         color #5c5b5b
         font-weight 300
@@ -249,7 +251,7 @@
     form 
       width 600px
       margin-left 12px
-      div
+      > div
         display flex
         > div
           min-height 0
@@ -258,6 +260,12 @@
             font-size 15px
       button
         margin-top 15px
+      .help
+        display flex
+        align-items center
+      .select
+        width 100%
+        margin 9px 0
 
 :local(.ModalSubscription)
   .has_card_details

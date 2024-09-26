@@ -18,21 +18,30 @@ export const Login = () => {
   const { isLoggedIn } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
+  const [isGoogleLogin, setIsGoogleLogin] = useState(false)
   const { loading, authErrorMessage } = useAppSelector((state) => state.user)
   const [formLoginData, setFormLoginData] = useState<Record<string, string>>({})
+  const [formError, setFormError] = useState<Record<string, string>>({})
 
   const onSubmit = () => {
     dispatch(loginAction(formLoginData))
   }
+
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',
     onSuccess: async (response) => {
-      API.post('auth/google/', JSON.stringify({ code: response.code })).then((response) =>
-        dispatch(loginGoogleUser(response)),
-      )
+      API.post('auth/google/', JSON.stringify({ code: response.code })).then((response) => {
+        dispatch(loginGoogleUser(response))
+        setIsGoogleLogin(false)
+      })
     },
     onError: (err) => console.log(err),
   })
+
+  const onHandleGoogleClick = () => {
+    setIsGoogleLogin(true)
+    googleLogin()
+  }
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -57,6 +66,8 @@ export const Login = () => {
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setFormLoginData((prev) => ({ ...prev, email: e.target.value }))
         }}
+        error={formError}
+        setError={setFormError}
       />
       <Input
         placeholder="Password"
@@ -66,21 +77,29 @@ export const Login = () => {
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setFormLoginData((prev) => ({ ...prev, password: e.target.value }))
         }
+        error={formError}
+        setError={setFormError}
       />
       <Button
         loading={loading}
         onClick={onSubmit}
         text="Login"
-        disabled={Object.entries(formLoginData).length !== 2}
+        disabled={Object.entries(formLoginData).length !== 2 || !!Object.keys(formError).length}
         className={styles.form_btn}
       />
       {!loading && authErrorMessage && <div className={styles.error_message}>{authErrorMessage}</div>}
       <div className={styles.divider}>Or log in with</div>
       <div className={styles.other_signup}>
-        <div onClick={googleLogin}>
-          <Google />
-          GOOGLE
-        </div>
+        <Button
+          onClick={onHandleGoogleClick}
+          loading={isGoogleLogin}
+          text={
+            <>
+              <Google />
+              GOOGLE
+            </>
+          }
+        />
       </div>
       <p className="already">
         Don't have an account? <Link to={ROUTES.unauthenticatedRoutes.SIGNUP.path}> Sign up</Link>

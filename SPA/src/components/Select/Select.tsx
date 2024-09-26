@@ -1,6 +1,7 @@
 import ClassNames from 'classnames'
 import ReactSelect, { GroupBase, Props } from 'react-select'
 import { omit } from 'lodash'
+import { forwardRef } from 'react'
 
 import style from './Select.module.styl'
 interface SelectProp {
@@ -55,21 +56,24 @@ const customStyles = {
   },
 }
 
-export const Select = <
+export const Select = forwardRef(function Select<
   Option,
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>,
->({
-  className,
-  name,
-  label,
-  onChange,
-  customValidation = null,
-  setError = null,
-  error = null,
-  defaultValue,
-  ...props
-}: Props<Option, IsMulti, Group> & SelectProp) => {
+>(
+  {
+    className,
+    name,
+    label,
+    onChange,
+    customValidation = null,
+    setError = null,
+    error = null,
+    defaultValue,
+    ...props
+  }: Props<Option, IsMulti, Group> & SelectProp,
+  ref: React.MutableRefObject<any>,
+) {
   const validate = (value: string) => {
     let errorMessage = null
     if (setError) {
@@ -96,6 +100,7 @@ export const Select = <
       <label className={style.form_label}>{label}</label>
       <ReactSelect
         name={name}
+        ref={ref}
         {...props}
         defaultValue={defaultValue}
         classNamePrefix="select"
@@ -105,4 +110,4 @@ export const Select = <
       {error?.[name] && <span className="error">{error[name]}</span>}
     </div>
   )
-}
+})
