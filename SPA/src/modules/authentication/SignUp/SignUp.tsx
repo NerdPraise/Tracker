@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { useGoogleLogin } from '@react-oauth/google'
 
 import { API } from '_Home/store/api'
@@ -10,9 +10,9 @@ import { isFormValid } from '_Home/common/utils'
 import { useUser, useAppSelector, useAppDispatch } from '_Home/common/hooks'
 
 import Google from '_Images/google.svg?react'
+import { loginGoogleUser } from '_Module/authentication/Login/redux/actions'
 
 import { signUpAction } from './redux/actions'
-import { loginGoogleUser } from '_Module/authentication/Login/redux/actions'
 import styles from './SignUp.module.styl'
 
 export const SignUp = () => {
@@ -22,6 +22,8 @@ export const SignUp = () => {
   const navigate = useNavigate()
   const [formError, setFormError] = useState<Record<string, string>>({})
   const formRef = useRef<HTMLFormElement>(null)
+  const [isGoogleLogin, setIsGoogleLogin] = useState(false)
+  const location = useLocation()
 
   const onSubmit = () => {
     const form = formRef.current
@@ -29,6 +31,7 @@ export const SignUp = () => {
 
     dispatch(signUpAction(formData))
   }
+
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',
     onSuccess: async (response) => {
@@ -36,12 +39,24 @@ export const SignUp = () => {
         dispatch(loginGoogleUser(response)),
       )
     },
-    onError: (err) => console.log(err),
+    onError: (err) => {
+      setIsGoogleLogin(false)
+      console.log(err)
+    },
   })
+
+  const onHandleGoogleClick = () => {
+    setIsGoogleLogin(true)
+    googleLogin()
+  }
 
   useEffect(() => {
     if (isLoggedIn && !isCheckingLoginStatus) {
-      navigate('/settings/subscription')
+      if (location.search === '') {
+        navigate(ROUTES.authenticatedRoutes.OVERVIEW.path)
+      } else {
+        navigate('/settings/subscription')
+      }
     }
   }, [isLoggedIn])
 
@@ -70,6 +85,15 @@ export const SignUp = () => {
           />
         </div>
         <Input
+          type="text"
+          error={formError}
+          setError={setFormError}
+          placeholder="Username"
+          autoComplete="username"
+          name="username"
+          className={styles.sign_input}
+        />
+        <Input
           type="email"
           error={formError}
           setError={setFormError}
@@ -78,7 +102,6 @@ export const SignUp = () => {
           name="email"
           className={styles.sign_input}
         />
-
         <Input
           name="password1"
           error={formError}
@@ -99,10 +122,16 @@ export const SignUp = () => {
 
       <div className={styles.divider}>Or register with</div>
       <div className={styles.other_signup}>
-        <div onClick={googleLogin}>
-          <Google />
-          GOOGLE
-        </div>
+        <Button
+          onClick={onHandleGoogleClick}
+          loading={isGoogleLogin}
+          text={
+            <>
+              <Google />
+              GOOGLE
+            </>
+          }
+        />
       </div>
       <p className="already">
         Already have an account? <Link to={ROUTES.unauthenticatedRoutes.LOGIN.path}> Log in</Link>

@@ -4,8 +4,8 @@ import PaystackPop from '@paystack/inline-js'
 
 import { Button } from '_Home/components'
 import { useAppDispatch, useUser } from '_Home/common/hooks'
-
 import { plans } from '_Home/constants'
+
 import { getUserTransactions, updateTransaction } from './redux/actions'
 import styles from './Settings.module.styl'
 
@@ -37,7 +37,9 @@ const Subscription = () => {
     <div className={styles.Subscription}>
       <div className={styles.plans}>
         {plans.map((item) => (
-          <div className={item.name.toLowerCase() === user?.subscription.toLowerCase() && styles.active}>
+          <div
+            className={item.name.toLowerCase() === user?.subscription?.toLowerCase() && styles.active}
+          >
             <div className={styles.dheader}>
               <p>{item.name}</p>
               <p>${item.price}/m</p>
@@ -52,12 +54,12 @@ const Subscription = () => {
             </div>
             <Button
               onClick={
-                item.name.toLowerCase() === user?.subscription.toLowerCase()
+                item.name.toLowerCase() === user?.subscription?.toLowerCase()
                   ? null
                   : () => handlePlanClick(item)
               }
               text={
-                item.name.toLowerCase() === user?.subscription.toLowerCase()
+                item.name.toLowerCase() === user?.subscription?.toLowerCase()
                   ? 'Current Plan'
                   : 'Switch to this plan'
               }

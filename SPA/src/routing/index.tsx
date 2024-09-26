@@ -6,7 +6,7 @@ import { Login } from '_Module/authentication/Login'
 import { BudgetStudio } from '_Module/dashboard/BudgetStudio'
 import { Track } from '_Module/dashboard/Track'
 import { InvoiceEdit, InvoiceList, AddInvoice, InvoiceDetail } from '_Module/dashboard/Invoice'
-import { getAllTemplatesLoader } from '_Module/dashboard/Invoice/loaders'
+import { getAllTemplatesLoader, getUserLoader } from '_Module/dashboard/Invoice/loaders'
 import { UnauthenticatedLayout } from '_Home/layout/UnauthenticatedLayout'
 import { InvoicePreview } from '_Module/dashboard/Invoice/InvoiceDetail/InvoicePreview'
 import Settings from '_Module/dashboard/Settings/Settings'
@@ -28,6 +28,7 @@ const BaseRouter = [
     children: [
       {
         element: <AuthenticatedWrapper />,
+        loader: getUserLoader,
         children: [
           {
             path: ROUTES.authenticatedRoutes.OVERVIEW.path,
@@ -77,7 +78,6 @@ const BaseRouter = [
               {
                 path: ROUTES.authenticatedRoutes.CONTACTS.path,
                 element: <Contacts />,
-                index: true,
               },
               {
                 path: ROUTES.authenticatedRoutes.ADD_INVOICE.path,

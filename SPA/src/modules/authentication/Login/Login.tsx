@@ -35,7 +35,10 @@ export const Login = () => {
         setIsGoogleLogin(false)
       })
     },
-    onError: (err) => console.log(err),
+    onError: (err) => {
+      setIsGoogleLogin(false)
+      console.log(err)
+    },
   })
 
   const onHandleGoogleClick = () => {

@@ -1,8 +1,9 @@
 :local(.SignUp)
   display flex
   flex-direction column
-  max-width 800px
+  max-width 600px
   margin-bottom 25px
+  width 100%
 
   h3
     font-size 40px
@@ -59,7 +60,8 @@
     display flex
     justify-content center
     margin-top 35px
-    > div
+    > button
+      background transparent
       flex-basis 44%
       border 1px solid $color-light-ccc 
       padding 13px
@@ -68,5 +70,8 @@
       justify-content center
       border-radius 4px
       cursor pointer
+      &:disabled
+        background transparent !important
+        border 1px solid $color-light-ccc 
       svg
         height 30px
