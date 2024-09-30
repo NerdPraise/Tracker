@@ -6,6 +6,7 @@ from functools import reduce
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import post_save
+from django.utils.functional import cached_property
 
 User = get_user_model()
 
@@ -47,12 +48,13 @@ class Invoice(TimeStampedModel):
             self.name = f"INV-{self.user.invoices.count() + 1}"
         return super().save(*args, **kwargs)
 
-    def get_amount(self):
+    @cached_property
+    def amount(self):
         return reduce(lambda a, b: a + (b["quantity"]) * b["unit_price"], self.invoice_items, 0)
 
     @staticmethod
     def create_payment_fk(sender, created, instance, **kwargs):
-        updated_amount = instance.get_amount()
+        updated_amount = instance.amount
         if created:
             Payment.objects.create(invoice=instance, total_due=updated_amount)
         else:

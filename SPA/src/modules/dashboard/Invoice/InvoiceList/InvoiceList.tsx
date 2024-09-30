@@ -34,7 +34,7 @@ export const InvoiceList = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
-  const onCellClick = (event: CellClickedEvent<(typeof invoice.invoices)[0]>) => {
+  const onCellClick = (event: CellClickedEvent<IInvoice>) => {
     if (event.column.getColId().toLowerCase() === 'name') {
       navigate(`/invoice/${event.data?.uuid}`)
     }

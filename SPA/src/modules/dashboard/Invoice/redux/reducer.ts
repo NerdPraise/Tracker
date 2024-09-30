@@ -18,8 +18,15 @@ type InvoiceState = {
   client: {
     loading: boolean
     clients: IClient[]
+    selectedClient: IClient | null
     statusCode: IStatusCode
     errorMessage: string
+    clientDetail: {
+      total: number
+      pending: number
+      paid: number
+      invoices: IInvoice[]
+    }
   }
   template: {
     loading: boolean
@@ -57,6 +64,7 @@ const initialState: InvoiceState = {
     clients: [],
     statusCode: StatusCode.CLEARED,
     errorMessage: '',
+    selectedClient: null,
   },
   template: {
     loading: false,
@@ -265,5 +273,13 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
     .addCase(INVOICE_ACTION_TYPE.UPDATE_INVOICE_SETTINGS_DONE, (state, action) => {
       state.invoiceSettings.settings = action.payload.data
       state.invoiceSettings.statusCode = action.payload.statusCode
+    })
+    .addCase(INVOICE_ACTION_TYPE.SET_SELECTED_CONTACT_DONE, (state, action) => {
+      state.client.selectedClient = action.payload.data
+    })
+    .addCase(INVOICE_ACTION_TYPE.GET_INVOICE_BY_CLIENT_DONE, (state, action) => {
+      state.client.loading = false
+      state.client.clientDetail = action.payload.data
+      state.client.statusCode = action.payload.statusCode
     })
 })

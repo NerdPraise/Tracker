@@ -433,6 +433,7 @@ export const contactColumnDefs = [
     headerName: 'Name',
     field: 'name',
     flex: 1,
+    cellClass: 'grid_click',
   },
   {
     headerName: 'Email',

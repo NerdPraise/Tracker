@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Plus, MoveLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { CellClickedEvent } from 'ag-grid-community'
+import { AgGridReact } from 'ag-grid-react'
 
 import { Button, Modal, Input, Grid } from '_Home/components'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
@@ -8,7 +10,7 @@ import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { noRowRenderer } from '_Home/components/Grid/renderer'
 import { StatusCode } from '_Home/common/utils'
 
-import { createUserClient } from '../redux/actions'
+import { createUserClient, setSelectedClient } from '../redux/actions'
 import { contactColumnDefs } from '../constants'
 import styles from './Contacts.module.styl'
 
@@ -17,10 +19,19 @@ const Contacts = () => {
   const [open, setOpen] = useState<boolean>(false)
   const formRef = useRef<HTMLFormElement>(null)
   const dispatch = useAppDispatch()
+  const gridRef = useRef<AgGridReact>(null)
+  const navigate = useNavigate()
 
   const handleCreateContact = () => {
     const formData = new FormData(formRef.current)
     dispatch(createUserClient(formData))
+  }
+
+  const onCellClick = (event: CellClickedEvent<IClient>) => {
+    if (event.column.getColId().toLowerCase() === 'name') {
+      dispatch(setSelectedClient(event.data))
+      navigate(`./history/`)
+    }
   }
 
   useEffect(() => {
@@ -50,12 +61,14 @@ const Contacts = () => {
         </div>
         <div className={styles.contact_list}>
           <Grid
+            innerRef={gridRef}
             className={`${styles.grid} ag-theme-customtracker`}
             rowHeight={80}
             columnDefs={contactColumnDefs}
             rowData={clients}
             defaultColDef={{ sortable: true }}
             overlayNoRowsTemplate={noRowRenderer('Contacts')}
+            onCellClicked={onCellClick}
           />
         </div>
       </div>

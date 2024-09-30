@@ -18,10 +18,10 @@ router.register(r"transactions", UserTransactionViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Xcrow API",
+        title="Tracker",
         default_version="v1",
-        description="Number 1 Escrow service in the world",
-        contact=openapi.Contact(email="xcrow@xcrow.com"),
+        description="For my use only",
+        contact=openapi.Contact(email="noreply@useinvoice.co"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,

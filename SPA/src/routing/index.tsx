@@ -12,11 +12,11 @@ import { InvoicePreview } from '_Module/dashboard/Invoice/InvoiceDetail/InvoiceP
 import Settings from '_Module/dashboard/Settings/Settings'
 import Home from '_Module/presentation/Home'
 import Contacts from '_Module/dashboard/Invoice/Contacts/Contacts'
+import ContactHistory from '_Module/dashboard/Invoice/Contacts/ContactHistory'
 import Subscription from '_Home/modules/dashboard/Settings/Subscription'
 
 import { ROUTES } from '_Home/routing/routes'
 
-import { AuthenticatedWrapper } from './AuthenticatedWrapper'
 import InvoiceSettings from '_Home/modules/dashboard/Settings/InvoiceSettings'
 import GeneralSettings from '_Home/modules/dashboard/Settings/GeneralSettings'
 import Billing from '_Home/modules/dashboard/Settings/Billing'
@@ -79,6 +79,10 @@ const BaseRouter = [
               {
                 path: ROUTES.authenticatedRoutes.CONTACTS.path,
                 element: <Contacts />,
+              },
+              {
+                path: ROUTES.authenticatedRoutes.CONTACT_HISTORY.path,
+                element: <ContactHistory />,
               },
               {
                 path: ROUTES.authenticatedRoutes.ADD_INVOICE.path,

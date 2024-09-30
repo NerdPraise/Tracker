@@ -45,6 +45,12 @@ export const ROUTES: routes = {
     SETTINGS: { path: '/settings/general', key: 'SETTINGS', menu: true, logo: <Cog />, permission: '' },
     ADD_INVOICE: { path: '/invoice/add', key: 'ADD_INVOICE', menu: false, permission: '' },
     CONTACTS: { path: '/invoice/contacts', key: 'CONTACTS', menu: false, permission: '' },
+    CONTACT_HISTORY: {
+      path: '/invoice/contacts/history',
+      key: 'CONTACT_HISTORY',
+      menu: false,
+      permission: '',
+    },
     ADD_TEMPLATE: { path: '/invoice/add/:templateId', key: 'ADD_TEMPLATE', menu: false, permission: '' },
     EDIT_INVOICE: { path: '/invoice/edit/:invoiceId', key: 'EDIT_INVOICE', menu: false, permission: '' },
     INVOICE_DETAIL: { path: '/invoice/:invoiceId', key: 'INVOICE_DETAIL', menu: false, permission: '' },

@@ -69,6 +69,38 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     def get_data_for_invoice(self, request):
         pass
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                "id",
+                in_=openapi.IN_PATH,
+                description="client id",
+                type=openapi.TYPE_NUMBER,
+                format=openapi.FORMAT_INT32,
+            )
+        ],
+        responses={200: TransactionSerializer(many=True)},
+    )
+    @action(detail=False, url_path="filter_invoice_by_client/(?P<id>[^/.]+)")
+    def filter_invoice_by_client(self, request, id):
+        qs = self.get_queryset().filter(client__id=id)
+
+        if not qs.exists():
+            return Response("Unavailable data", status=400)
+
+        total = sum(instance.amount for instance in qs)
+        pending = qs.filter(payment__status="pending")
+        paid = qs.filter(payment__status="paid")
+
+        response_data = {
+            "total": total,
+            "paid": sum(instance.amount for instance in paid),
+            "pending": sum(instance.amount for instance in pending),
+            "invoices": self.serializer_class(qs, many=True).data,
+        }
+
+        return Response(response_data)
+
 
 class AS(views.APIView):
     permission_classes = [permissions.AllowAny]
@@ -136,11 +168,11 @@ class TransactionAPIView(views.APIView):
         responses={200: TransactionSerializer(many=True)},
     )
     def get(self, request):
-        uuid = request.GET.get("invoice")
+        uuid = request.GET.get("id").get("invoice")
         try:
             invoice = Invoice.objects.get(uuid=uuid)
         except Invoice.DoesNotExist:
-            return Response("Invoice doesn't exist", status=400)
+            return Response({"message": "Invoice doesn't exist"}, status=400)
         transactions = self.queryset.filter(payment__invoice=invoice)
         serializer = self.serializer_class(transactions, many=True)
         return Response(serializer.data)
@@ -174,7 +206,7 @@ class TransactionAPIView(views.APIView):
 
         payment = invoice.payment
         invoice.date_sent = None
-        payment.total_due = invoice.get_amount()
+        payment.total_due = invoice.amount
         payment.save()
         payment.transactions.all().delete()
         invoice.save()

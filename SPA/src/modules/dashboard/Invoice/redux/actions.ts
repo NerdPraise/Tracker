@@ -32,6 +32,8 @@ export const INVOICE_ACTION_TYPE = {
   SEND_INVOICE_DONE: 'INVOICE_ACTION_TYPE/SEND_INVOICE/DONE',
   GET_USER_INVOICE_SETTINGS_DONE: 'INVOICE_ACTION_TYPE/GET_USER_INVOICE_SETTINGS/DONE',
   UPDATE_INVOICE_SETTINGS_DONE: 'INVOICE_ACTION_TYPE/UPDATE_INVOICE_SETTINGS/DONE',
+  SET_SELECTED_CONTACT_DONE: 'INVOICE_ACTION_TYPE/SET_SELECTED_CONTACT/DONE',
+  GET_INVOICE_BY_CLIENT_DONE: 'INVOICE_ACTION_TYPE/GET_INVOICE_BY_CLIENT/DONE',
 }
 
 export const getAllInvoices = () => (dispatch) => {
@@ -444,6 +446,40 @@ export const getAllDataForInvoiceView = (invoiceCode: string) => (dispatch) => {
     .catch((err) =>
       dispatch({
         type: INVOICE_ACTION_TYPE.SEND_INVOICE_DONE,
+        payload: {
+          data: [],
+          errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const setSelectedClient = (data: IClient) => (dispatch) => {
+  dispatch({
+    type: INVOICE_ACTION_TYPE.SET_SELECTED_CONTACT_DONE,
+    payload: {
+      data,
+    },
+  })
+}
+
+export const getClientDetails = () => (dispatch, getState) => {
+  console.log(getState)
+  const clientId = getState().invoices.client.selectedClient.id
+  AuthenticatedAPI.get(`invoices/filter_invoice_by_client/${clientId}`)
+    .then((response) => {
+      console.log(response.data)
+      dispatch({
+        type: INVOICE_ACTION_TYPE.GET_INVOICE_BY_CLIENT_DONE,
+        payload: {
+          statusCode: response.status,
+          data: camelize(response.data),
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: INVOICE_ACTION_TYPE.GET_INVOICE_BY_CLIENT_DONE,
         payload: {
           data: [],
           errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',

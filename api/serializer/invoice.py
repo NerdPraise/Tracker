@@ -1,5 +1,3 @@
-from functools import reduce
-
 from rest_framework import serializers
 
 from app.invoice.models import Client, Invoice, InvoiceSettings, InvoiceTemplate, Payment, Transaction
@@ -96,7 +94,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
         return Invoice.objects.create(**validated, user=self.context["request"].user)
 
     def get_amount(self, instance):
-        return reduce(lambda a, b: a + (b["quantity"]) * b["unit_price"], instance.invoice_items, 0)
+        return instance.amount
 
     def to_representation(self, instance):
         invoice = super().to_representation(instance)
