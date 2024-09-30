@@ -5,6 +5,7 @@ import LoadingBar from 'react-top-loading-bar'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 import { Input, Button, HelpToolTip, Select } from '_Home/components'
 import { currencyOptions } from '_Home/constants'
+import { useTourContext } from '_Home/routing/context'
 
 import { getInvoiceSettings, updateInvoiceSettings } from '../Invoice/redux/actions'
 
@@ -13,6 +14,10 @@ import { StatusCode } from '_Home/common/utils'
 
 const InvoiceSettings = () => {
   const ref = useRef()
+  const {
+    setState,
+    state: { tourActive },
+  } = useTourContext()
   const selectRef = useRef()
   const {
     invoiceSettings: { settings, loading, statusCode },
@@ -29,6 +34,11 @@ const InvoiceSettings = () => {
   useEffect(() => {
     if (!settings) {
       dispatch(getInvoiceSettings())
+    }
+    if (tourActive) {
+      setTimeout(() => {
+        setState((prev) => ({ ...prev, run: true, stepIndex: 6 }))
+      }, 600)
     }
   }, [])
 
@@ -48,7 +58,7 @@ const InvoiceSettings = () => {
       <LoadingBar ref={loadingRef} color="#c770fe" />
       <div className={styles.flexed}>
         <div>Invoice Settings</div>
-        <form ref={ref} onSubmit={(e) => e.preventDefault()}>
+        <form id="form" ref={ref} onSubmit={(e) => e.preventDefault()}>
           <div>
             <Input
               type="text"

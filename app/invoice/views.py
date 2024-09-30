@@ -1,7 +1,7 @@
 import datetime
 
-from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -20,7 +20,6 @@ from lib.tasks import send_mail_async
 from lib.utils import send_mail_user
 
 from .models import Client, Invoice, InvoiceMessageCode, InvoiceSettings, InvoiceTemplate, Transaction
-
 
 User = get_user_model()
 

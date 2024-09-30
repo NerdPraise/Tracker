@@ -11,16 +11,21 @@ import { noRowRenderer } from '_Home/components/Grid/renderer'
 import { Button, Grid, Input, Modal } from '_Home/components'
 import { useAppDispatch, useAppSelector, useUser } from '_Home/common/hooks'
 import { capitalise } from '_Home/common/utils'
+import { PricingDeets } from '_Home/modules/presentation/Home/constants'
+import { useTourContext } from '_Home/routing/context'
 
 import { getAllUserClient } from '../redux/actions'
 import { columnDefs } from '../constants'
-import { PricingDeets } from '_Home/modules/presentation/Home/constants'
 import styles from '../Invoice.module.styl'
 
 const tabs = ['all', 'draft', 'paid', 'pending', 'overdue']
 
 export const InvoiceList = () => {
   const gridRef = useRef<AgGridReact>(null)
+  const {
+    setState,
+    state: { tourActive },
+  } = useTourContext()
   const [currentTab, setCurrentTab] = useState<string>('all')
   const [filterText, setFilterText] = useState<string>('')
   const { invoice } = useAppSelector((state) => state.invoices)
@@ -37,6 +42,12 @@ export const InvoiceList = () => {
 
   useEffect(() => {
     dispatch(getAllUserClient())
+    // Tour shenanigans
+    if (tourActive) {
+      setTimeout(() => {
+        setState((prev) => ({ ...prev, run: true, stepIndex: 1 }))
+      }, 600)
+    }
   }, [])
 
   const onExport = () => {
@@ -67,10 +78,10 @@ export const InvoiceList = () => {
     <SideBarLayout disableHide>
       <div className={styles.InvoiceList}>
         <div className={styles.header}>
-          <h2>Invoices</h2>
+          <h2 id="invoice">Invoices</h2>
           <div className={styles.header_btn}>
             <Button
-              className={styles.track_button}
+              className={ClassNames(styles.track_button, 'clients')}
               text={
                 <>
                   <Users size={18} />
@@ -80,7 +91,7 @@ export const InvoiceList = () => {
               onClick={() => navigate('./contacts')}
             />
             <Button
-              className={styles.track_button}
+              className={ClassNames(styles.track_button, 'add_invoice')}
               logo={canCreateInvoiceThisMonth ? <Plus fill="#fff" size={18} /> : <Lock size={18} />}
               text="Add Invoice"
               onClick={onClickAddInvoice}
@@ -127,7 +138,7 @@ export const InvoiceList = () => {
             </div>
           </div>
         </div>
-        <div className={styles.export}>
+        <div id="export" className={styles.export}>
           <p onClick={() => onExport()}>Export all invoice</p>
         </div>
       </div>
@@ -172,7 +183,7 @@ export const InvoiceList = () => {
                     <p className={styles.features}>Features you will love</p>
                     <div className={styles.offers}>
                       {PricingDeets[1].offers.map((item) => (
-                        <p>
+                        <p key={item}>
                           <Check size={16} stroke="#00ddb3" />
                           {item}
                         </p>
@@ -194,7 +205,7 @@ export const InvoiceList = () => {
                     <p className={styles.features}>Features you will love</p>
                     <div className={styles.offers}>
                       {PricingDeets[2].offers.map((item) => (
-                        <p>
+                        <p key={item}>
                           <Check size={16} stroke="#00ddb3" />
                           {item}
                         </p>

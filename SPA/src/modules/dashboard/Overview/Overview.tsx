@@ -1,20 +1,21 @@
 import Calendar, { TileArgs } from 'react-calendar'
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 
 import { Card, Chart, ChartPlaceholder, ExportButton, Placeholder } from '_Home/components'
 import { Grid } from '_Home/components/Grid/Grid'
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { generateColor, monthsForDropdown } from '_Home/common/utils'
-import { ROUTES } from '_Home/routing/routes'
+import { useTourContext } from '_Home/routing/context'
+import { dateRenderer } from '_Home/components/renderers/renderers'
 
 import MoneyBagIcon from '_Images/moneybag.svg'
 import { columnDefs, defaultColDef } from './constants'
 import { useMoneyDash } from './hooks'
-import { dateRenderer } from '_Home/components/renderers/renderers'
 import styles from './Overview.module.styl'
 
 export const Overview = () => {
+  const { setState } = useTourContext()
   const gridRef = useRef<AgGridReact>(null)
   const {
     transactionList,
@@ -37,17 +38,26 @@ export const Overview = () => {
       </div>
     ) : null
   }
+  useEffect(() => {
+    setState((prev) => ({
+      ...prev,
+      run: !localStorage.getItem('onboarding'),
+      tourActive: !localStorage.getItem('onboarding'),
+      stepIndex: 0,
+    }))
+  }, [])
 
   const onBtnExport = useCallback(() => {
     gridRef.current?.api.exportDataAsCsv()
   }, [])
-  console.log(categoryList)
 
   return (
     <SideBarLayout disableHide>
       <div className={styles.MoneyDash}>
         <div className={styles.title}>
-          <div className={styles.overview}> Overview</div>
+          <div className={styles.overview} id="Overview">
+            Overview
+          </div>
           <div className={styles.months_selection}>
             <select value={selectedMonth.month() + 1} onChange={(e) => updateMonth(e.target.value)}>
               {months.map((month) => (

@@ -6,8 +6,21 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.serializer.accounts import ChangePasswordSerializer, UserProfileSerializer, UserSerializer
 from app.accounts.models import User, UserProfile
+from lib.tasks import send_mail_async
 
 from .google import get_user_google_info
+
+
+def send_welcome_user_email(user):
+    email_kwargs = {
+        "subject": "Welcome to UseInvoice! Get Started with Creating Invoices Effortlessly",
+        "template": "email/welcome.html",
+        "message_context": {
+            "username": user.get_full_name(),
+        },
+        "to": [user.email],
+    }
+    send_mail_async.apply_async(kwargs=email_kwargs, queue="high_priority")
 
 
 class RegisterAPIView(generics.CreateAPIView):
@@ -18,15 +31,19 @@ class RegisterAPIView(generics.CreateAPIView):
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
-            user = serializer.save()
-            refresh = RefreshToken.for_user(user)
-            data = {
-                "user": serializer.data,
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-            }
-            return Response({"data": data}, status=status.HTTP_201_CREATED)
+            return self.get_successful_user_save(serializer)
         return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_successful_user_save(self, serializer):
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+        data = {
+            "user": serializer.data,
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+        }
+        send_welcome_user_email(user)
+        return Response({"data": data}, status=status.HTTP_201_CREATED)
 
 
 class ChangePasswordView(generics.UpdateAPIView):
@@ -99,6 +116,7 @@ class GoogleLoginAPIView(views.APIView):
                 last_name=last_name,
             )
         refresh = RefreshToken.for_user(user)
+        send_welcome_user_email(user)
 
         return Response(
             {

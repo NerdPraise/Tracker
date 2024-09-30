@@ -59,19 +59,21 @@ export const SideBar = ({
       <div className={styles.children}>
         <ul>
           {show &&
-            children?.map((child, ind) => (
-              <React.Fragment key={`side ${ind}`}>
-                {location.startsWith(child.props.to) && (
-                  <motion.li layoutId="active-pill" className={styles.active_cursor} />
-                )}
-                <li
-                  onClick={disableHide ? child.props.onClick : () => onChildClick(child.props.onClick)}
-                  className={ClassNames(styles.sidebar_child)}
-                >
-                  {child}
-                </li>
-              </React.Fragment>
-            ))}
+            children?.map((child, ind) => {
+              return (
+                <React.Fragment key={`side ${ind}`}>
+                  {location.startsWith(`/${child.props.to?.split('/')[1]}`) && (
+                    <motion.li layoutId="active-pill" className={styles.active_cursor} />
+                  )}
+                  <li
+                    onClick={disableHide ? child.props.onClick : () => onChildClick(child.props.onClick)}
+                    className={ClassNames(styles.sidebar_child)}
+                  >
+                    {child}
+                  </li>
+                </React.Fragment>
+              )
+            })}
         </ul>
 
         <div className={styles.logout} onClick={logOut}>

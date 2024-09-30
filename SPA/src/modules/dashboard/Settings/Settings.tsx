@@ -4,13 +4,14 @@ import { Outlet, useLocation, useNavigate, Navigate } from 'react-router'
 import { motion } from 'framer-motion'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
+import styles from './Settings.module.styl'
 
 import GeneralSettings from './GeneralSettings'
 import Billing from './Billing'
 import InvoiceSettings from './InvoiceSettings'
 import Subscription from './Subscription'
 
-import styles from './Settings.module.styl'
+import { useTourContext } from '_Home/routing/context'
 
 const tabs = [
   {
@@ -33,6 +34,10 @@ const tabs = [
 
 const Settings = () => {
   const navigate = useNavigate()
+  const {
+    setState,
+    state: { tourActive },
+  } = useTourContext()
   const { pathname } = useLocation()
   const match = pathname.split('/')
   const [activeTab, setActiveTab] = useState<string>()
@@ -46,16 +51,21 @@ const Settings = () => {
     setActiveTab(match[match.length - 1] || 'general')
   }, [pathname])
 
-  if (pathname === '/settings') {
-    return <Navigate to="/settings/general" />
-  }
+  useEffect(() => {
+    // Tour shenanigans
+    if (tourActive) {
+      setTimeout(() => {
+        setState((prev) => ({ ...prev, run: true, stepIndex: 5 }))
+      }, 600)
+    }
+  }, [])
 
   return (
     <SideBarLayout disableHide>
       <div className={styles.Settings}>
         <div className={styles.header}>
           <div>
-            <h2>Settings</h2>
+            <h2 id="settings">Settings</h2>
             <p>Manage your details and personal preferences here.</p>
           </div>
         </div>

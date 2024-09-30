@@ -22,15 +22,18 @@ class Wallet(models.Model):
 
 class MonthTrack(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    month = MonthField(unique=True)
+    month = MonthField()
     amount = models.BigIntegerField(default=0, help_text=_("Amount of money held into the month"))
 
     def __str__(self):
-        return f"{self.month} track"
+        return f"{self.month} track for user {self.user.email}"
 
     def get_balance(self):
         amount = self.transactions.all().aggregate(sum=Sum("amount"))
         return amount["sum"]
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["month", "user"], name="unique_month_user")]
 
 
 class Category(models.Model):

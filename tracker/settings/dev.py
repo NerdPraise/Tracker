@@ -49,9 +49,8 @@ DATABASES = {
         "PORT": config("DB_PORT"),
     }
 }
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# Looking to send emails in production? Check out our Email API/SMTP product!
+
 EMAIL_HOST = "sandbox.smtp.mailtrap.io"
-EMAIL_HOST_USER = "9d9784ff87014f"
-EMAIL_HOST_PASSWORD = "37438df8223e07"
-EMAIL_PORT = "2525"
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = config("EMAIL_PORT")

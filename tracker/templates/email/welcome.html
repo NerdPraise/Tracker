@@ -1,0 +1,30 @@
+{% extends './base_email.html' %}
+
+{% block body %}
+  <div style="padding:20px 15px">
+    <p style="margin-bottom:10px; font-size: 13px">Hello, {{ username }}</p>
+
+    <p style="margin-bottom:10px; font-size: 13px">Welcome to UseInvoice! We’re excited to have you on board. You’ve just taken the first step toward simplifying your invoicing process.</p>
+    <h2 style="font-size:18px; color:#321B5F;">What you can do</h2>
+    <ul>
+      <li style="font-size:13px; margin-bottom: 4px;">Create and send invoices: Generate professional invoices in just a few clicks.</li>
+      <li style="font-size:13px; margin-bottom: 4px;">Track payments: Stay on top of what’s been paid and what’s outstanding.</li>
+      <li style="font-size:13px; margin-bottom: 4px;">Manage clients: Keep all your client information in one convenient place.</li>
+      <li style="font-size:13px; margin-bottom: 4px;">Download & Export: Easily export your invoices in PDF or Excel formats.</li>
+    </ul>
+
+    <h2 style="font-size:18px; color:#321B5F;">How to Get Started:</h2>
+    <ul>
+      <li style="font-size:13px; margin-bottom: 4px;">
+        Log in to your account <a href="https://useinvoice.co/login">here</a>
+      </li>
+      <li style="font-size:13px; margin-bottom: 4px;">Create your first invoice by clicking on the “New Invoice” button.</li>
+      <li style="font-size:13px; margin-bottom: 4px;">Customize your invoice with your logo, business info, and payment terms.</li>
+    </ul>
+
+    <p style="margin:10px 0px; font-size: 13px;">
+      If you need any help along the way, feel free to explore our Help Center or reach out to our support team at <a href="mailto:admin@useinvoice.co">admin@useinvoice.co</a>
+    </p>
+    <p style="margin:10px 0px; font-size: 13px;">Thank you for choosing UseInvoice. We can’t wait to help you streamline your business!</p>
+  </div>
+{% endblock %}

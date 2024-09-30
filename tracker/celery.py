@@ -6,10 +6,10 @@ from django.conf import settings
 
 environment = config("ENVIRONMENT")
 
-if environment == "development":
+if environment == "prod":
     path_to_settings = "tracker.settings.prod"
 else:
-    path_to_settings = "tracker.settings.prod"
+    path_to_settings = "tracker.settings.dev"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", path_to_settings)
 app = Celery("APP")

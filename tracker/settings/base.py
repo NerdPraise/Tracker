@@ -158,13 +158,15 @@ SWAGGER_SETTINGS = {
 }
 
 
-# Django SES
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
-AWS_SES_REGION_NAME = config("AWS_SES_REGION_NAME")
-AWS_SES_REGION_ENDPOINT = config("AWS_SES_REGION_ENDPOINT")
 
-USE_SES_V2 = True
-AWS_SES_FROM_EMAIL = "noreply@useinvoice.co"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+SENDER_EMAIL = "noreply@useinvoice.co"
+
 CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", "django-db")
 CELERY_RESULT_EXTENDED = True
+
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=31536000, public",
+}

@@ -20,6 +20,7 @@ import { AuthenticatedWrapper } from './AuthenticatedWrapper'
 import InvoiceSettings from '_Home/modules/dashboard/Settings/InvoiceSettings'
 import GeneralSettings from '_Home/modules/dashboard/Settings/GeneralSettings'
 import Billing from '_Home/modules/dashboard/Settings/Billing'
+import TourAuthenticatedWrapper from './TourAuthenticatedWrapper'
 
 const BaseRouter = [
   {
@@ -27,7 +28,7 @@ const BaseRouter = [
     element: '',
     children: [
       {
-        element: <AuthenticatedWrapper />,
+        element: <TourAuthenticatedWrapper />,
         loader: getUserLoader,
         children: [
           {

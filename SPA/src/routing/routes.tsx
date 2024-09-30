@@ -27,6 +27,7 @@ export const ROUTES: routes = {
       logo: <BarChart3 />,
       permission: '',
     },
+    INVOICES: { path: '/invoice', key: 'INVOICE', menu: true, logo: <BookOpenText />, permission: '' },
     BUDGET: {
       path: '/budget-studio',
       key: 'BUDGET_STUDIO',
@@ -41,8 +42,7 @@ export const ROUTES: routes = {
       logo: <TrainTrack />,
       permission: 'view-track',
     },
-    INVOICES: { path: '/invoice', key: 'INVOICE', menu: true, logo: <BookOpenText />, permission: '' },
-    SETTINGS: { path: '/settings', key: 'SETTINGS', menu: true, logo: <Cog />, permission: '' },
+    SETTINGS: { path: '/settings/general', key: 'SETTINGS', menu: true, logo: <Cog />, permission: '' },
     ADD_INVOICE: { path: '/invoice/add', key: 'ADD_INVOICE', menu: false, permission: '' },
     CONTACTS: { path: '/invoice/contacts', key: 'CONTACTS', menu: false, permission: '' },
     ADD_TEMPLATE: { path: '/invoice/add/:templateId', key: 'ADD_TEMPLATE', menu: false, permission: '' },

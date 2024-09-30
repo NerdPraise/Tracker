@@ -46,6 +46,7 @@ export const AddInvoice = () => {
                   <img className={styles.card_image} src={item?.image} />
                 </Card>
               ))}
+              {!processed_templates.recent.length && "You don't have any custom templates yet!"}
             </div>
           </div>
           <div className={styles.simple}>
