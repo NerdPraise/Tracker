@@ -2,7 +2,7 @@ import React, { MouseEventHandler } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import ClassNames from 'classnames'
 import { motion } from 'framer-motion'
-import { LogOut } from 'lucide-react'
+import { LogOut, X, Menu } from 'lucide-react'
 
 import { useAppDispatch } from '_Home/common/hooks'
 import { logOutAction } from '_Home/modules/authentication/Login/redux/actions'
@@ -53,7 +53,7 @@ export const SideBar = ({
     >
       {!disableHide && (
         <div onClick={toggleSide} className={styles.hamburger}>
-          {show ? 'close' : 'open'}
+          {show ? <X /> : <Menu />}
         </div>
       )}
       <div className={styles.children}>
@@ -75,11 +75,10 @@ export const SideBar = ({
               )
             })}
         </ul>
-
-        <div className={styles.logout} onClick={logOut}>
-          <LogOut size={19} />
-          &nbsp; Log out
-        </div>
+      </div>
+      <div className={ClassNames(styles.logout, { [styles.hidden]: !show })} onClick={logOut}>
+        <LogOut size={19} />
+        &nbsp;{show && <span>Log out</span>}
       </div>
     </div>
   )

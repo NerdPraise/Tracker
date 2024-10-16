@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import svgr from 'vite-plugin-svgr'
+import { compression } from 'vite-plugin-compression2'
 
 const root = resolve(__dirname, 'src')
 
@@ -21,9 +22,7 @@ export default defineConfig({
     },
   },
   css: {
-    modules: {
-      // scopeBehaviour: 'global',
-    },
+    modules: {},
     preprocessorOptions: {
       styl: {
         additionalData: `@import "${resolve(root, './assets/img/global.styl')}"`,
@@ -38,5 +37,6 @@ export default defineConfig({
       include: '**/*.{jsx,tsx}',
     }),
     svgr(),
+    compression(),
   ],
 })

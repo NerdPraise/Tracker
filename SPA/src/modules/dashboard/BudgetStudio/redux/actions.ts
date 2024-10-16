@@ -1,5 +1,4 @@
-import { toCamel, toSnake } from 'snake-camel'
-
+import { snakify } from '_Home/common/utils'
 import { AuthenticatedAPI } from '_Home/store/api'
 import { parseErrorFromResponse, camelize } from '_Home/common/utils'
 
@@ -44,7 +43,7 @@ export const getAllCategories = () => (dispatch) => {
 
   AuthenticatedAPI.get('categories/')
     .then((response) => {
-      const data = response.data
+      const data = { response }
 
       dispatch({
         type: BUDGET_ACTION_TYPES.GET_ALL_CATEGORIES_DONE,
@@ -69,7 +68,7 @@ export const createUserCategory = (values) => (dispatch) => {
     type: BUDGET_ACTION_TYPES.CREATE_USER_CATEGORY_START,
   })
 
-  AuthenticatedAPI.post('categories/', JSON.stringify(toSnake(values)))
+  AuthenticatedAPI.post('categories/', JSON.stringify(snakify(values)))
     .then((response) => {
       const { data } = response.data
 

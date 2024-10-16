@@ -1,14 +1,13 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { Button, Card, Modal } from '_Home/components'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
-import { ROUTES } from '_Home/routing/routes'
 
 import { setSelectedTemplate } from '../redux/actions'
-import styles from '../Invoice.module.styl'
 import { TemplatesProcessor } from '../redux/processor'
+import styles from '../Invoice.module.styl'
 
 export const AddInvoice = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -35,7 +34,10 @@ export const AddInvoice = () => {
       <div className={styles.InvoiceAdd}>
         <div className={styles.header}>
           <h2>Create your invoice</h2>
-          <p>Select your most preferred templates</p>
+          <p>
+            Select from our specially curated templates <span>OR</span>
+            &nbsp;<Link to="../templates/create">Create your template</Link>
+          </p>
         </div>
         <div className={styles.templates}>
           <div className={styles.most_recent}>

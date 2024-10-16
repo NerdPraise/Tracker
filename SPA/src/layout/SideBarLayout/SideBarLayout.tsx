@@ -16,7 +16,7 @@ import styles from './SideBarLayout.module.styl'
 interface SideBarLayoutProps {
   backdrop?: boolean
   children: React.ReactNode
-  disableHide: boolean
+  disableHide?: boolean
   extraContent?: React.ReactNode
   selectedKey?: string
 }

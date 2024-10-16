@@ -165,3 +165,12 @@ export const convertStringToColor = (color: string): string | undefined => {
 
   return `#${((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1)}`
 }
+
+export const formatDate = (date: string) => {
+  if (!date) {
+    return ''
+  }
+  return new Intl.DateTimeFormat('en-GB', {
+    dateStyle: 'long',
+  }).format(new Date(date))
+}

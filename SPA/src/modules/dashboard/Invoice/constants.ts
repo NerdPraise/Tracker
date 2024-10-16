@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react'
 
 import { ActionsCellRenderer, StatusRenderer } from '_Home/components/Grid/renderer'
-import { capitalise } from '_Home/common/utils'
+import { capitalise, formatDate } from '_Home/common/utils'
 
 import { deleteInvoice, deleteUserClient } from './redux/actions'
 
@@ -70,14 +70,16 @@ export const a = `<!DOCTYPE html>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Invoice</title>
-    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Abel&display=swap"
+      rel="stylesheet"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap"
       rel="stylesheet"
     />
     <style>
       main#main {
-        font-family: "Abel", sans-serif !important;
         margin: 0;
         padding: 0;
         {{#theme.body}}
@@ -85,13 +87,6 @@ export const a = `<!DOCTYPE html>
         {{/theme.body}}
       }
 
-      main#main div,
-      main#main h1,
-      main#main p,
-      {
-        font-family: "Abel", sans-serif;
-      }
-    
       * {
         box-sizing: border-box;
       }
@@ -101,28 +96,31 @@ export const a = `<!DOCTYPE html>
       }
 
       .invoice-container .body {
-        padding: 66px 80px 30px;
+        padding: 66px 40px 30px;
         background-color: #fff;
       }
 
       .header {
         display: flex;
-        flex-direction: column;
-        align-items: end;
-        margin-bottom: 40px;
-        justify-content: center;
-      }
+        justify-content: space-between;
+        margin-bottom: 20px;
+        align-items: center;
+        height: 80px;
 
-      .header h1 {
-        font-family: "Abel", sans-serif;
-        margin: 0;
-        font-size: clamp(4.2rem, 0.0025rem + 1.933vw, 5.3rem);
-        font-weight: 800;
-        letter-spacing: 14px;
+        img {
+          height: 100%;
+          max-width: 200px;
+          width: 100%;
+        }
 
-        {{#theme.header}}
-        color: {{.}};
-        {{/theme.header}}
+        h1 {
+          margin: 0;
+          font-size: 40px;
+          font-weight: 600;
+          {{#theme.header}}
+          color: {{.}};
+          {{/theme.header}}
+        }
       }
 
       .header .invoice_number {
@@ -136,112 +134,117 @@ export const a = `<!DOCTYPE html>
         {{/theme.accent}}
       }
 
-      .address {
-        max-width: 350px;
+      .invoice_details {
         display: flex;
-        justify-content: space-between;
         flex-direction: column;
-        margin-bottom: 3.125em;
-        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
+        max-width: 200px;
+        font-size: 14px;
+        margin-bottom: 15px;
+
+        .detail_group {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          p {
+            margin: 1px 0;
+          }
+        }
       }
 
-      .address .address_group {
+      .address {
+        margin-top: 25px;
+        max-width: 420px;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        margin-bottom: 0.125em;
-        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
+        .address_group {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 15px;
+        }
       }
 
       .address .address_group div {
         flex-basis:48%;
       }
 
-      .address .address_group.major p {
-        font-family: "Abel", sans-serif;
-      }
-
       .address .address_group p {
-        font-family: "Cormorant", serif;
-        margin-bottom: 8px;
-        font-size: 16px;
+        font-size: 14px;
+        margin: 4px 0;
       }
 
-      .address .address_group.major > div:first-child p {
-        font-size: 18px;
-        font-weight: 700;
-        letter-spacing: 3px;
+      .total_due {
+        font-size: 20px;
+        margin: 18px 0;
       }
 
       .table-container {
-        font-family: "Cormorant", serif !important;
         width: 100%;
         border-collapse: collapse;
         font-size: clamp(0.8125rem, 0.165rem + 0.75vw, 1rem);
+
+        tr {
+          border-bottom: 1px solid #cfcfcf;
+
+          td {
+            font-weight: 500;
+            padding: 1.3625em;
+            padding-right: 0;
+          }
+        }
+        tr:last-of-type {
+          border-bottom: none;
+        }
+        th, td {
+          padding: 0.5em;
+          text-align: right;
+          width: 17%;
+        }
+        th {
+          font-size: 12px;
+          font-weight: 400;
+          border: none;
+          border-bottom: 1.5px solid black;
+          padding-bottom: 0.5625em;
+        }
+        td:first-of-type,
+        th:first-of-type {
+          text-align: left;
+          padding-left: 0;
+          width: 45%;
+        }
+        td:last-of-type,
+        th:last-of-type {
+          text-align: right;
+          padding-right: 0;
+        }
       }
 
-      .table-container tr {
-       border-bottom: 1.5px solid black;
-      }
-
-      .table-container tr td {
-        font-weight: 300;
-        padding: 1.3625em;
-      }
       .table-container td:last-of-type, .table-container td:nth-of-type(4), .table-container th{
         {{#theme.accent}}
         color: {{.}};
         {{/theme.accent}}
       }
 
-
-      .table-container tr:last-of-type {
-          border-bottom: none;
-      }
-
-      .table-container th,
-      .table-container td {
-        min-width: 25%;
-        padding: 0.5em;
-        text-align: center;
-        min-width: 50px;
-      }
-
-      .table-container tr:last-of-type td {
-        font-size: 20px;
-        font-weight: 600;
-        font-family: "Abel", sans-serif;
-      }
-
-      .table-container th {
-        font-size: 20px;
-        font-weight: 800;
-        border: none;
-        border-bottom: 1.5px solid black;
-        margin-bottom: 0.9375em;
-        padding-bottom: 1.3625em;
-        font-family: "Abel", sans-serif;
-      }
-
-      .table-container td:first-of-type,
-      .table-container th:first-of-type {
-        text-align: left;
-        padding-left: 0;
-        width: 260px;
-      }
-
-      .table-container td:last-of-type,
-      .table-container th:last-of-type {
-        text-align: right;
-        padding-right: 0;
+      .subtotal_field {
+        margin-top: 20px;
+        width: 400px;
+        margin-left: auto;
+        div {
+          border-top: 1px solid #cfcfcf;
+          display: flex;
+          justify-content: space-between;
+          p {
+            margin: 10px 0;
+            font-size: 14px;
+          }
+        }
       }
       .footer {
+        margin-top: 15px;
+        font-size: 14px;
+        max-width: 400px;
         padding: 10px 0 30px;
         font-weight: 300;
-        font-family: "Cormorant", serif;
-      }
-      #cormorant {
-        font-family: "Cormorant", serif;
       }
     </style>
   </head>
@@ -249,72 +252,79 @@ export const a = `<!DOCTYPE html>
     <div class="invoice-container">
       <div class="body">
         <div class="header">
-          <h1>INVOICE</h1>
-          <p class="invoice_number"># {{invoice.inv_tag}}</p>
+          <h1>Invoice</h1>
+          <img src="" />
+        </div>
+        <div class="invoice_details">
+          <div class="detail_group">
+            <div>
+              <p><strong>Invoice number:</strong></p>
+            </div>
+            <div>
+              <p>{{invoice.inv_tag}}</p>
+            </div>
+          </div>
+          <div class="detail_group">
+            <div>
+              <p>Date due:</p>
+            </div>
+            <div>
+              <p>{{invoice.due_date}}</p>
+            </div>
+          </div>
+          {{#invoice.issue_date}}
+          <div class="detail_group">
+            <div>
+              <p>Date issued:</p>
+            </div>
+            <div>
+              <p>{{.}}</p>
+            </div>
+          </div>
+          {{/invoice.issue_date}}
         </div>
         <div class="address">
-          <div class="address_group major">
+          <div class="address_group">
+            <p><strong>Pay to</strong></p>
             <div>
-              <p>BILLED TO:</p>
-            </div>
-            <div>
-              <p>{{client}}</p>
-            </div>
-          </div>
-          <div class="address_group major">
-            <div>
-            <p>PAY TO:</p>
-            </div>
-            <div>
-            <p>
-              {{ user.name }}
-              <br />
-              {{user.address}}
-              <br />
-              {{user.extras}}
-            </p>
+              <p>
+                {{ user.name }}
+              </p>
+              <p>
+                {{user.address}}
+              </p>
+              <p>
+                {{user.bank}}
+                </>p
+              <p>
+                {{user.account_name}}
+                </p>
+              <p>
+                {{user.account_number}}
+              </p>
             </div>
           </div>
-          <div class="address_group" id="cormorant">
-            <div>
-            <p>Bank</p>
-          </div>
-            <div>
-            <p>{{user.bank}}</p>
-          </div>
-          </div>
-          <div class="address_group" id="cormorant">
-            <div>
-            <p>Account Name</p>
-          </div>
-            <div>
-            <p>{{user.account_name}}</p>
-          </div>
-          </div>
-          <div class="address_group" id="cormorant">
-            <div>
-            <p>Account Number</p>
-          </div>
-            <div>
-            <p>{{user.account_number}}</p>
-          </div>
-          </div>
-          <div class="address_group" id="cormorant">
-            <div>
-            <p>ISSUE DATE:</p>
-          </div>
-            <div>
-            <p>{{invoice.issue_date}}</p>
-          </div>
+          <div class="address_group">
+            <p><strong>Billed to</strong></p>
+            <p>{{client}}</p>
           </div>
         </div>
-        <table class="table-container" id="cormorant">
+
+        <div class="total_due">
+          <p>
+            <strong>
+              {{invoice.total}} {{invoice.currency}} due {{invoice.naturalised_due_date}}
+            </strong>
+          </p>
+        </div>
+
+        <table class="table-container">
           <thead>
             <tr>
-              <th>DESCRIPTION</th>
-              <th>RATE</th>
-              <th>QTY/HRS.</th>
-              <th>AMOUNT</th>
+              <th>Description</th>
+              <th>Rate</th>
+              <th>Quantity/Hours</th>
+              <th>Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -326,17 +336,27 @@ export const a = `<!DOCTYPE html>
               <td>{{subtotal}}</td>
             </tr>
             {{/invoice.items}}
-            <tr>
-              <td>TOTAL</td>
-              <td></td>
-              <td></td>
-              <td>{{invoice.currency}} {{invoice.total}}</td>
-            </tr>
           </tbody>
         </table>
-        <div class="footer">
-          {{invoice.description}}
+        <div class="subtotal_field">
+          <div>
+            <p>Subtotal</p>
+            <p>{{invoice.currency}} {{invoice.total}}</p>
+          </div>
+          <div>
+            <p>Tax</p>
+            <p>{{invoice.total_with_tax}} 0</p>
+          </div>
+          <div>
+            <p>Total</p>
+            <p>{{invoice.currency}} Subtotal</p>
+          </div>
+          <div>
+            <p><strong>Amount Due</strong></p>
+            <p><strong>{{invoice.currency}} {{invoice.total_due}}</strong></p>
+          </div>
         </div>
+        <div class="footer">{{invoice.description}}</div>
       </div>
     </div>
   </main>
@@ -402,10 +422,14 @@ export const getContext = (invoice: IInvoice, user: IUser, invoiceSettings: IInv
     description: invoice?.description,
     issue_date: invoice?.issueDate,
     due_date: invoice?.dueDate,
+    naturalised_due_date: formatDate(invoice?.dueDate),
     total: function total() {
       return parseInt(
-        this.invoice.items?.reduce((acc, cur) => acc + cur.subtotal(), 0),
+        this.invoice?.items?.reduce((acc, cur) => acc + cur.subtotal(), 0),
       )?.toLocaleString()
+    },
+    total_with_tax: function total_with_tax() {
+      return this.invoice.total()
     },
     total_due: invoice?.payment.totalDue?.toLocaleString(),
     status: capitalise(invoice?.payment.status),

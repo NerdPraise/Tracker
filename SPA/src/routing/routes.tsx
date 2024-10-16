@@ -54,6 +54,12 @@ export const ROUTES: routes = {
     ADD_TEMPLATE: { path: '/invoice/add/:templateId', key: 'ADD_TEMPLATE', menu: false, permission: '' },
     EDIT_INVOICE: { path: '/invoice/edit/:invoiceId', key: 'EDIT_INVOICE', menu: false, permission: '' },
     INVOICE_DETAIL: { path: '/invoice/:invoiceId', key: 'INVOICE_DETAIL', menu: false, permission: '' },
+    CREATE_TEMPLATE: {
+      path: '/invoice/templates/create',
+      key: 'CREATE_TEMPLATE',
+      menu: false,
+      permission: '',
+    },
   },
   unauthenticatedRoutes: {
     HOME: { path: '/', key: 'HOME' },
