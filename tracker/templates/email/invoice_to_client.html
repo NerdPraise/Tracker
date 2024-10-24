@@ -6,11 +6,11 @@
 
     <p style="margin-bottom:10px; font-size: 13px">We’re reaching out on behalf of {{ username }} to let you know that your invoice for their service is ready. You can view and download your invoice by clicking the link below:</p>
     <div style="text-align: center; margin: 24px 0;">
-      <button style="background:#7B50C6;border:none; padding:15px 25px; border-radius: 8px;"><a style="color:#fff; text-decoration: none;" href="{{ host }}/{{ invoice_code }}?client={{ client_email }}">See Invoice</a></button>
+      <button style="background:#7B50C6;border:none; padding:15px 25px; border-radius: 8px;"><a style="color:#fff; text-decoration: none;" href="{{ host }}/client/{{ invoice_code }}?client={{ client_email }}">See Invoice</a></button>
     </div>
     <p style="margin:10px 0px; font-size: 13px;">
       You can also copy paste the below link in to your browser to access the invoice.
-      <a style="color: #87255b;" href="{{ host }}/{{ invoice_code }}?client={{ client_email }}">{{ host }}/{{ invoice_code }}</a>
+      <a style="color: #87255b;" href="{{ host }}/client/{{ invoice_code }}?client={{ client_email }}">{{ host }}/client/{{ invoice_code }}</a>
     </p>
     <p style="margin:10px 0px; font-size: 13px;">Thank you for your prompt attention to this matter!</p>
   </div>

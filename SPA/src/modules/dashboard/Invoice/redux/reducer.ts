@@ -282,4 +282,8 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
       state.client.clientDetail = action.payload.data
       state.client.statusCode = action.payload.statusCode
     })
+    .addCase(INVOICE_ACTION_TYPE.SET_DATA_FOR_INVOICE, (state, action) => {
+      state.invoice.preview = action.payload.data.invoice
+      state.invoiceSettings.settings = action.payload.data.invoiceSettings
+    })
 })

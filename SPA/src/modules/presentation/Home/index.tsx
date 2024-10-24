@@ -2,16 +2,17 @@ import { useRef } from 'react'
 import ClassNames from 'classnames'
 import { Link, useNavigate } from 'react-router-dom'
 import { CircleCheckBig } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 import { Button, Nav, Card } from '_Home/components'
-import InvoiceDash from '_Images/invoice.svg'
 import { ROUTES } from '_Home/routing/routes'
 import { plans } from '_Home/constants'
+import InvoiceDash from '_Images/invoice.svg'
 
 import { features } from './constants'
 import styles from './Home.module.styl'
 
-const generateDots = (count) => {
+const generateDots = (count: number) => {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -26,6 +27,7 @@ const Home = () => {
   const setRef = (element, index) => {
     refs.current[index] = element // Assign element to the specific index
   }
+  const scrollRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
 
   const handleMouseMove = (e: React.MouseEvent, index: number) => {
@@ -42,7 +44,7 @@ const Home = () => {
   }
 
   return (
-    <div className={styles.Home}>
+    <div className={styles.Home} ref={scrollRef}>
       <Nav />
       <div className={styles.home__hero}>
         <div className={styles.floating_dots}>
@@ -59,18 +61,33 @@ const Home = () => {
           ))}
         </div>
         <div className={styles.hero_content}>
-          <h1>Streamline Your Invoicing with Ease</h1>
-          <p>Create, Send, and Manage Invoices in Seconds – Get Paid Faster!</p>
-          <Link to={ROUTES.unauthenticatedRoutes.SIGNUP.path}>
-            <Button className={styles.hero__btn} onClick={null} text="Get started" />
-          </Link>
-          <div className={styles.hero__dash}>
-            <img src={InvoiceDash} alt="Invoice Dashboard" />
-            <div className={styles.hero_fade}></div>
+          <div className={styles.hero_content_light}>
+            <div className={styles.hero_content_light_item} />
+            <div className={styles.hero_content_light_item} />
+            <div className={styles.hero_content_light_item} />
+            <div className={styles.hero_content_light_item} />
+            <div className={styles.hero_content_light_item} />
+            <div className={styles.hero_content_light_item} />
+          </div>
+          <div className={styles.hero_content_item}>
+            <h1>Streamline Your Invoicing with Ease</h1>
+            <p>Create, Send, and Manage Invoices in Seconds – Get Paid Faster!</p>
+            <Link to={ROUTES.unauthenticatedRoutes.SIGNUP.path}>
+              <Button className={styles.hero__btn} onClick={null} text="Get started" />
+            </Link>
+            <div className={styles.hero__dash}>
+              <img src={InvoiceDash} alt="Invoice Dashboard" loading="lazy" height={1} />
+              <div className={styles.hero_fade}></div>
+            </div>
           </div>
         </div>
       </div>
-      <div className={styles.home__features}>
+      <motion.div
+        className={styles.home__features}
+        initial={{ opacity: 0, transform: 'translateY(50px)' }}
+        whileInView={{ opacity: 1, transform: 'translateY(0)' }}
+        viewport={{ root: scrollRef, amount: 0.15 }}
+      >
         <h3 id="features">FEATURES</h3>
         <div className={styles.home__features_cards}>
           {features.slice(0, 2).map((item) => (
@@ -101,7 +118,7 @@ const Home = () => {
             </Card>
           ))}
         </div>
-      </div>
+      </motion.div>
       <div className={styles.home_pricing} id="pricing">
         <div className={styles.pricing_header}>
           <h3>Equip yourself with world class software</h3>

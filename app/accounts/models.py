@@ -26,6 +26,9 @@ class User(AbstractUser):
         if created:
             UserProfile.objects.create(user=instance)
             UserSubscription.objects.create(user=instance)
+            from app.invoice.models import InvoiceSettings
+
+            InvoiceSettings.objects.create(user=instance)
 
 
 class UserProfile(models.Model):

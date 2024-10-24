@@ -2,13 +2,12 @@
   display flex
   position relative
   .panel
-    width 400px
+    width 220px
     height 750px
-    background #4b4e55
     display flex
     &_menu
       height 100%
-      width 50px
+      width 55px
       padding 25px 5px
       background #1f2325
       display flex
@@ -33,15 +32,32 @@
             display block
     &_menu_items
       background #4b4e55
-      width 100%
+      width 170px
+      .all_widget
+        display flex
+        flex-direction column
+        align-items center
+        justify-content center
+        margin-top 20px
+        .widget_lone
+          margin-bottom 20px
+          cursor pointer
+          .widget_logo
+            width 70px
+            height 70px
+            img 
+              border-radius 6px
       .colors
         display flex
         flex-direction column
         align-items center
         width 100%
-        text-align center
+        .circle_color
+          width 120px
         > div p
           margin 15px 0
+          font-size 12px
+        
   .template
     position relative
     width 700px
@@ -49,7 +65,13 @@
     .background_s
       width 700px
     .layout
-      background blue
+      position relative
+      color black
+      height 100%
+      .widget_container
+        border 1px solid transparent
+        &:hover
+          border 1px dashed #83aee6
 
   .widget
     &:hover

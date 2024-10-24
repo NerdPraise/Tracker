@@ -1,18 +1,35 @@
+import { useContext, useState } from 'react'
+import ClassNames from 'classnames'
+
+import { HoverCard } from '_Home/components'
+import { DragContext } from '_Home/components/GridLayout/DragContext'
+
+import styles from './BaseWidget.module.styl'
+
 interface BaseWidgetProps {
   key?: string
   className?: string
-  style: CSSStyleRule
   children: ReactChildren
-  gridRef: React.MutableRefObject<any>
+  toolBar?: ReactChildren
+  widgetId: string
 }
 
-export const BaseWidget = function a({ className, style, children, ...props }: BaseWidgetProps) {
+export const BaseWidget = ({ className, children, toolBar, widgetId, ...props }: BaseWidgetProps) => {
+  const { isDragging, activeWidget, setActiveWidget } = useContext(DragContext)
+
+  const onFocusHandler = () => {
+    setActiveWidget(widgetId)
+  }
+  const showToolBar = activeWidget === widgetId
+
   return (
-    <div className={className} ref={props.gridRef} style={{ background: 'green', ...style }} {...props}>
-      {children}
-      <div style={{ zIndex: 2, position: 'relative' }}>
-        <p>sww</p>
+    <>
+      {!isDragging && showToolBar && (
+        <HoverCard side="top" open={showToolBar} trigger={<div></div>} item={toolBar} />
+      )}
+      <div className={ClassNames(styles.BaseWidget, className)} {...props} onFocus={onFocusHandler}>
+        {children}
       </div>
-    </div>
+    </>
   )
 }

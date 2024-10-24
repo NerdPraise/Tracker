@@ -1,29 +1,48 @@
 import RGridLayout, { WidthProvider } from 'react-grid-layout'
+import type { ReactGridLayoutProps } from 'react-grid-layout'
+
+import { DragContext } from './DragContext'
 
 import './GridLayout.css'
-import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
+import { useState } from 'react'
 
 const ResponsiveGridLayout = WidthProvider(RGridLayout)
 
-interface GridLayoutProps {
-  className?: string
+interface GridLayoutProps extends ReactGridLayoutProps {
   children: ReactChildren
-  layout?: object
 }
-export const GridLayout = ({ children, className, layout }: GridLayoutProps) => {
+
+export const GridLayout = ({
+  children,
+  className,
+  layout,
+  onDrop,
+  isDroppable,
+  onLayoutChange,
+}: GridLayoutProps) => {
+  const [isDragging, setIsDragging] = useState<boolean>(false)
+  const [activeWidget, setActiveWidget] = useState<string>('')
+
   return (
-    <ResponsiveGridLayout
-      className={className}
-      autoSize={false}
-      containerPadding={[0, 0]}
-      cols={12}
-      rowHeight={30}
-      width={1200}
-      compactType={null}
-      layout={layout}
-    >
-      {children}
-    </ResponsiveGridLayout>
+    <DragContext.Provider value={{ isDragging, activeWidget, setActiveWidget }}>
+      <ResponsiveGridLayout
+        className={className}
+        autoSize={false}
+        containerPadding={[0, 0]}
+        rowHeight={30}
+        isDroppable={isDroppable}
+        width={1200}
+        compactType={null}
+        layout={layout}
+        onLayoutChange={onLayoutChange}
+        onDrop={onDrop}
+        onDrag={() => setIsDragging(true)}
+        onDragStop={() => setIsDragging(false)}
+        allowOverlap={true}
+      >
+        {children}
+      </ResponsiveGridLayout>
+    </DragContext.Provider>
   )
 }

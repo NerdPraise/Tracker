@@ -15,8 +15,12 @@ export const Tour = (props: TourProps) => {
       hideCloseButton
       callback={props.callback}
       styles={{
+        tooltip: {
+          borderRadius: '12px',
+        },
         options: {
-          backgroundColor: '#EBFFF4',
+          // backgroundColor: '#EBFFF4',
+          backgroundColor: '#fff',
           arrowColor: '#EBFFF4',
           textColor: '#00A991',
         },
@@ -24,8 +28,9 @@ export const Tour = (props: TourProps) => {
           backgroundColor: '#c770fe',
           color: '#FFFFFF',
           fontSize: '12px',
-          padding: '10px',
+          padding: '14px 25px',
           outline: 'none',
+          borderRadius: '20px',
         },
         buttonBack: {
           fontSize: '12px',

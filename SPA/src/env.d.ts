@@ -95,6 +95,12 @@ declare global {
     subscription: string
   }
 
+  type IWidget = {
+    name: string
+    description: string
+    image?: string
+  }
+
   const enum IStatusCode {
     'SUCCESS' = 200,
     'CREATED' = 201,

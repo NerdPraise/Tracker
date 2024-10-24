@@ -1,0 +1,48 @@
+:local(.TextWidget)
+  display block
+  height 100%
+  >  div
+    height 100%
+    outline none
+    &:empty::before
+      content: 'Type Here'
+      font-style italic
+      height 100%
+      display flex
+      align-items center
+
+:local(.toolBar)
+  display flex
+  > div
+    display flex
+    background #940094cf
+    margin-right 7px
+    align-items center
+    padding 0 10px 
+    &.font_variant
+      padding 0 3px
+      > div
+        padding 3px 6px
+    &.font_bar > div
+      padding 6px 7px
+      cursor pointer
+      text-align center
+      width 40px
+      &:hover
+        background #ffffff2b
+      sub, sup
+        font-size 8px
+    .select
+      width 100px
+      padding 6px 10px
+      :global(.css-ltl6lq-container)
+        margin-top 0
+    .color_wheel
+      height 40px
+      width 40px
+      display flex
+      align-items center
+      justify-content center
+      cursor pointer
+  .dropdown
+    display flex

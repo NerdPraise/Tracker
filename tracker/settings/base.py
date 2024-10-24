@@ -162,7 +162,7 @@ AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-SENDER_EMAIL = "noreply@useinvoice.co"
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = SENDER_EMAIL = "noreply@useinvoice.co"
 
 CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", "django-db")
 CELERY_RESULT_EXTENDED = True

@@ -1,0 +1,47 @@
+:local(.BaseWidget)
+  height 100%
+ 
+  
+:local(.ImageWidget)
+  .img_cont
+    cursor pointer
+    padding 5px
+    margin 4px
+    border-radius 2px
+    background #83aee64a
+    border 1px dashed #83aee6
+    width fit-content
+    .logo 
+      background #528cd8
+      border-radius 50%
+      height 53px
+      width 53px
+      display flex
+      justify-content center
+      align-items center
+
+:local(.dropdown)
+  background $content-sidebar-gray
+  > div
+    padding-left 0
+    width 100%
+    > div
+      width 100%
+      padding 0 10px
+      display flex
+      align-items center
+      height 40px
+      cursor pointer
+      &:hover
+        background $content-gray-dark
+
+:local(.align_dropdown)
+  background $content-sidebar-gray
+  display flex
+  > div
+    padding 10px
+    height 40px
+    cursor pointer
+    &:hover
+        background $content-gray-dark
+

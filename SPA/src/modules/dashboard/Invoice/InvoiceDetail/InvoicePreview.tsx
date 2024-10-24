@@ -24,9 +24,10 @@ export const InvoicePreview = () => {
       dispatch(getInvoiceSettings())
     }
     if (invoiceCode) {
-      getAllDataForInvoiceView(invoiceCode)
+      dispatch(getAllDataForInvoiceView(invoiceCode))
     }
-  }, [invoiceId, invoiceCode])
+    console.log(invoiceId, invoiceCode)
+  }, [])
 
   const templateSettings = preview?.template?.settings
   const context = useMemo(() => getContext(preview, user, settings), [preview, settings])

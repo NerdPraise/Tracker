@@ -73,9 +73,9 @@ class InvoiceSettings(models.Model):
     prefix = models.CharField(max_length=150, default="INV")
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     default_currency = models.CharField(choices=CurrencyChoices.choices, default=CurrencyChoices.USD, max_length=20)
-    default_bank = models.CharField(max_length=150)
-    account_name = models.CharField(max_length=150)
-    account_number = models.CharField(max_length=150)
+    default_bank = models.CharField(max_length=150, default="")
+    account_name = models.CharField(max_length=150, default="")
+    account_number = models.CharField(max_length=150, default="")
     due_after = models.PositiveSmallIntegerField(default=10)
 
     def __str__(self) -> str:
@@ -160,3 +160,11 @@ class InvoiceMessageCode(TimeStampedModel):
         current_datetime = datetime.now().isoformat()
         unique_string = f"{invoice_uuid}-{current_datetime}"
         return hashlib.sha256(unique_string.encode()).hexdigest()
+
+
+class Widget(TimeStampedModel):
+    name = models.CharField(max_length=120)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name

@@ -1,0 +1,81 @@
+:local(.RichTextWidget)
+  height 100%
+  margin 5px
+  .content
+    height 100%
+    :global(p.is-editor-empty)
+      height 100%
+    :global(p.is-editor-empty)::before
+      content 'Type Here'
+      height 0
+      float left
+      font-size 29px
+      font-style italic
+      pointer-events none
+    > div
+      height 100%
+      outline none
+      
+
+:local(.MenuBar)
+  display flex
+  > div
+    display flex
+    align-items center
+    margin-right 7px
+    padding 5px 10px
+    background $content-sidebar-gray
+    border-radius 3px
+  .font_bar
+    > div
+      padding 3px 6px
+      cursor pointer
+      
+      &:last-of-type
+        padding-left 12px
+
+      &:hover
+        background #ffffff2b
+  .font_variant
+    background $content-sidebar-gray
+    margin-right 7px
+    > div 
+      cursor pointer
+  .trigger
+    margin-left 10px
+
+:local(.SliderT)
+  .Thumb
+    height 12px
+    width 12px
+    cursor pointer
+    background $content-sidebar-gray
+  .Range
+    background $content-sidebar-gray
+
+
+:local(.dropdown)
+  background $content-sidebar-gray
+  > div
+    padding-left 0
+    width 100%
+    > div
+      width 100%
+      padding 0 10px
+      display flex
+      align-items center
+      height 40px
+      cursor pointer
+      &:hover
+        background $content-gray-dark
+
+:local(.align_dropdown)
+  background $content-sidebar-gray
+  display flex
+  > div
+    padding 10px
+    height 40px
+    cursor pointer
+    &:hover
+        background $content-gray-dark
+

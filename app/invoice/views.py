@@ -9,6 +9,7 @@ from rest_framework import generics, permissions, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from api.serializer.accounts import UserProfileSerializer
 from api.serializer.invoice import (
     ClientSerializer,
     InvoiceSerializer,
@@ -65,9 +66,23 @@ class InvoiceViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(invoice)
         return Response(serializer.data, status=200)
 
-    @action(detail=False)
+    @action(detail=False, permission_classes=[permissions.AllowAny])
     def get_data_for_invoice(self, request):
-        pass
+        code = request.query_params.get("invoice")
+        imc = InvoiceMessageCode.objects.filter(code=code)
+        if not imc.exists():
+            return ""
+        imc = imc[0]
+        user = imc.invoice.user
+        settings = InvoiceSettings.objects.filter(user=user)[0]
+
+        return Response(
+            {
+                "invoice": self.serializer_class(imc.invoice).data,
+                "invoice_settings": InvoiceSettingsSerializer(settings).data,
+                "user": UserProfileSerializer(user.userprofile).data,
+            }
+        )
 
     @swagger_auto_schema(
         manual_parameters=[

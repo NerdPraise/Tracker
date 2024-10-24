@@ -30,7 +30,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['html2pdf.js'],
+    include: ['html2pdf.js', 'tiptap_react.js'],
   },
   plugins: [
     react({
