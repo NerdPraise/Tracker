@@ -75,6 +75,7 @@ export const EditForm = forwardRef(function EditForm(
     dispatchedUpdateInvoice(data)
     setCurrentInvoiceItem(0)
   }
+  console.log(selectedInvoice)
 
   return (
     <div className={styles.form}>

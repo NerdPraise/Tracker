@@ -71,293 +71,229 @@ export const a = `
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Invoice</title>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300&family=Roboto:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
     <style>
-     @font-face {
-        font-family: 'seas' ;
-        src: url("/fourseas.woff") format("woff"), url('/fourseas.woff2') format('woff2');
-        font-weight: 300;
-        font-style: normal;
-        font-display: swap;
-      }
-      main#main {
-        font-family: "Josefin Sans", sans-serif !important;
+      main {
+        font-family: Lato, sans-serif;
         margin: 0;
         padding: 0;
-        min-height: 900px;
-        zoom: 1;
+        background-color: #f9f9f9;
         {{#theme.body}}
         color: {{.}};
         {{/theme.body}}
-      }
 
-      main#main div,
-      main#main h1,
-      main#main p,
-      {
-        font-family: "Josefin Sans", sans-serif;
       }
-    
       * {
         box-sizing: border-box;
       }
       .invoice-container {
         width: 100%;
-        height: 100%;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       }
 
       .invoice-container .body {
-        padding: 66px 80px 30px;
+        padding: 66px 80px;
         background-color: #fff;
-        min-height: 900px;
+        // min-height: 800px;
       }
-
       .header {
         display: flex;
-        flex-direction: column;
-        align-items: end;
-        margin-bottom: 40px;
-        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
       }
-
+      .header img {
+        width: 6.25em;
+      }
       .header h1 {
-        font-family: "Josefin Sans", sans-serif;
         margin: 0;
-        font-size: 4.8rem;
-        font-weight: 500;
-        letter-spacing: 4px;
-
+        font-size: 2.3rem;
+        font-weight: 800;
+        letter-spacing: 3px;
         {{#theme.header}}
         color: {{.}};
         {{/theme.header}}
       }
-
-      .header .invoice_number {
-        font-family: "Josefin Sans", sans-serif;
-        margin: 20px 0 0;
-        font-size: 16px;
-        font-weight: 800;
-
-       {{#theme.accent}}
-        color: {{.}};
-        {{/theme.accent}}
-      }
-
       .address {
-        max-width: 350px;
         display: flex;
+        align-items: center;
         justify-content: space-between;
-        flex-direction: column;
-        margin-bottom: 16px;
+        margin-bottom: 3.125em;
         font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
       }
+      .address .client p {
+        font-weight: 600;
+        font-size: clamp(1rem, 0.0025rem + 1.333vw, 1.35rem);
+        margin-bottom: 1.555em;
+      }
+      .address .client div {
+        margin-bottom: 0.45em;
+      }
+      .address .client span {
+        font-weight: 600;
+        
+      }
 
-      .address .address_group {
+       .address .client > div {
         display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.125em;
-        font-size: 0.925rem;
       }
 
-      .address .address_group div {
-        flex-basis:48%;
+      .address .user-detail {
+        text-align: right;
       }
-
-      .address .address_group.major p {
-        font-family: "Josefin Sans", sans-serif;
+      .address .user-detail div {
+        margin-bottom: 0.3125em;
       }
-
-      .address .address_group p {
-        font-family: "seas", serif;
-        margin-bottom: 8px;
-        font-size: 16px;
+      .table-head {
+        min-height: 250px;
       }
-
-      .address .address_group.major > div:first-child p {
-        font-size: 18px;
-        font-weight: 700;
-        letter-spacing: 3px;
-      }
-      .table_head {
-        min-height: 400px;
-      }
-
       .table-container {
-        font-family: "seas", serif !important;
         width: 100%;
         border-collapse: collapse;
         font-size: clamp(0.8125rem, 0.165rem + 0.75vw, 1rem);
-        
-        tr {
-          border-bottom: 1.5px solid black;
-          height: 60px;
-          td {
-            font-weight: 300;
-            padding: 1.3625em;
-          }
-        }
       }
-
-      .table-container td:last-of-type, .table-container td:nth-of-type(4), .table-container th{
+      .table-container tr:first-of-type td {
+        padding-top: 1.5625em;
+      }
+      .table-container td {
+        font-weight: 600;
+      }
+      .table-container td:last-of-type, .table-container td:nth-of-type(4) {
         {{#theme.accent}}
         color: {{.}};
         {{/theme.accent}}
       }
-
-      .table-container tr:last-of-type {
-          border-bottom: none;
+      .table-container td:last-of-type {
+        min-width: 80px;
       }
-
       .table-container th,
       .table-container td {
-        min-width: 25%;
         padding: 0.5em;
         text-align: center;
         min-width: 50px;
       }
-
-      .table-container tr:last-of-type td {
-        font-size: 20px;
-        font-weight: 600;
-        font-family: "Josefin Sans", sans-serif;
-      }
-
       .table-container th {
-        font-size: 18px;
-        font-weight: 600;
+        color: #808080;
+        font-weight: 400;
+        font-size:clamp(0.75rem, 0.165rem + 0.75vw, 0.87rem);
         border: none;
-        border-bottom: 1.5px solid black;
+        border-bottom: 1px solid #ddd;
         margin-bottom: 0.9375em;
-        padding-bottom: 5px;
-        font-family: "Josefin Sans", sans-serif;
       }
-
       .table-container td:first-of-type,
       .table-container th:first-of-type {
         text-align: left;
         padding-left: 0;
         width: 260px;
       }
-
       .table-container td:last-of-type,
       .table-container th:last-of-type {
         text-align: right;
         padding-right: 0;
       }
       .footer {
-        padding: 10px 0 30px;
-        font-weight: 300;
-        font-family: "seas", serif;
+        {{#theme.footerBg}}
+          background: {{.}};
+        {{/theme.footerBg}}
+        height: 23.875em;
+        padding: 4.375em 80px 4.375em;
       }
-      #seas {
-        font-family: "seas", serif;
+      .footer-header,
+      .footer-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .footer-header {
+        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.87rem);
+        color: #808080;
+        width: 100%;
+      }
+      .third {
+        flex-basis: 33%;
+      }
+      .third.end {
+        text-align: right;
+      }
+      .footer-item {
+        margin: 1.5625em 0;
+      }
+      .footer-item .account_details {
+        font-size: clamp(0.75rem, 0.165rem + 0.75vw, 0.925rem);
+      }
+      .footer-item .due_item {
+        font-size: clamp(1rem, 0.0025rem + 1.333vw, 1.375rem);
+      }
+      .footer-item .total_item {
+        font-size: clamp(1.2rem, 0.0025rem + 1.333vw, 1.675rem);
+        {{#theme.accent}}
+        color: {{.}};
+        {{/theme.accent}}
+        font-weight: 700;
+        padding-right: 0;
+      }
+      hr {
+        border: 0.7px solid #ccc;
+        border-style: solid;
+        border-bottom: none;
+      }
+      .footer-msg {
+        margin-top: 2.5em;
+      }
+      .footer-msg {
+        font-size: 1.0625em;
       }
     </style>
   </head>
-  <main id="main">
+  <main>
     <div class="invoice-container">
       <div class="body">
         <div class="header">
+        {{#logo}}
+        <img src="{{.}}" alt="Your Logo" />
+        {{/logo}}
           <h1>INVOICE</h1>
-          <p class="invoice_number"># {{invoice.inv_tag}}</p>
         </div>
         <div class="address">
-          <div class="address_group major">
+          <div class="client">
+            <p>{{client}}</p>
             <div>
-              <p>BILLED TO:</p>
+            Date Issued:
+            {{#invoice.issue_date}}
+            <span>{{.}}</span>
+            {{/invoice.issue_date}}
+            {{^invoice.issue_date}}
+            <div style="height: 20px; min-width: 60px; background:#efeeee;margin-left: 12px;"></div>
+            {{/invoice.issue_date}}
+            
             </div>
-            <div>
-              {{#client}}
-              <p id="seas">{{.}}</p>
-              {{/client}}
-              {{^client}}
-              <div style="height: 20px; min-width: 60px; background: #ccc;"></div>
-              {{/client}}
-            </div>
-          </div>
-          <div class="address_group major">
-            <div>
-            <p>PAY TO:</p>
-            </div>
-            <div>
-            <p id="seas">
-              {{#user.name}}
-              {{.}}
-              {{/user.name}}
-              {{^user.name}}
-              <div style="height: 20px; min-width: 50px; background: #efeeee;"></div>
-              {{/user.name}}
-              <br />
-
-              {{#user.address}}
-              {{.}}
-              {{/user.address}}
-              {{^user.address}}
-              <div style="height: 20px; min-width: 50px; background: #efeeee;"></div>
-              {{/user.address}}
-              <br />
-
-              {{user.extras}}
-            </p>
+            <div>Invoice No:
+            {{#invoice.inv_tag}}
+            <span>{{.}}</span>
+            {{/invoice.inv_tag}}
+            {{^invoice.inv_tag}}
+            <div style="height: 20px; min-width: 60px; background:#efeeee;margin-left: 12px;"></div>
+            {{/invoice.inv_tag}}
             </div>
           </div>
-          <div class="address_group" id="seas">
-            <div>
-            <p>Bank</p>
-          </div>
-            <div>
-             {{#user.bank}}
-              <p>{{.}}</p>
-              {{/user.bank}}
-              {{^user.bank}}
-              <div style="height: 20px; min-width: 50px; background: #efeeee;"></div>
-              {{/user.bank}}
-          </div>
-          </div>
-          <div class="address_group" id="seas">
-            <div>
-            <p>Account Name</p>
-          </div>
-            <div>
-            {{#user.account_name}}
-            <p>{{.}}</p>
-            {{/user.account_name}}
-            {{^user.account_name}}
-            <div style="height: 20px; min-width: 50px; background: #efeeee;"></div>
-            {{/user.account_name}}
-          </div>
-          </div>
-          <div class="address_group" id="seas">
-            <div>
-            <p>Account Number</p>
-          </div>
-            <div>
-            <p>{{user.account_number}}</p>
-          </div>
-          </div>
-          <div class="address_group" id="seas">
-            <div>
-            <p>Issue Date:</p>
-          </div>
-            <div>
-             {{#invoice.issue_date}}
-              <p>{{.}}</p>
-              {{/invoice.issue_date}}
-              {{^invoice.issue_date}}
-              <div style="height: 20px; min-width: 50px; background: #efeeee;"></div>
-              {{/invoice.issue_date}}
-          </div>
+          <div class="user-detail">
+            <div>{{ user.name }}</div>
+            <div>{{user.address}}</div>
+            <div>{{user.city}}, {{user.country}}</div>
+            <div>{{user.extras}}</div>
           </div>
         </div>
-        <div class="table_head">
-          <table class="table-container" id="seas">
+        <div class="table-head">
+          <table class="table-container">
             <thead>
               <tr>
                 <th>DESCRIPTION</th>
                 <th>RATE</th>
-                <th>QTY/HRS.</th>
-                <th>AMOUNT</th>
+                <th>QTY.</th>
+                <th>SUBTOTAL</th>
+                <th>TOTAL</th>
               </tr>
             </thead>
             <tbody>
@@ -367,41 +303,102 @@ export const a = `
                 <td>{{rate}}</td>
                 <td>{{qty}}</td>
                 <td>{{subtotal}}</td>
+                <td></td>
               </tr>
               {{/invoice.items}}
               {{^invoice.items}}
               <tr>
                 <td>
-                  <div style="height: 20px; min-width: 50px; background: #efeeee;"></div>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
                 </td>
                 <td>
-                  <div style="height: 20px; min-width: 50px; background: #efeeee;"></div>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
                 </td>
                 <td>
-                  <div style="height: 20px; min-width: 50px; background: #efeeee;"></div>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
                 </td>
                 <td>
-                  <div style="height: 20px; min-width: 50px; background: #efeeee;"></div>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
                 </td>
               </tr>
               {{/invoice.items}}
               <tr>
-                <td>TOTAL</td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td>{{invoice.currency}} {{invoice.total}}</td>
               </tr>
             </tbody>
           </table>
+      </div>
+      </div>
+      <div class="footer">
+        <div class="footer-header">
+          <div class="third">BANK INFO</div>
+          <div class="third">DUE BY</div>
+          <div class="third end">TOTAL DUE</div>
         </div>
-        <div class="footer">
-          {{invoice.description}}
+        <hr />
+        <div class="footer-item">
+          <div class="third">
+            <div class="account_details">
+            {{user.bank}}
+            <br/>
+            {{user.account_name}}
+            <br/>
+            {{user.account_number}}
+            {{^user.account_name}}
+                <div style="height:20px; max-width:150px; background: #d1d1d1; margin-bottom: 3px;"> </div>
+                <div style="height:20px; max-width:150px; background: #d1d1d1;"> </div>
+            {{/user.account_name}}
+            </div>
+          </div>
+          <div class="third due_item">
+            <div>
+            {{invoice.due_date}}
+            {{^invoice.due_date}}
+                <div style="height:20px; min-width:70px; background: #d1d1d1;"> </div>
+            {{/invoice.due_date}}
+            </div>
+          </div>
+          <div class="third total_item end">{{invoice.currency}} {{invoice.total_due}}</div>
+        </div>
+        <hr />
+        <div class="footer-msg">
+          <div class="thanks">
+          {{#invoice.description}}
+          {{.}}
+          {{/invoice.description}}
+          {{^invoice.description}}
+          ❤️ Thank you!
+          {{/invoice.description}}
+          </div>
         </div>
       </div>
     </div>
   </main>
 </html>
-
 `
 
 export const paymentColumnDefs = [
@@ -522,4 +519,4 @@ export const contactColumnDefs = [
   },
 ]
 
-console.log(JSON.stringify(a))
+// console.log(JSON.stringify(a))

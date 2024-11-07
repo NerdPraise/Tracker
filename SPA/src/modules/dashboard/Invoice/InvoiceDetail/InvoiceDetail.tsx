@@ -139,7 +139,7 @@ export const InvoiceDetail = () => {
         </div>
         <div className={styles.details}>
           <div className={styles.frame}>
-            <Frame template={a || templateSettings?.html || ''} context={context} />
+            <Frame template={templateSettings?.html || ''} context={context} />
             {!!transactions.length && (
               <div className={styles.transactions}>
                 <Grid

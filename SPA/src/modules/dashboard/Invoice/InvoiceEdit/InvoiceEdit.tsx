@@ -83,7 +83,7 @@ export const InvoiceEdit = () => {
         </div>
         <div className={styles.details}>
           <div className={styles.frame}>
-            <Frame template={a || templateSettings?.html || ''} context={context} />
+            <Frame template={templateSettings?.html || ''} context={context} />
             <div className={styles.spacer}></div>
           </div>
 
