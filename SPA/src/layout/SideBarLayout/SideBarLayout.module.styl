@@ -6,12 +6,12 @@
   .lottie
     padding 60px
   .nav 
-    height 75px
+    height 60px
     background $content-sidebar-gray
     width 100%
     display flex
     justify-content space-between
-    padding 15px 25px
+    padding 0 25px
     align-items center
     svg
       cursor pointer
@@ -52,14 +52,12 @@
     .content
       background $content-gray-dark
       width 100%
-      overflow-y auto
-      height calc(100vh - 75px)
-
-      &_children
-        padding 35px 40px
+      overflow-y hidden
+      height calc(100vh - 60px)
+      padding 15px 50px
 
 :local(.LayoutSide)
-  padding-top 25px
+  padding-top 10px
   @media screen and (max-width: 768px) {
     display none
   }

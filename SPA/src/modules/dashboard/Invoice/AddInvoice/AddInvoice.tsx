@@ -62,9 +62,9 @@ export const AddInvoice = () => {
             </div>
           </div>
           <div className={styles.simple}>
-            <h2 className={styles.template_name}>Classy</h2>
+            <h2 className={styles.template_name}>Custom</h2>
             <div className={`${styles.simple_container} ${styles.template_container}`}>
-              {processed_templates.classy.map((item, ind) => (
+              {processed_templates.custom.map((item, ind) => (
                 <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>
                   <img className={styles.card_image} src={item?.image} />
                 </Card>

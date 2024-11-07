@@ -35,6 +35,7 @@ export const INVOICE_ACTION_TYPE = {
   SET_SELECTED_CONTACT_DONE: 'INVOICE_ACTION_TYPE/SET_SELECTED_CONTACT/DONE',
   GET_INVOICE_BY_CLIENT_DONE: 'INVOICE_ACTION_TYPE/GET_INVOICE_BY_CLIENT/DONE',
   SET_DATA_FOR_INVOICE: 'INVOICE_ACTION_TYPE/SET_DATA_FOR_INVOICE/DONE',
+  SET_DATA_FOR_INVOICE_LOADING: 'INVOICE_ACTION_TYPE/SET_DATA_FOR_INVOICE/START',
 }
 
 export const getAllInvoices = () => (dispatch) => {
@@ -432,9 +433,9 @@ export const sendInvoiceToClient = (uuid: string) => (dispatch) => {
       }),
     )
 }
-// TODO
+
 export const getAllDataForInvoiceView = (invoiceCode: string) => (dispatch) => {
-  console.log('HHHEH')
+  dispatch({ type: INVOICE_ACTION_TYPE.SET_DATA_FOR_INVOICE_LOADING })
   AuthenticatedAPI.get(`invoices/get_data_for_invoice/?invoice=${invoiceCode}`)
     .then((response) => {
       dispatch({

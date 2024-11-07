@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { Layout } from 'react-grid-layout'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
-import { GridLayout } from '_Home/components'
+import Moveable from 'react-moveable'
 
 import * as AllWidget from '../Widget'
 import { allWidgets } from '../Widget/constant'
@@ -22,7 +22,7 @@ interface CreateTemplateProps {
 const settingsTemp = {
   settings: {
     layout: [],
-    widgets: [],
+    widgets: [{ name: 'RichTextWidget', widgetId: 'RichTextWidget' }],
   },
 }
 
@@ -194,14 +194,7 @@ const CreateTemplate = (props: CreateTemplateProps) => {
               ></rect>
             </svg>
           </div>
-
-          <GridLayout
-            className={styles.layout}
-            layout={layout}
-            onDrop={onDrop}
-            isDroppable
-            onLayoutChange={onLayoutChange}
-          >
+          <>
             {widgets.map((widget) => {
               const widgetId = widget.widgetId.split('/')[0]
               const Component = AllWidget[widgetId]
@@ -215,7 +208,34 @@ const CreateTemplate = (props: CreateTemplateProps) => {
                 </div>
               )
             })}
-          </GridLayout>
+            <Moveable
+              target=".widget"
+              draggable={true}
+              throttleDrag={1}
+              edgeDraggable={false}
+              startDragRotate={0}
+              throttleDragRotate={0}
+              resizable={true}
+              keepRatio={false}
+              checkInput={true}
+              throttleResize={1}
+              renderDirections={['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se']}
+              rotatable={true}
+              throttleRotate={0}
+              rotationPosition={'top'}
+              onDrag={(e) => {
+                e.target.style.transform = e.transform
+              }}
+              onResize={(e) => {
+                e.target.style.width = `${e.width}px`
+                e.target.style.height = `${e.height}px`
+                e.target.style.transform = e.drag.transform
+              }}
+              onRotate={(e) => {
+                e.target.style.transform = e.drag.transform
+              }}
+            />{' '}
+          </>
         </div>
       </div>
     </SideBarLayout>

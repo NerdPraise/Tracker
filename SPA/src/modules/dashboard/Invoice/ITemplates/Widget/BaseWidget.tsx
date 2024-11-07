@@ -27,7 +27,11 @@ export const BaseWidget = ({ className, children, toolBar, widgetId, ...props }:
       {!isDragging && showToolBar && (
         <HoverCard side="top" open={showToolBar} trigger={<div></div>} item={toolBar} />
       )}
-      <div className={ClassNames(styles.BaseWidget, className)} {...props} onFocus={onFocusHandler}>
+      <div
+        className={ClassNames('widget', styles.BaseWidget, className)}
+        {...props}
+        onFocus={onFocusHandler}
+      >
         {children}
       </div>
     </>

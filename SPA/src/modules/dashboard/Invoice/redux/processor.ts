@@ -2,7 +2,7 @@ import { DefaultDict } from '_Home/common/utils'
 
 type IProcessedTemplates = {
   simple: ITemplate[]
-  classy: ITemplate[]
+  custom: ITemplate[]
   recent: ITemplate[]
 }
 

@@ -52,7 +52,7 @@ export const SideBarLayout = ({ backdrop, children, disableHide, extraContent }:
           </div>
         </div>
         <div>
-          <BellRing size={22} />
+          <BellRing size={18} />
         </div>
       </div>
       <div className={styles.sidebar_e_content}>
@@ -78,9 +78,7 @@ export const SideBarLayout = ({ backdrop, children, disableHide, extraContent }:
             )}
         </SideBar>
         {showSide && backdrop && <Backdrop onClick={closeSide} />}
-        <div className={styles.content}>
-          <div className={styles.content_children}>{children}</div>
-        </div>
+        <div className={styles.content}>{children}</div>
       </div>
       <Modal
         isVisible={showDisabledInfo}

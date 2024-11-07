@@ -1,12 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { debounce } from 'lodash'
-import { ChevronDown, CalendarCheck2, MoveLeft } from 'lucide-react'
+import { ChevronDown, CalendarCheck2, ArrowLeft } from 'lucide-react'
 import { useMemo, useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { formatDate } from 'date-fns'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
-import { Button, Card, Grid, Input, Modal, Select } from '_Home/components'
+import { Button, Card, DatePicker, Frame, Grid, Input, Modal, Select } from '_Home/components'
 import { StatusCode, htmlToPdf, isFormValid } from '_Home/common/utils'
 
 import {
@@ -15,7 +16,6 @@ import {
   sendInvoiceToClient,
   setSelectedInvoice,
 } from '../redux/actions'
-import { FrameDetails } from '../common/FrameDetails'
 import { paymentColumnDefs, a, getContext } from '../constants'
 import { getInvoiceTransactions } from '../redux/actions'
 import styles from '../Invoice.module.styl'
@@ -51,6 +51,7 @@ export const InvoiceDetail = () => {
   const [isSendToClient, setIsSendToClient] = useState<boolean>(false)
   const [isRecordPayment, setIsRecordPayment] = useState<boolean>(false)
   const [error, setError] = useState<Record<string, string>>({})
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const invoiceID = useParams().invoiceId
@@ -60,7 +61,6 @@ export const InvoiceDetail = () => {
     (formData: FormData) => dispatch(createInvoiceTransaction(formData)),
     2000,
   )
-
   useEffect(() => {
     if (!transLoading && statusCode === StatusCode.CREATED) {
       setIsRecordPayment(false)
@@ -87,6 +87,7 @@ export const InvoiceDetail = () => {
     setLoading(true)
     const formData = new FormData(reportFormRef.current)
     formData.append('invoice', selectedInvoice.uuid)
+    formData.append('payment_date', formatDate(selectedDate, 'yyyy-MM-dd'))
     debouncedRecordPayment(formData)
   }
 
@@ -111,6 +112,7 @@ export const InvoiceDetail = () => {
 
   const gridData = transactions?.map((item) => ({ ...item, client: selectedInvoice?.client }))
   const clientHasPaidAll = !Number(selectedInvoice?.payment.totalDue)
+  console.log(templateSettings?.html)
 
   return (
     <SideBarLayout disableHide>
@@ -118,7 +120,7 @@ export const InvoiceDetail = () => {
         <div className={styles.header}>
           <h2>
             <Link to="..">
-              <MoveLeft />
+              <ArrowLeft />
             </Link>
             Invoice {selectedInvoice?.name}
           </h2>
@@ -137,7 +139,7 @@ export const InvoiceDetail = () => {
         </div>
         <div className={styles.details}>
           <div className={styles.frame}>
-            <FrameDetails template={templateSettings?.html || ''} context={context} />
+            <Frame template={a || templateSettings?.html || ''} context={context} />
             {!!transactions.length && (
               <div className={styles.transactions}>
                 <Grid
@@ -150,60 +152,62 @@ export const InvoiceDetail = () => {
             )}
           </div>
           <div className={styles.client_actions}>
-            <Card className={styles.card}>
-              <div className={styles.card_paid}>
-                {!clientHasPaidAll ? (
-                  !selectedInvoice?.dateSent ? (
+            <div>
+              <Card className={styles.card}>
+                <div className={styles.card_paid}>
+                  {!clientHasPaidAll ? (
+                    !selectedInvoice?.dateSent ? (
+                      <>
+                        <p className={styles.card_paid_text}>
+                          Send invoice to client via email to get paid faster
+                        </p>
+                        <Button text="Send to Client" onClick={() => setIsSendToClient(true)} />
+                      </>
+                    ) : (
+                      <>
+                        <p className={styles.card_paid_text}>
+                          Congrats!!🎉 Your invoice is in the hands of your client
+                        </p>
+                        <Button text="Send Reminder" onClick={() => setIsSendToClient(true)} />
+                      </>
+                    )
+                  ) : selectedInvoice?.dateSent ? (
+                    <>
+                      <p className={styles.card_paid_text}>Congrats!!🎉 Your invoice is all paid for</p>
+                      <Button text="Send Receipt" onClick={() => setIsSendToClient(true)} />
+                    </>
+                  ) : (
+                    <p className={styles.card_paid_text}>
+                      Invoice is paid for, but you haven't sent the invoice
+                    </p>
+                  )}
+                </div>
+              </Card>
+              <Card className={styles.card}>
+                <div className={styles.card_paid}>
+                  {clientHasPaidAll ? (
                     <>
                       <p className={styles.card_paid_text}>
-                        Send invoice to client via email to get paid faster
+                        Wish to reverse invoice payment? Click below button.
                       </p>
-                      <Button text="Send to Client" onClick={() => setIsSendToClient(true)} />
+                      <Button text="Mark Unpaid" onClick={onHandleMarkUpaid} />
                     </>
                   ) : (
                     <>
                       <p className={styles.card_paid_text}>
-                        Congrats!!🎉 Your invoice is in the hands of your client
+                        Client already paid? Click below to record an offline payment
                       </p>
-                      <Button text="Send Reminder" onClick={() => setIsSendToClient(true)} />
+                      <Button text="Record Payment" onClick={() => setIsRecordPayment(true)} />
                     </>
-                  )
-                ) : selectedInvoice?.dateSent ? (
-                  <>
-                    <p className={styles.card_paid_text}>Congrats!!🎉 Your invoice is all paid for</p>
-                    <Button text="Send Receipt" onClick={() => setIsSendToClient(true)} />
-                  </>
-                ) : (
-                  <p className={styles.card_paid_text}>
-                    Invoice is paid for, but you haven't sent the invoice
-                  </p>
-                )}
+                  )}
+                </div>
+              </Card>
+              <div className={styles.extra_btn}>
+                <a href={`/preview/${selectedInvoice?.uuid}`} target="_blank">
+                  <Button text="Preview as Client" onClick={null} />
+                </a>
+                <Button text="Download Invoice" onClick={handleDownloadInvoice} />
               </div>
-            </Card>
-            <Card className={styles.card}>
-              <div className={styles.card_paid}>
-                {clientHasPaidAll ? (
-                  <>
-                    <p className={styles.card_paid_text}>
-                      Wish to reverse invoice payment? Click below button.
-                    </p>
-                    <Button text="Mark Unpaid" onClick={onHandleMarkUpaid} />
-                  </>
-                ) : (
-                  <>
-                    <p className={styles.card_paid_text}>
-                      Client already paid? Click below to record an offline payment
-                    </p>
-                    <Button text="Record Payment" onClick={() => setIsRecordPayment(true)} />
-                  </>
-                )}
-              </div>
-            </Card>
-            <div className={styles.extra_btn}>
-              <a href={`/preview/${selectedInvoice?.uuid}`} target="_blank">
-                <Button text="Preview as Client" onClick={null} />
-              </a>
-              <Button text="Download Invoice" onClick={handleDownloadInvoice} />
             </div>
           </div>
         </div>
@@ -238,18 +242,18 @@ export const InvoiceDetail = () => {
               <h2>Record Payment</h2>
               <div className={styles.input_group}>
                 <form ref={reportFormRef}>
-                  <Input
-                    labelName={
-                      <p className={styles.label_name}>
-                        PAYMENT DATE <span>*</span>
-                      </p>
-                    }
-                    setError={setError}
-                    error={error}
-                    type="date"
-                    name="payment_date"
-                    icon={<CalendarCheck2 width={20} />}
-                  />
+                  <div>
+                    <p className={styles.label_name}>
+                      PAYMENT DATE <span>*</span>
+                    </p>
+                    <DatePicker
+                      icon={<CalendarCheck2 width={20} />}
+                      selected={selectedDate}
+                      dateFormat="yyyy-MM-dd"
+                      onSelect={(date) => setSelectedDate(date)}
+                    />
+                  </div>
+
                   <div className={styles.select}>
                     <Select
                       options={options}

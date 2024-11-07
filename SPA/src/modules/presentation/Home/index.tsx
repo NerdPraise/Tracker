@@ -73,7 +73,7 @@ const Home = () => {
             <h1>Streamline Your Invoicing with Ease</h1>
             <p>Create, Send, and Manage Invoices in Seconds – Get Paid Faster!</p>
             <Link to={ROUTES.unauthenticatedRoutes.SIGNUP.path}>
-              <Button className={styles.hero__btn} onClick={null} text="Get started" />
+              <Button className={styles.hero__btn} onClick={null} text="Get started for free" />
             </Link>
             <div className={styles.hero__dash}>
               <img src={InvoiceDash} alt="Invoice Dashboard" loading="lazy" height={1} />

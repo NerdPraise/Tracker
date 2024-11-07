@@ -174,6 +174,9 @@ export const MenuBar = ({ editor }) => {
             {
               child: <div onClick={() => handleFontFamilyChange('cursive')}>Cursive</div>,
             },
+            {
+              child: <div onClick={() => handleFontFamilyChange('market')}>Market</div>,
+            },
           ]}
         />
         <Dropdown
