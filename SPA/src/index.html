@@ -29,6 +29,7 @@
       href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300&family=Roboto:wght@400;500;700;900&display=swap"
       rel="stylesheet"
     />
+    <link rel="preload" href="/market.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Web site created using create-react-app" />
     <style lang="stylus" scoped></style>
@@ -49,8 +50,14 @@
     </script>
     <style>
       @font-face {
-        font-family: 'markets';
-        src: url('/market.ttf') format('ttf');
+        font-family: 'market';
+        src: url('./assets/fonts/market.woff') format('woff');
+      }
+      @font-face {
+        font-family: 'rox';
+        src: url('./assets/fonts/rox.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
       }
       body {
         background: #181c1e;

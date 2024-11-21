@@ -95,16 +95,20 @@
     margin-bottom 30px
     height 50px
     h2
-      margin-bottom 15px
+      margin-bottom 12px
       display flex
       align-items center
     p
+      font-weight 300
+      font-size 14px
       span
         font-weight 200
       a
-        color #c770fe
+        color $color-purple
   .templates
     margin-top 30px
+    overflow-y auto
+    height 100vh
     .template_name
       font-size 45px
     .template_container
@@ -283,8 +287,6 @@
       padding-bottom 130px
       min-height 800px
       height 100%
-      .spacer
-        padding-bottom 130px
     .form 
       margin-left 25px
       min-width 450px
@@ -363,18 +365,18 @@
               font-size 13px
           .active_it
             display block
-          .add_item
-            color $color-purple
-            display flex
-            align-items center
-            font-size 14px
-            cursor pointer
-            justify-content center
-            margin-bottom 25px
+        .add_item
+          color $color-purple
+          display flex
+          align-items center
+          font-size 14px
+          cursor pointer
+          justify-content center
+          margin 25px 0
 
-            svg
-              stroke $color-purple
-              margin-right 7px
+          svg
+            stroke $color-purple
+            margin-right 7px
       .halves
         display flex
         justify-content space-between
@@ -450,7 +452,7 @@
     border-radius 9px
     cursor pointer
     &[data-state='active']
-      border 1px solid #c770fe
+      border 1px solid $color-purple
     .pricing
       text-align right
       .small

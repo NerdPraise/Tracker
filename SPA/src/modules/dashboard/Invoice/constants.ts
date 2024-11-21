@@ -309,36 +309,36 @@ export const a = `
               {{^invoice.items}}
               <tr>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
                 <td>
-                  <div style="height:20px; min-width:70px; background: #efeeee;"> </div>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
                 </td>
               </tr>
               {{/invoice.items}}
@@ -401,6 +401,384 @@ export const a = `
 </html>
 `
 
+export const b = `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Abel&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      main#main {
+        margin: 0;
+        padding: 0;
+        {{#theme.body}}
+        color: {{.}};
+        {{/theme.body}}
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      .invoice-container {
+        width: 100%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .invoice-container .body {
+        padding: 66px 40px 30px;
+        {{#theme.background}}
+        background-color:{{.}}
+        {{/theme.background}}
+        {{^theme.background}}
+        background-color: #fff;
+        {{/theme.background}}
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        align-items: center;
+        height: 80px;
+
+        img {
+          height: 100%;
+          max-width: 200px;
+          width: 100%;
+        }
+
+        h1 {
+          margin: 0;
+          font-size: 40px;
+          font-weight: 600;
+          {{#theme.header}}
+          color: {{.}};
+          {{/theme.header}}
+        }
+      }
+
+      .header .invoice_number {
+        font-family: "Abel", sans-serif;
+        margin: 20px 0 0;
+        font-size: 16px;
+        font-weight: 800;
+
+       {{#theme.accent}}
+        color: {{.}};
+        {{/theme.accent}}
+      }
+
+      .invoice_details {
+        display: flex;
+        flex-direction: column;
+        max-width: 200px;
+        font-size: 14px;
+        margin-bottom: 15px;
+
+        .detail_group {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          p {
+            margin: 1px 0;
+          }
+        }
+      }
+
+      .address {
+        margin-top: 25px;
+        max-width: 420px;
+        display: flex;
+        justify-content: space-between;
+        .address_group {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 15px;
+        }
+      }
+
+      .address .address_group div {
+        flex-basis:48%;
+      }
+
+      .address .address_group p {
+        font-size: 14px;
+        margin: 4px 0;
+      }
+
+      .total_due {
+        font-size: 20px;
+        margin: 18px 0;
+      }
+
+      .table-container {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: clamp(0.8125rem, 0.165rem + 0.75vw, 1rem);
+
+        tr {
+          border-bottom: 1px solid #cfcfcf;
+
+          td {
+            font-weight: 500;
+            padding: 1.3625em;
+            padding-right: 0;
+          }
+        }
+        tr:last-of-type {
+          border-bottom: none;
+        }
+        th, td {
+          padding: 0.5em;
+          text-align: right;
+          width: 17%;
+        }
+        th {
+          font-size: 12px;
+          font-weight: 400;
+          border: none;
+          border-bottom: 1.5px solid black;
+          padding-bottom: 0.5625em;
+        }
+        td:first-of-type,
+        th:first-of-type {
+          text-align: left;
+          padding-left: 0;
+          width: 45%;
+        }
+        td:last-of-type,
+        th:last-of-type {
+          text-align: right;
+          padding-right: 0;
+        }
+      }
+
+      .table-container td:last-of-type, .table-container td:nth-of-type(4), .table-container th{
+        {{#theme.accent}}
+        color: {{.}};
+        {{/theme.accent}}
+      }
+
+      .subtotal_field {
+        margin-top: 20px;
+        width: 400px;
+        margin-left: auto;
+        div {
+          border-top: 1px solid #cfcfcf;
+          display: flex;
+          justify-content: space-between;
+          p {
+            margin: 10px 0;
+            font-size: 14px;
+          }
+        }
+      }
+      .footer {
+        margin-top: 15px;
+        font-size: 14px;
+        max-width: 400px;
+        padding: 10px 0 30px;
+        font-weight: 300;
+      }
+    </style>
+  </head>
+  <main id="main">
+    <div class="invoice-container">
+      <div class="body">
+        <div class="header">
+          <h1>Invoice</h1>
+          <img src="" />
+        </div>
+        <div class="invoice_details">
+          <div class="detail_group">
+            <div>
+              <p><strong>Invoice number:</strong></p>
+            </div>
+            <div>
+            {{#invoice.inv_tag}}
+            <p>{{.}}</p>
+            {{/invoice.inv_tag}}
+            {{^invoice.inv_tag}}
+            <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+            {{/invoice.inv_tag}}
+            </div>
+          </div>
+          <div class="detail_group">
+            <div>
+              <p>Date due:</p>
+            </div>
+            <div>
+              {{#invoice.due_date}}
+              <p>{{.}}</p>
+              {{/invoice.due_date}}
+              {{^invoice.due_date}}
+              <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+              {{/invoice.due_date}}
+            </div>
+          </div>
+          {{#invoice.issue_date}}
+          <div class="detail_group">
+            <div>
+              <p>Date issued:</p>
+            </div>
+            <div>
+              <p>{{.}}</p>
+            </div>
+          </div>
+          {{/invoice.issue_date}}
+        </div>
+        <div class="address">
+          <div class="address_group">
+            <p><strong>Pay to</strong></p>
+            <div>
+              <p>
+                {{ user.name }}
+                {{^user.name }}
+                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                {{/user.name }}
+              </p>
+              <p>
+                {{user.address}}
+                {{^user.address }}
+                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                {{/user.address }}
+              </p>
+              <p>
+                {{user.bank}}
+                {{^user.bank }}
+                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                {{/user.bank }}
+                </>p
+              <p>
+                {{user.account_name}}
+                {{^user.account_name }}
+                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                {{/user.account_name }}
+                </p>
+              <p>
+                {{user.account_number}}
+                {{^user.account_number }}
+                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                {{/user.account_number }}
+              </p>
+            </div>
+          </div>
+          <div class="address_group">
+            <p><strong>Billed to</strong></p>
+            {{#client}}
+            <p>{{.}}</p>
+            {{/client }}
+
+            {{^client }}
+            <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+            {{/client }}
+          </div>
+        </div>
+
+        <div class="total_due">
+          <p>
+            <strong>
+              {{invoice.total}} {{invoice.currency}} due {{invoice.naturalised_due_date}}
+            </strong>
+          </p>
+        </div>
+        <div style="min-height: 300px">
+          <table class="table-container">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Rate</th>
+                <th>Quantity/Hours</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+          <tbody>
+              {{#invoice.items}}
+              <tr>
+                <td>{{description}}</td>
+                <td>{{rate}}</td>
+                <td>{{qty}}</td>
+                <td>{{subtotal}}</td>
+                <td></td>
+              </tr>
+              {{/invoice.items}}
+              {{^invoice.items}}
+              <tr>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
+                </td>
+                <td>
+                  <div style="height:20px; min-width:70px; background: #efeeee; mix-blend-mode: darken;"> </div>
+                </td>
+              </tr>
+              {{/invoice.items}}
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{invoice.currency}} {{invoice.total}}</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        <div class="subtotal_field">
+          <div>
+            <p>Subtotal</p>
+            <p>{{invoice.currency}} {{invoice.total}}</p>
+          </div>
+         
+          <div>
+            <p>Total</p>
+            <p>{{invoice.currency}} {{invoice.total}}</p>
+          </div>
+          <div>
+            <p><strong>Amount Due</strong></p>
+            <p><strong>{{invoice.currency}} {{invoice.total_due}}</strong></p>
+          </div>
+        </div>
+        <div class="footer">
+          {{invoice.description}}
+          {{^invoice.description}}
+          <p> Extra information........ </p>
+          <p> 🙌🏾Thank you </p>
+          {{/invoice.description}}
+        
+        </div>
+      </div>
+    </div>
+  </main>
+</html>
+`
+
 export const paymentColumnDefs = [
   {
     headerName: '',
@@ -455,6 +833,7 @@ export const getContext = (invoice: IInvoice, user: IUser, invoiceSettings: IInv
     accent: invoice?.template?.settings.theme?.accent,
     header: invoice?.template?.settings.theme?.header,
     body: invoice?.template?.settings.theme?.body,
+    background: invoice?.template?.settings.theme?.background,
   },
   invoice: {
     description: invoice?.description,
@@ -519,4 +898,4 @@ export const contactColumnDefs = [
   },
 ]
 
-// console.log(JSON.stringify(a))
+// console.log(JSON.stringify(b))

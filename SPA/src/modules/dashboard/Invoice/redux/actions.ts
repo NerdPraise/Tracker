@@ -1,6 +1,6 @@
 import { ColorResult } from '@uiw/color-convert'
 
-import { camelize, snakify } from '_Home/common/utils'
+import { camelize, parseErrorFromResponse, snakify } from '_Home/common/utils'
 import { API, AuthenticatedAPI } from '_Home/store/api'
 
 export const INVOICE_ACTION_TYPE = {
@@ -36,6 +36,10 @@ export const INVOICE_ACTION_TYPE = {
   GET_INVOICE_BY_CLIENT_DONE: 'INVOICE_ACTION_TYPE/GET_INVOICE_BY_CLIENT/DONE',
   SET_DATA_FOR_INVOICE: 'INVOICE_ACTION_TYPE/SET_DATA_FOR_INVOICE/DONE',
   SET_DATA_FOR_INVOICE_LOADING: 'INVOICE_ACTION_TYPE/SET_DATA_FOR_INVOICE/START',
+  CREATE_CUSTOM_TEMPLATE_DONE: 'INVOICE_ACTION_TYPE/CREATE_CUSTOM_TEMPLATE/DONE',
+  CUSTOM_TEMPLATE_SAVE: 'INVOICE_ACTION_TYPE/CUSTOM_TEMPLATE_SAVE/START', // save to state
+  AUTO_SAVE_CUSTOM_TEMPLATE_START: 'INVOICE_ACTION_TYPE/SAVE_CUSTOM_TEMPLATE/START', // save to db
+  AUTO_SAVE_CUSTOM_TEMPLATE_DONE: 'INVOICE_ACTION_TYPE/SAVE_CUSTOM_TEMPLATE/DONE',
 }
 
 export const getAllInvoices = () => (dispatch) => {
@@ -470,7 +474,6 @@ export const getClientDetails = () => (dispatch, getState) => {
   const clientId = getState().invoices.client.selectedClient.id
   AuthenticatedAPI.get(`invoices/filter_invoice_by_client/${clientId}`)
     .then((response) => {
-      console.log(response.data)
       dispatch({
         type: INVOICE_ACTION_TYPE.GET_INVOICE_BY_CLIENT_DONE,
         payload: {
@@ -485,6 +488,69 @@ export const getClientDetails = () => (dispatch, getState) => {
         payload: {
           data: [],
           errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const createCustomTemplates = () => (dispatch) => {
+  return AuthenticatedAPI.post(`invoice/templates/custom/`)
+    .then((response) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.CREATE_CUSTOM_TEMPLATE_DONE,
+        payload: {
+          statusCode: response.status,
+          data: camelize(response.data),
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: INVOICE_ACTION_TYPE.CREATE_CUSTOM_TEMPLATE_DONE,
+        payload: {
+          data: [],
+          errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const updateTemplateSettings = (data: Partial<Settings>) => (dispatch) => {
+  return dispatch({
+    payload: { data },
+    type: INVOICE_ACTION_TYPE.CUSTOM_TEMPLATE_SAVE,
+  })
+}
+
+// TODO: Combine both save and create actions
+export const saveCustomTemplates = () => (dispatch, getState) => {
+  const { selectedTemplate } = getState().invoices.template
+
+  dispatch({
+    type: INVOICE_ACTION_TYPE.AUTO_SAVE_CUSTOM_TEMPLATE_DONE,
+  })
+  return AuthenticatedAPI.put(
+    `invoice/templates/custom/`,
+    JSON.stringify({ template: selectedTemplate }),
+  )
+    .then((response) => {
+      console.log(response.data)
+      dispatch({
+        type: INVOICE_ACTION_TYPE.AUTO_SAVE_CUSTOM_TEMPLATE_DONE,
+        payload: {
+          statusCode: response.status,
+          data: camelize(response.data),
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: INVOICE_ACTION_TYPE.AUTO_SAVE_CUSTOM_TEMPLATE_DONE,
+        payload: {
+          data: [],
+          errorMessage: err.response
+            ? parseErrorFromResponse(err.response.data)
+            : 'Something terrible occurred',
         },
       }),
     )

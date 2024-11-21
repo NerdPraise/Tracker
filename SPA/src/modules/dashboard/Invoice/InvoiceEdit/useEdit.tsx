@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { ColorResult } from '@uiw/color-convert'
 
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
@@ -10,6 +10,9 @@ export const useEdit = () => {
   const {
     invoice: { selectedInvoice },
     client: { clients },
+    invoiceSettings: {
+      settings: { defaultCurrency },
+    },
   } = useAppSelector((state) => state.invoices)
   const dispatch = useAppDispatch()
   const [displayColor, setDisplayColor] = useState<string>('')
@@ -41,7 +44,11 @@ export const useEdit = () => {
   const defaultOption = options.find(
     (item) => item.label === selectedInvoice?.client?.name && item.value === selectedInvoice?.client?.id,
   )
-  const defaultCurrencyOption = currencyOptions.find((item) => item.label === selectedInvoice?.currency)
+  const defaultCurrencyOption = useMemo(
+    () => currencyOptions.find((item) => item.label === (selectedInvoice?.currency || defaultCurrency)),
+    [selectedInvoice, defaultCurrency],
+  )
+  console.log(defaultCurrencyOption, selectedInvoice?.currency)
 
   return {
     invoiceItems,

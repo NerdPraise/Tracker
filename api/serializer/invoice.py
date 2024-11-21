@@ -56,7 +56,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 class InvoiceTemplateSerializer(serializers.ModelSerializer):
     settings = serializers.JSONField()
     image = serializers.ImageField(read_only=True)
-    invoice = serializers.SlugRelatedField(queryset=Invoice.objects, slug_field="uuid", write_only=True)
+    invoice = serializers.SlugRelatedField(queryset=Invoice.objects, slug_field="uuid", write_only=True, required=False)
 
     class Meta:
         model = InvoiceTemplate

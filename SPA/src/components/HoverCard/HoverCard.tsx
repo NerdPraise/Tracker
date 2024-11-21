@@ -10,9 +10,17 @@ interface HoverCardProps extends HoverCardRadix.HoverCardProps {
   className?: string
   open?: boolean
   side?: 'top' | 'right' | 'bottom' | 'left'
+  sideOffset?: number
 }
 
-export const HoverCard = ({ trigger, item, className, open, side = 'bottom' }: HoverCardProps) => (
+export const HoverCard = ({
+  trigger,
+  item,
+  className,
+  open,
+  side = 'bottom',
+  sideOffset,
+}: HoverCardProps) => (
   <HoverCardRadix.Root open={open} openDelay={0}>
     <HoverCardRadix.Trigger asChild>{trigger}</HoverCardRadix.Trigger>
 
@@ -20,6 +28,7 @@ export const HoverCard = ({ trigger, item, className, open, side = 'bottom' }: H
       <HoverCardRadix.Content
         className={ClassNames(styles.Content, className)}
         side={side}
+        sideOffset={sideOffset}
         onInteractOutside={(e) => e.preventDefault()}
       >
         {item}

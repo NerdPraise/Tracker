@@ -81,11 +81,14 @@ class InvoiceSettings(models.Model):
     def __str__(self) -> str:
         return self.user.email
 
+    class Meta:
+        verbose_name_plural = "Invoice Settings"
+
 
 class InvoiceTemplate(models.Model):
     class CategoryChoices(models.TextChoices):
         SIMPLE = "SIMPLE"
-        CLASSY = "CLASSY"
+        CUSTOM = "CUSTOM"
 
     image = models.ImageField(upload_to="invoice_temp", null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)

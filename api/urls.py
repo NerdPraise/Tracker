@@ -54,7 +54,12 @@ urlpatterns = [
     path(
         "invoice/templates/",
         invoice_views.InvoiceTemplateListUpdateAPIView.as_view(),
-        name="invoice-template-list-create",
+        name="invoice-template-list-update",
+    ),
+    path(
+        "invoice/templates/custom/",
+        invoice_views.InvoiceCustomTemplateAPIView.as_view(),
+        name="invoice-template-custom-create",
     ),
     path(
         "invoice/templates/<str:pk>",

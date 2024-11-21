@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import ClassNames from 'classnames'
 import {
   Bold,
@@ -14,10 +14,13 @@ import {
   AlignLeft,
   AlignCenter,
   Palette,
+  Lock,
+  LockKeyholeOpen,
 } from 'lucide-react'
 import Circle from '@uiw/react-color-circle'
+import { type Editor } from '@tiptap/react'
 
-import { Dropdown, HoverCard, SliderT } from '_Home/components'
+import { Dropdown, Popover, SliderT } from '_Home/components'
 import { capitalise } from '_Home/common/utils'
 
 import styles from './RichTextWidget.module.styl'
@@ -27,7 +30,14 @@ const fontAlignment = {
   center: <AlignCenter />,
   right: <AlignRight />,
 }
-export const MenuBar = ({ editor }) => {
+
+interface RichTextToolBarProps {
+  editor: Editor
+  isEditMode: boolean
+  setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const RichTextToolBar = memo(({ editor, isEditMode, setIsEditMode }: RichTextToolBarProps) => {
   const [fontFamily, setFontFamily] = useState<string>('Inter')
   const [fontAlign, setFontAlign] = useState<string>('left')
   const [fontSize, setFontSize] = useState<number>(16)
@@ -232,7 +242,7 @@ export const MenuBar = ({ editor }) => {
           ]}
         />
         <div style={{ width: 55, marginLeft: 5 }}>
-          <HoverCard
+          <Popover
             side="top"
             trigger={<div>{fontSize} px</div>}
             item={
@@ -253,8 +263,8 @@ export const MenuBar = ({ editor }) => {
                   thumbClassName={styles.Thumb}
                   rangeClassName={styles.Range}
                   onValueChange={(e) => handleFontSize(e)}
-                  defaultValue={15}
-                  max={84}
+                  defaultValue={24}
+                  max={180}
                   min={8}
                   step={2}
                   value={fontSize}
@@ -263,7 +273,7 @@ export const MenuBar = ({ editor }) => {
             }
           />
         </div>
-        <HoverCard
+        <Popover
           side="top"
           className={styles.color_list}
           trigger={
@@ -311,6 +321,9 @@ export const MenuBar = ({ editor }) => {
           }
         />
       </div>
+      <div className={styles.font_variant} onClick={() => setIsEditMode(!isEditMode)}>
+        {isEditMode ? <LockKeyholeOpen /> : <Lock />}
+      </div>
     </div>
   )
-}
+})

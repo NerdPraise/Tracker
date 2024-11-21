@@ -1,0 +1,64 @@
+:local(.MenuBar)
+  display flex
+  position relative
+  > div
+    display flex
+    align-items center
+    margin-right 7px
+    padding 5px 10px
+    background $content-sidebar-gray
+    border-radius 3px
+
+  .font_bar
+    > div
+      padding 3px 6px
+      cursor pointer
+      margin-right 1px
+      
+      &:last-of-type
+        padding-left 12px
+
+      &:hover, &.active
+        background #ffffff2b
+  .font_variant
+    background $content-sidebar-gray
+    margin-right 7px
+    > div, svg 
+      cursor pointer
+
+
+:local(.SliderT)
+  .Thumb
+    height 12px
+    width 12px
+    cursor pointer
+    background $content-sidebar-gray
+  .Range
+    background $content-sidebar-gray
+
+:local(.dropdown)
+  background $content-sidebar-gray
+  min-width 200px
+  > div
+    padding-left 0
+    width 100%
+    > div
+      width 100%
+      padding 0 10px
+      display flex
+      align-items center
+      height 40px
+      cursor pointer
+      &:hover
+        background $content-gray-dark
+
+:local(.align_dropdown)
+  background $content-sidebar-gray
+  display flex
+  > div
+    padding 10px
+    height 40px
+    cursor pointer
+    &:hover
+        background $content-gray-dark
+

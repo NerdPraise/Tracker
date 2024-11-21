@@ -44,8 +44,20 @@ declare global {
     color?: string
   }
 
+  type Widget = {
+    name: string
+    widgetId: string
+    layout: Layout
+    content?: React.ReactNode
+    color?: string
+    img?: string
+    background?: string
+    frame?: string
+    opacity?: number
+  }
+
   type ITemplate = {
-    settings: { html: string; theme: IThemes }
+    settings: { html: string; theme: IThemes } | Settings
     category: string
     user: string | null
     uuid: string
@@ -101,6 +113,13 @@ declare global {
     image?: string
   }
 
+  type Layout = {
+    width?: number
+    height?: number
+    left: number
+    top: number
+  }
+
   const enum IStatusCode {
     'SUCCESS' = 200,
     'CREATED' = 201,
@@ -110,6 +129,14 @@ declare global {
     'FORBIDDEN' = 403,
     'NOT_FOUND' = 404,
     'NOT_ACCEPTABLE' = 406,
+  }
+
+  type Settings = {
+    widgets: Widget[]
+    theme: {
+      background?: string | HsvaColor
+      bgImg?: string
+    }
   }
 
   type IInvoiceItems = {

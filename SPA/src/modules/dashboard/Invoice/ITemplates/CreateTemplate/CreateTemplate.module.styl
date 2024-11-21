@@ -1,10 +1,18 @@
 :local(.CreateTemplate)
+  height 100vh
+  overflow-y auto
   display flex
   position relative
+  &::-webkit-scrollbar 
+    display none
+  -ms-overflow-style none
+  scrollbar-width none
   .panel
     width 220px
     height 750px
     display flex
+    position sticky
+    top 0
     &_menu
       height 100%
       width 55px
@@ -41,6 +49,9 @@
         margin-top 20px
         .widget_lone
           margin-bottom 20px
+          display flex
+          align-items center
+          flex-direction column
           cursor pointer
           .widget_logo
             width 70px
@@ -56,7 +67,25 @@
           width 120px
         > div p
           margin 15px 0
-          font-size 12px
+          font-size 11px
+        .add_image
+          background #f6f6f6
+          border-radius 5px
+          display flex
+          align-items center
+          padding 0 10px
+          margin-top 9px
+          height 30px
+          p 
+            cursor pointer
+            display flex
+            align-items center
+            font-size 14px
+            color $color-purple-mid
+            margin 0
+          input 
+            display none
+            visibility hidden
         
   .template
     position relative
@@ -68,10 +97,11 @@
       position relative
       color black
       height 100%
-      .widget_container
-        border 1px solid transparent
-        &:hover
-          border 1px dashed #83aee6
+    .widget_container
+      border 1px solid transparent
+      height 100%
+      &:hover
+        border 1px dashed #83aee6
 
   .widget
     &:hover

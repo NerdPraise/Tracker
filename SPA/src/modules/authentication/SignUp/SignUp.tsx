@@ -41,7 +41,6 @@ export const SignUp = () => {
     },
     onError: (err) => {
       setIsGoogleLogin(false)
-      console.log(err)
     },
   })
 

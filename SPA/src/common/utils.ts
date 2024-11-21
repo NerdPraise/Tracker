@@ -1,5 +1,7 @@
 import { camelCase, snakeCase, isArray, transform, isObject } from 'lodash'
 import html2pdf from 'html2pdf.js/dist/html2pdf.bundle.min'
+import { isTextSelection } from '@tiptap/core'
+import { Editor } from '@tiptap/react'
 
 export const getFirstTwoLetters = (word: string) => {
   if (typeof word !== 'string') {
@@ -173,4 +175,22 @@ export const formatDate = (date: string) => {
   return new Intl.DateTimeFormat('en-GB', {
     dateStyle: 'long',
   }).format(new Date(date))
+}
+
+export const isTextSelected = ({ editor }: { editor: Editor }) => {
+  const {
+    state: {
+      doc,
+      selection,
+      selection: { empty, from, to },
+    },
+  } = editor
+
+  const isEmptyTextBlock = !doc.textBetween(from, to).length && isTextSelection(selection)
+
+  if (empty || isEmptyTextBlock || !editor.isEditable) {
+    return false
+  }
+
+  return true
 }

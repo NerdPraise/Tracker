@@ -192,7 +192,6 @@ const TourWrapper = () => {
   const navigate = useNavigate()
 
   const handleJoyrideCallback = (data: CallBackProps) => {
-    console.log(data)
     const {
       index,
       action,

@@ -1,17 +1,16 @@
 import ClassNames from 'classnames'
 import { useEffect, useState } from 'react'
-import Wheel from '@uiw/react-color-wheel'
 import Circle from '@uiw/react-color-circle'
-import { HsvaColor, hsvaToHex } from '@uiw/color-convert'
-import { Component, Ellipsis, LayoutPanelLeft, Palette, X } from 'lucide-react'
+import { Component, Ellipsis, LayoutPanelLeft, Palette, Plus } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import type { Layout } from 'react-grid-layout'
 
+import { Spacer } from '_Home/components'
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
-import Moveable from 'react-moveable'
+import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 
-import * as AllWidget from '../Widget'
 import { allWidgets } from '../Widget/constant'
+import { createCustomTemplates, updateTemplateSettings } from '../../redux/actions'
+import WidgetGridLayout from '../Widget/WidgetGridLayout/WidgetGridLayout'
 
 import styles from './CreateTemplate.module.styl'
 
@@ -19,55 +18,96 @@ interface CreateTemplateProps {
   onLayoutChange?: (...e: any) => void
 }
 
-const settingsTemp = {
-  settings: {
-    layout: [],
-    widgets: [{ name: 'RichTextWidget', widgetId: 'RichTextWidget' }],
+const newSettingsTemp: Settings = {
+  theme: {
+    background: '#673ab7',
   },
+  widgets: [
+    {
+      name: 'RichTextWidget',
+      widgetId: 'RichTextWidget_0',
+      layout: {
+        left: 367,
+        top: 13,
+        height: 88,
+        width: 323,
+      },
+      content: '<p><span style="font-size: 72px; font-family: rox">INVOICE</span></p>',
+    },
+    {
+      name: 'RichTextWidget',
+      widgetId: 'RichTextWidget_1',
+      layout: {
+        left: 25,
+        top: 156,
+        height: 93,
+        width: 285,
+      },
+    },
+    {
+      name: 'RichTextWidget',
+      widgetId: 'RichTextWidget_2',
+      layout: {
+        left: 325,
+        top: 161,
+        height: 53,
+        width: 375,
+      },
+    },
+    {
+      name: 'RichTextWidget',
+      widgetId: 'RichTextWidget_3',
+      layout: {
+        left: 45,
+        top: 819,
+        height: 73,
+        width: 275,
+      },
+    },
+  ],
 }
 
 const CreateTemplate = (props: CreateTemplateProps) => {
   const [panelKey, setPanelKey] = useState<string>('')
-  const [backgroundColor, setBackgroundColor] = useState<HsvaColor>({ a: 1, h: 0, s: 0, v: 100 })
-  const [foregroundColor, setForegroundColor] = useState<HsvaColor>({ h: 3, s: 0, v: 0, a: 1 })
-  const [settings, setSettings] = useState<{ layout: Layout[]; widgets: { [key: string]: string }[] }>(
-    settingsTemp.settings,
-  )
-  const { layout, widgets } = settings
+  // const [settings, setSettings] = useState<Settings>(newSettingsTemp)
+  const { selectedTemplate } = useAppSelector((state) => state.invoices.template)
+  const dispatch = useAppDispatch()
+  const dispatchedCreateCustomTemplates = () => dispatch(createCustomTemplates())
+  const { category, settings } = selectedTemplate || {}
+
+  useEffect(() => {
+    if (selectedTemplate && selectedTemplate?.category === 'custom') {
+      // getTemplates
+    } else {
+      dispatchedCreateCustomTemplates()
+    }
+  }, [])
+
+  const setSettings = (settings: Partial<Settings>) => {
+    dispatch(updateTemplateSettings(settings))
+  }
 
   const onMenuChange = (value: string) => {
     setPanelKey(value === panelKey ? '' : value)
   }
-  const onDrop = (layout, layoutItem, _event) => {
-    const widget = AllWidget[_event.dataTransfer.getData('text')]
-    const { minWeight, defaults, defaultWidth, widgetId, minHeight } = widget
-    const updatedWidgetId = `${widgetId}/${layout.length}`
-    const newLayoutItem = {
-      ...layoutItem,
-      isResizable: true,
-      minW: minWeight,
-      w: defaultWidth,
-      h: minHeight,
-      i: updatedWidgetId,
-    }
-    setSettings((prev) => ({
-      layout: [...prev.layout, newLayoutItem],
-      widgets: [...prev.widgets, { widgetId: updatedWidgetId, ...defaults }],
-    }))
+
+  const applySettings = (newSettings: Partial<Settings>) => {
+    setSettings({ ...settings, ...newSettings })
   }
 
-  const removeLayoutItem = (widgetId: string) => {
-    const newLayout = settings.layout.filter((item) => item.i !== widgetId)
-    console.log(newLayout, widgetId, settings.layout)
-    setSettings((prev) => ({ ...prev, layout: newLayout }))
-  }
-  console.log(settings.layout)
-  const onLayoutChange = (currentLayout: Layout[]) => {
-    setSettings((prev) => ({ ...prev, layout: currentLayout }))
+  const handleImageChange = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        applySettings({ theme: { background: '#fff', bgImg: reader.result as string } })
+      }
+      reader.readAsDataURL(file)
+    }
   }
 
   return (
-    <SideBarLayout>
+    <SideBarLayout disableHide>
       <div className={styles.CreateTemplate}>
         <div className={styles.panel}>
           <div className={styles.panel_menu}>
@@ -102,7 +142,7 @@ const CreateTemplate = (props: CreateTemplateProps) => {
                 {panelKey === 'color' && (
                   <div className={styles.colors}>
                     <div className={styles.colors_bg}>
-                      <p>INVOICE COLOR</p>
+                      <p>INVOICE BACKGROUND</p>
                       <Circle
                         colors={[
                           '#fff',
@@ -114,7 +154,7 @@ const CreateTemplate = (props: CreateTemplateProps) => {
                           '#3f51b5',
                           '#2196f3',
                         ]}
-                        color={backgroundColor}
+                        color={settings.theme.background}
                         className={styles.circle_color}
                         pointProps={{
                           style: {
@@ -126,26 +166,18 @@ const CreateTemplate = (props: CreateTemplateProps) => {
                             width: 25,
                           },
                         }}
-                        onChange={(color) => setBackgroundColor(color.hsva)}
+                        onChange={(color) => applySettings({ theme: { background: color.hex } })}
                       />
-                      {/* <Wheel
-                    className={styles.color_wheel}
-                    width={150}
-                    height={150}
-                    color={backgroundColor}
-                    onChange={(color) => setBackgroundColor(color.hsva)}
-                  /> */}
                     </div>
-
-                    <div className="foreground">
-                      <p>Foreground</p>
-                      <Wheel
-                        className={styles.color_wheel}
-                        width={150}
-                        height={150}
-                        color={foregroundColor}
-                        onChange={(color) => setForegroundColor(color.hsva)}
-                      />
+                    <div>OR</div>
+                    <div className={styles.add_image}>
+                      <label htmlFor="bg">
+                        <input type="file" accept="image/*" id="bg" onChange={handleImageChange} />
+                        <p>
+                          <Plus size={15} />
+                          Add Image
+                        </p>
+                      </label>
                     </div>
                   </div>
                 )}
@@ -154,11 +186,13 @@ const CreateTemplate = (props: CreateTemplateProps) => {
                     {allWidgets.map((widget) => (
                       <div
                         key={widget.name}
-                        id={widget.name}
-                        className={ClassNames(widget.name, styles.widget_lone)}
+                        id={widget.id}
+                        className={ClassNames(widget.id, styles.widget_lone)}
                         draggable={true}
                         unselectable="on"
-                        onDragStart={(e) => e.dataTransfer.setData('text/plain', widget.name)}
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', widget.id)
+                        }}
                       >
                         <div className={styles.widget_logo}>
                           <img src={widget.logo} alt={widget.name} />
@@ -172,71 +206,12 @@ const CreateTemplate = (props: CreateTemplateProps) => {
             )}
           </AnimatePresence>
         </div>
-        <div className={styles.template}>
-          <div className={styles.background_s}>
-            <svg
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                left: '0px',
-                top: '0px',
-                overflow: 'visible',
-              }}
-            >
-              <rect
-                id="background"
-                x="0"
-                y="0"
-                width="700"
-                height="100%"
-                style={{ fill: hsvaToHex(backgroundColor) || 'rgb(255, 255, 255)' }}
-              ></rect>
-            </svg>
+        {settings && (
+          <div style={{ height: '100%' }}>
+            <WidgetGridLayout settings={settings as Settings} setSettings={applySettings} />
+            <Spacer />
           </div>
-          <>
-            {widgets.map((widget) => {
-              const widgetId = widget.widgetId.split('/')[0]
-              const Component = AllWidget[widgetId]
-
-              return (
-                <div key={widget.widgetId} className={ClassNames(styles.widget_container)}>
-                  <Component settings={{ ...widget }} />
-                  <div className={styles.remove} onClick={() => removeLayoutItem(widget.widgetId)}>
-                    <X />
-                  </div>
-                </div>
-              )
-            })}
-            <Moveable
-              target=".widget"
-              draggable={true}
-              throttleDrag={1}
-              edgeDraggable={false}
-              startDragRotate={0}
-              throttleDragRotate={0}
-              resizable={true}
-              keepRatio={false}
-              checkInput={true}
-              throttleResize={1}
-              renderDirections={['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se']}
-              rotatable={true}
-              throttleRotate={0}
-              rotationPosition={'top'}
-              onDrag={(e) => {
-                e.target.style.transform = e.transform
-              }}
-              onResize={(e) => {
-                e.target.style.width = `${e.width}px`
-                e.target.style.height = `${e.height}px`
-                e.target.style.transform = e.drag.transform
-              }}
-              onRotate={(e) => {
-                e.target.style.transform = e.drag.transform
-              }}
-            />{' '}
-          </>
-        </div>
+        )}
       </div>
     </SideBarLayout>
   )

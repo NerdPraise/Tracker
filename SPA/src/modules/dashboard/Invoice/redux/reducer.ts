@@ -290,4 +290,18 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
       state.invoice.preview = action.payload.data.invoice
       state.invoiceSettings.settings = action.payload.data.invoiceSettings
     })
+    .addCase(INVOICE_ACTION_TYPE.CREATE_CUSTOM_TEMPLATE_DONE, (state, action) => {
+      state.template.selectedTemplate = action.payload.data
+      state.template.statusCode = action.payload.statusCode
+    })
+    .addCase(INVOICE_ACTION_TYPE.CUSTOM_TEMPLATE_SAVE, (state, action) => {
+      state.template.selectedTemplate.settings = action.payload.data
+      state.template.statusCode = action.payload.statusCode
+    })
+    .addCase(INVOICE_ACTION_TYPE.AUTO_SAVE_CUSTOM_TEMPLATE_START, (state, action) => {
+      state.template.loading = true
+    })
+    .addCase(INVOICE_ACTION_TYPE.AUTO_SAVE_CUSTOM_TEMPLATE_DONE, (state, action) => {
+      state.template.loading = false
+    })
 })

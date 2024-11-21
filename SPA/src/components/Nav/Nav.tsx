@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Sun, Moon, Menu, X } from 'lucide-react'
 import { motion, useScroll, useTransform } from 'framer-motion'
@@ -56,7 +56,7 @@ export const Nav = () => {
         <div className={`${styles.nav_menu} ${isMenuOpen ? styles.show : styles.hide}`}>
           <ul>
             {NavMenu.map((item) => (
-              <>
+              <React.Fragment key={item.path}>
                 <li>
                   {location.startsWith(`#${item.path}`) && (
                     <motion.li layoutId="active-menu" className={styles.active_menu} />
@@ -65,7 +65,7 @@ export const Nav = () => {
                     {item.name}
                   </Link>
                 </li>
-              </>
+              </React.Fragment>
             ))}
           </ul>
         </div>

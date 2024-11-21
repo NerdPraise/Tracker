@@ -10,19 +10,13 @@ import { Content, List, Root, Trigger } from '@radix-ui/react-tabs'
 import { ColorResult } from '@uiw/color-convert'
 
 import { Button, Card, Input, Select, TextArea, Dropdown, DatePicker } from '_Home/components'
-import { convertStringToColor } from '_Home/common/utils'
+import { capitalise, convertStringToColor } from '_Home/common/utils'
 import { currencyOptions } from '_Home/constants'
 
 import styles from '../Invoice.module.styl'
 import { saveInvoice, updateInvoice, saveTemplate } from '../redux/actions'
 import { useAppDispatch } from '_Home/common/hooks'
 
-const defaultColorSection = {
-  Body: 'body',
-  Header: 'header',
-  Accent: 'accent',
-  'Footer Background': 'footerBg',
-}
 export const EditForm = forwardRef(function EditForm(
   {
     invoiceItems,
@@ -75,7 +69,6 @@ export const EditForm = forwardRef(function EditForm(
     dispatchedUpdateInvoice(data)
     setCurrentInvoiceItem(0)
   }
-  console.log(selectedInvoice)
 
   return (
     <div className={styles.form}>
@@ -206,49 +199,57 @@ export const EditForm = forwardRef(function EditForm(
             <Content value="templates" className={styles.tab_content}>
               <div className="input_group">
                 <div className={styles.halves}>
-                  {Object.entries(defaultColorSection).map(([k, v], index) => (
-                    <Input
-                      key={index}
-                      className={styles.color_input}
-                      icon={
-                        <Dropdown
-                          className={styles.formDropdown}
-                          open={displayColor === v}
-                          modal={false}
-                          trigger={
-                            <div
-                              style={{ width: '100%', height: '100%' }}
-                              onClick={() => onClickInputColor(v)}
-                            />
-                          }
-                          items={[
-                            {
-                              child: (
-                                <Wheel
-                                  color={
-                                    templateSettings?.theme?.[`${displayColor}__hsva`] ||
-                                    hexToHsva(templateSettings?.theme?.[displayColor] || '#fff')
-                                  }
-                                  onChange={(color) => onHandleColorChange(color, displayColor, 'theme')}
-                                />
-                              ),
-                            },
-                          ]}
-                        />
-                      }
-                      iconStyle={{
-                        backgroundColor: templateSettings?.theme[v],
-                        cursor: 'pointer',
-                      }}
-                      type="text"
-                      name={v}
-                      labelName={`${k} Color`}
-                      value={templateSettings?.theme[v]}
-                      onChange={(e) =>
-                        onHandleColorChange(colorFunc(convertStringToColor(e.target.value)), v, 'theme')
-                      }
-                    />
-                  ))}
+                  {Object.entries(templateSettings?.theme || {})
+                    .filter(([k, v]) => !k.includes('__hsva'))
+                    .map(([k, v], index) => (
+                      <Input
+                        key={index}
+                        className={styles.color_input}
+                        icon={
+                          <Dropdown
+                            className={styles.formDropdown}
+                            open={displayColor === k}
+                            modal={false}
+                            trigger={
+                              <div
+                                style={{ width: '100%', height: '100%' }}
+                                onClick={() => onClickInputColor(k)}
+                              />
+                            }
+                            items={[
+                              {
+                                child: (
+                                  <Wheel
+                                    color={
+                                      templateSettings?.theme?.[`${displayColor}__hsva`] ||
+                                      hexToHsva(templateSettings?.theme?.[displayColor] || '#fff')
+                                    }
+                                    onChange={(color) =>
+                                      onHandleColorChange(color, displayColor, 'theme')
+                                    }
+                                  />
+                                ),
+                              },
+                            ]}
+                          />
+                        }
+                        iconStyle={{
+                          backgroundColor: v,
+                          cursor: 'pointer',
+                        }}
+                        type="text"
+                        name={k}
+                        labelName={`${capitalise(k)} Color`}
+                        value={v}
+                        onChange={(e) =>
+                          onHandleColorChange(
+                            colorFunc(convertStringToColor(e.target.value)),
+                            k,
+                            'theme',
+                          )
+                        }
+                      />
+                    ))}
                 </div>
               </div>
             </Content>

@@ -71,7 +71,7 @@ class InvoiceViewSet(viewsets.ModelViewSet):
         code = request.query_params.get("invoice")
         imc = InvoiceMessageCode.objects.filter(code=code)
         if not imc.exists():
-            return ""
+            return Response("Invoice doesn't exist", status=400)
         imc = imc[0]
         user = imc.invoice.user
         settings = InvoiceSettings.objects.filter(user=user)[0]
@@ -183,7 +183,7 @@ class TransactionAPIView(views.APIView):
         responses={200: TransactionSerializer(many=True)},
     )
     def get(self, request):
-        uuid = request.GET.get("id").get("invoice")
+        uuid = request.GET.get("invoice")
         try:
             invoice = Invoice.objects.get(uuid=uuid)
         except Invoice.DoesNotExist:
@@ -234,3 +234,30 @@ class InvoiceSettingsAPIView(generics.ListAPIView, generics.UpdateAPIView):
 
     def get_queryset(self):
         return InvoiceSettings.objects.filter(user=self.request.user)
+
+
+class InvoiceCustomTemplateAPIView(views.APIView):
+    serializer_class = InvoiceTemplateSerializer
+    queryset = InvoiceTemplate.objects.all()
+
+    def post(self, request):
+        user = request.user
+
+        initial = {
+            "settings": {"theme": {"background": "#fff", "bgImg": None}, "widgets": []},
+            "user": user,
+            "category": InvoiceTemplate.CategoryChoices.CUSTOM,
+        }
+        template = InvoiceTemplate.objects.create(**initial)
+        return Response(self.serializer_class(template).data, status=200)
+
+    def put(self, request):
+        template = request.data.get("template")
+        try:
+            from_db_temp = InvoiceTemplate.objects.filter(uuid=template["uuid"])[0]
+        except (AttributeError, IndexError):
+            return Response({"template": "Template doesn't exist"})
+        from_db_temp.settings = template.get("settings", from_db_temp.settings)
+        from_db_temp.save()
+
+        return Response(self.serializer_class(from_db_temp).data, status=200)

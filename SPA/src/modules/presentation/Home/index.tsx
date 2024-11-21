@@ -95,6 +95,7 @@ const Home = () => {
               title={item.title}
               className={styles.features__card}
               headerClassname={styles.card__header}
+              key={item.title}
             >
               <div>{item.description}</div>
             </Card>
@@ -113,6 +114,7 @@ const Home = () => {
               title={item.title}
               className={styles.features__card}
               headerClassname={styles.card__header}
+              key={item.title}
             >
               <div>{item.description}</div>
             </Card>
@@ -127,6 +129,7 @@ const Home = () => {
         <div className={styles.pricing_cards}>
           {plans.map((item, index) => (
             <Card
+              key={item.name}
               className={styles.pricing_card}
               childrenClassName={styles.children}
               onMouseMove={(e) => handleMouseMove(e, index)}
@@ -145,7 +148,7 @@ const Home = () => {
                 className={styles.pricing_btn}
               />
               {item.offers.slice(0, 4).map((offer) => (
-                <div className={ClassNames('small', styles.list_item)}>
+                <div className={ClassNames('small', styles.list_item)} key={offer}>
                   <CircleCheckBig />
                   {offer}
                 </div>

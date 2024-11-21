@@ -11,14 +11,27 @@ interface DropdownProps extends DropdownMenu.DropdownMenuProps {
   open?: boolean
   modal?: boolean
   side?: 'top' | 'right' | 'bottom' | 'left'
+  sideOffset?: number
 }
 
-export const Dropdown = ({ trigger, items, className, open, modal, side = 'bottom' }: DropdownProps) => (
+export const Dropdown = ({
+  trigger,
+  items,
+  className,
+  open,
+  modal,
+  sideOffset = 10,
+  side = 'bottom',
+}: DropdownProps) => (
   <DropdownMenu.Root open={open} modal={modal}>
     <DropdownMenu.Trigger asChild>{trigger}</DropdownMenu.Trigger>
 
     <DropdownMenu.Portal>
-      <DropdownMenu.Content className={ClassNames(styles.Content, className)} side={side}>
+      <DropdownMenu.Content
+        className={ClassNames(styles.Content, className)}
+        side={side}
+        sideOffset={sideOffset}
+      >
         {items.map((item, index) => (
           <React.Fragment key={`${item.label} ${index}`}>
             {item?.label && <DropdownMenu.Label>{item?.label}</DropdownMenu.Label>}

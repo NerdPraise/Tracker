@@ -70,41 +70,82 @@ export const Overview = () => {
         </div>
 
         <div className={styles.expenses_overview}>
-          <Card className={styles.card} title="This Month">
-            <div className={styles.card_content}>
-              {!loading &&
-                !errorMessage &&
-                transactions?.map((item) => (
-                  <div className={styles.transactions_list} key={item.uuid}>
-                    <div>
-                      <div className={styles.moneybag} style={{ background: generateColor('c8') }}>
-                        {/* {getFirstTwoLetters(item.description)} */}
-                        {dateRenderer(item.createdAt, 'DD')}
+          <div className={styles.half_mini}>
+            <Card className={styles.mini_card} title="This Month">
+              <div className={styles.card_content}>
+                {!loading &&
+                  !errorMessage &&
+                  transactions?.map((item) => (
+                    <div className={styles.transactions_list} key={item.uuid}>
+                      <div>
+                        <div className={styles.moneybag} style={{ background: generateColor('c8') }}>
+                          {/* {getFirstTwoLetters(item.description)} */}
+                          {dateRenderer(item.createdAt, 'DD')}
+                        </div>
+                        <div className={styles.description}>
+                          <div>{item.description}</div>
+                          <div>{dateRenderer(item.createdAt)}</div>
+                        </div>
                       </div>
-                      <div className={styles.description}>
-                        <div>{item.description}</div>
-                        <div>{dateRenderer(item.createdAt)}</div>
-                      </div>
-                    </div>
-                    <div className={item.source}>₦{item.amount}</div>
-                  </div>
-                ))}
-              {!loading && errorMessage && <div className={styles.error_message}> {errorMessage} </div>}
-              {loading &&
-                !errorMessage &&
-                Array(5)
-                  .fill(0)
-                  .map((_, i) => (
-                    <div className={styles.loading_div_two} key={i}>
-                      <div className={styles.ge_placeholder}>
-                        <Placeholder width="20%" height="50px" />
-                        <Placeholder width="78%" height="50px" />
-                      </div>
-                      <Placeholder width="100px" height="50px" />
+                      <div className={item.source}>₦{item.amount}</div>
                     </div>
                   ))}
-            </div>
-          </Card>
+                {!loading && errorMessage && (
+                  <div className={styles.error_message}> {errorMessage} </div>
+                )}
+                {loading &&
+                  !errorMessage &&
+                  Array(5)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div className={styles.loading_div_two} key={i}>
+                        <div className={styles.ge_placeholder}>
+                          <Placeholder width="20%" height="50px" />
+                          <Placeholder width="78%" height="50px" />
+                        </div>
+                        <Placeholder width="100px" height="50px" />
+                      </div>
+                    ))}
+              </div>
+            </Card>
+            <Card className={styles.mini_card} title="This Month">
+              <div className={styles.card_content}>
+                {!loading &&
+                  !errorMessage &&
+                  transactions?.map((item) => (
+                    <div className={styles.transactions_list} key={item.uuid}>
+                      <div>
+                        <div className={styles.moneybag} style={{ background: generateColor('c8') }}>
+                          {/* {getFirstTwoLetters(item.description)} */}
+                          {dateRenderer(item.createdAt, 'DD')}
+                        </div>
+                        <div className={styles.description}>
+                          <div>{item.description}</div>
+                          <div>{dateRenderer(item.createdAt)}</div>
+                        </div>
+                      </div>
+                      <div className={item.source}>₦{item.amount}</div>
+                    </div>
+                  ))}
+                {!loading && errorMessage && (
+                  <div className={styles.error_message}> {errorMessage} </div>
+                )}
+                {loading &&
+                  !errorMessage &&
+                  Array(5)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div className={styles.loading_div_two} key={i}>
+                        <div className={styles.ge_placeholder}>
+                          <Placeholder width="20%" height="50px" />
+                          <Placeholder width="78%" height="50px" />
+                        </div>
+                        <Placeholder width="100px" height="50px" />
+                      </div>
+                    ))}
+              </div>
+            </Card>
+          </div>
 
           <Card className={`${styles.card} ${styles.report_card}`} title="Reports">
             {loading && (

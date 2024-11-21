@@ -13,169 +13,12 @@
       rel="stylesheet"
     />
     <style>
-      main#main {
-        margin: 0;
-        padding: 0;
-        {{#theme.body}}
-        color: {{.}};
-        {{/theme.body}}
+      @font-face {
+        font-family: 'market';
+        src: url('./market.woff') format('woff');
       }
-
-      * {
-        box-sizing: border-box;
-      }
-      .invoice-container {
-        width: 100%;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .invoice-container .body {
-        padding: 66px 80px 30px;
-        background-color: #fff;
-      }
-
-      .header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        align-items: center;
-        height: 80px;
-        img {
-          height: 100%;
-          max-width: 200px;
-          width: 100%;
-        }
-      }
-
-      .header h1 {
-        margin: 0;
-        font-size: 19px;
-        font-weight: 800;
-        {{#theme.header}}
-        color: {{.}};
-        {{/theme.header}}
-      }
-
-      .header .invoice_number {
-        font-family: "Abel", sans-serif;
-        margin: 20px 0 0;
-        font-size: 16px;
-        font-weight: 800;
-
-       {{#theme.accent}}
-        color: {{.}};
-        {{/theme.accent}}
-      }
-
-      .invoice_details {
-        display: flex;
-        flex-direction: column;
-        max-width: 200px;
-        font-size: 14px;
-        margin-bottom: 15px;
-
-        .detail_group {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          p {
-            margin: 1px 0;
-          }
-        }
-      }
-
-      .address {
-        max-width: 450px;
-        display: flex;
-        justify-content: space-between;
-        .address_group {
-          display: flex;
-          flex-direction: column;
-        }
-      }
-
-      .address .address_group div {
-        flex-basis:48%;
-      }
-
-      .address .address_group p {
-        font-size: 14px;
-        margin: 1px 0;
-      }
-
-      .total_due {
-        font-size: 20px;
-      }
-
-      .table-container {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: clamp(0.8125rem, 0.165rem + 0.75vw, 1rem);
-
-        tr {
-          border-bottom: 1px solid #cfcfcf;
-          td {
-            font-weight: 300;
-            padding: 1.3625em;
-            padding-right: 0;
-          }
-        }
-        tr:last-of-type {
-          border-bottom: none;
-          td {
-            font-size: 17px;
-            font-weight: 500;
-          }
-        }
-        th, td {
-          padding: 0.5em;
-          text-align: right;
-          width: 17%;
-        }
-        th {
-          font-size: 12px;
-          font-weight: 400;
-          border: none;
-          border-bottom: 1.5px solid black;
-          padding-bottom: 0.5625em;
-        }
-        td:first-of-type,
-        th:first-of-type {
-          text-align: left;
-          padding-left: 0;
-          width: 45%;
-        }
-        td:last-of-type,
-        th:last-of-type {
-          text-align: right;
-          padding-right: 0;
-        }
-      }
-
-      .table-container td:last-of-type, .table-container td:nth-of-type(4), .table-container th{
-        {{#theme.accent}}
-        color: {{.}};
-        {{/theme.accent}}
-      }
-
-      .subtotal_field {
-        margin-top: 20px;
-        width: 550px;
-        margin-left: auto;
-        div {
-          border-top: 1px solid #cfcfcf;
-          display: flex;
-          justify-content: space-between;
-          p {
-            margin: 10px 0;
-            font-size: 16px;
-          }
-        }
-      }
-      .footer {
-        max-width: 500px;
-        padding: 10px 0 30px;
-        font-weight: 300;
+      main {
+        font-family: 'market';
       }
     </style>
   </head>
@@ -296,4 +139,47 @@
       </div>
     </div>
   </main>
+
+  <table style="min-width: 75px">
+    <colgroup>
+      <col />
+      <col />
+      <col />
+    </colgroup>
+    <tbody>
+      <tr>
+        <th colspan="1" rowspan="1">
+          <p><br class="ProseMirror-trailingBreak" /></p>
+        </th>
+        <th colspan="1" rowspan="1">
+          <p><br class="ProseMirror-trailingBreak" /></p>
+        </th>
+        <th colspan="1" rowspan="1">
+          <p><br class="ProseMirror-trailingBreak" /></p>
+        </th>
+      </tr>
+      <tr>
+        <td colspan="1" rowspan="1">
+          <p><br class="ProseMirror-trailingBreak" /></p>
+        </td>
+        <td colspan="1" rowspan="1">
+          <p><br class="ProseMirror-trailingBreak" /></p>
+        </td>
+        <td colspan="1" rowspan="1">
+          <p><br class="ProseMirror-trailingBreak" /></p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="1" rowspan="1">
+          <p><br class="ProseMirror-trailingBreak" /></p>
+        </td>
+        <td colspan="1" rowspan="1">
+          <p><br class="ProseMirror-trailingBreak" /></p>
+        </td>
+        <td colspan="1" rowspan="1">
+          <p><br class="ProseMirror-trailingBreak" /></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </html>

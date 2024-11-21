@@ -1,24 +1,36 @@
 :local(.BaseWidget)
   height 100%
- 
-  
-:local(.ImageWidget)
-  .img_cont
+  .remove
+    height 18px 
+    width 15px
     cursor pointer
-    padding 5px
-    margin 4px
-    border-radius 2px
-    background #83aee64a
-    border 1px dashed #83aee6
-    width fit-content
-    .logo 
-      background #528cd8
-      border-radius 50%
-      height 53px
-      width 53px
-      display flex
-      justify-content center
-      align-items center
+    position absolute
+    top -7px
+    right -28px
+    z-index 99
+    transition .5s
+    &:hover
+      border-radius 4px
+      background #83aee6
+
+      svg
+        stroke #fff
+
+
+:local(.moveable)
+    :global(.moveable-control)
+      width 7px !important
+      height 7px !important
+      margin-top -3px !important
+      margin-left -3px !important
+      border 2px solid #83aee6 !important
+      z-index 90
+    :global(.moveable-line)
+      background none !important
+      border 0.11px dashed #83aee6
+      height 0.5px !important
+      z-index 90 !important
+
 
 :local(.dropdown)
   background $content-sidebar-gray

@@ -1,21 +1,14 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useMatch, useNavigate, useParams, Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import { ColorResult } from '@uiw/color-convert'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
-import { Frame } from '_Home/components'
+import { Frame, Spacer } from '_Home/components'
 import { StatusCode } from '_Home/common/utils'
 
-import { getContext, a } from '../constants'
-import {
-  saveInvoice,
-  setSelectedInvoice,
-  updateInvoice,
-  saveTemplate,
-  setSelectedTemplate,
-} from '../redux/actions'
+import { getContext, a, b } from '../constants'
+import { setSelectedInvoice, setSelectedTemplate } from '../redux/actions'
 import { EditForm } from './EditForm'
 import { useEdit } from './useEdit'
 
@@ -23,7 +16,7 @@ import styles from '../Invoice.module.styl'
 
 export const InvoiceEdit = () => {
   const {
-    invoice: { invoices, selectedInvoice, statusCode, loading, hasTemplateChanged },
+    invoice: { invoices, selectedInvoice, statusCode, loading },
     invoiceSettings: { settings },
     client: { clients },
   } = useAppSelector((state) => state.invoices)
@@ -84,7 +77,7 @@ export const InvoiceEdit = () => {
         <div className={styles.details}>
           <div className={styles.frame}>
             <Frame template={templateSettings?.html || ''} context={context} />
-            <div className={styles.spacer}></div>
+            <Spacer />
           </div>
 
           <EditForm

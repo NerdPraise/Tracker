@@ -1,0 +1,92 @@
+:local(.TableWidget)
+  display block
+  position relative
+  .editor
+    > div:focus-visible
+      outline none
+
+  table 
+    border-collapse collapse
+    margin 0
+    overflow hidden
+    table-layout fixed
+    width 100%
+
+    td,
+    th 
+      border 1px solid #3d25141f
+      box-sizing border-box
+      min-width 1em
+      padding 6px 8px
+      position relative
+      vertical-align top
+
+      > * 
+        margin-bottom 0
+    
+    th 
+      font-weight bold
+      text-align left
+    
+    .selectedCell:after 
+      background #3d251414
+      content ""
+      left 0 
+      right 0
+      top 0
+      bottom 0
+      pointer-events none
+      position absolute
+      z-index 2
+
+    .column-resize-handle 
+      background-color var(--purple)
+      bottom -2px
+      pointer-events none
+      position absolute
+      right -2px
+      top 0
+      width 4px
+
+  .tableWrapper 
+    margin 1.5rem 0
+    overflow-x auto
+
+:local(.TableWidgetToolBar)
+  display flex
+  > div
+    display flex
+    align-items center
+    margin-right 7px
+    padding 5px 10px
+    background $content-sidebar-gray
+    gap 0 6px 
+    border-radius 3px
+
+  
+  .locked
+    background $content-sidebar-gray
+    margin-right 7px
+    > div, svg 
+      cursor pointer
+  .trigger
+    margin-left 10px
+
+
+:local(.dropdown)
+  background $content-sidebar-gray
+  position relative
+  > div 
+    padding-left 0
+    width 100%
+    > div
+      width 100%
+      padding 0 10px
+      display flex
+      align-items center
+      height 40px
+      cursor pointer
+      &:hover
+        background $content-gray-dark
+      svg
+        margin-right 10px

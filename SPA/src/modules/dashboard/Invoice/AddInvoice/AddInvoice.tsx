@@ -28,6 +28,7 @@ export const AddInvoice = () => {
     setShowModal(false)
     navigate(`./${selectedTemplate.uuid}`)
   }
+  // console.log(processed_templates)
 
   return (
     <SideBarLayout disableHide>
@@ -35,7 +36,8 @@ export const AddInvoice = () => {
         <div className={styles.header}>
           <h2>Create your invoice</h2>
           <p>
-            Select from our specially curated templates <span>OR</span>
+            Select from our specially curated templates&nbsp;
+            <span>OR</span>
             &nbsp;<Link to="../templates/create">Create your template</Link>
           </p>
         </div>
@@ -45,6 +47,7 @@ export const AddInvoice = () => {
             <div className={`${styles.template_container}`}>
               {processed_templates.recent.map((item, ind) => (
                 <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>
+                  {item.category.toLowerCase() === 'custom' && 'Custom'}
                   <img className={styles.card_image} src={item?.image} />
                 </Card>
               ))}
@@ -69,6 +72,7 @@ export const AddInvoice = () => {
                   <img className={styles.card_image} src={item?.image} />
                 </Card>
               ))}
+              {!processed_templates.custom.length && 'FEATURE - INCOMING DRAG & DROP'}
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Plus, MoveLeft } from 'lucide-react'
+import { Plus, ArrowLeft } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { CellClickedEvent } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
@@ -46,7 +46,7 @@ const Contacts = () => {
         <div className={styles.header}>
           <h2>
             <Link to="..">
-              <MoveLeft />
+              <ArrowLeft />
             </Link>
             Contacts
           </h2>

@@ -1,3 +1,5 @@
 export { ImageWidget } from './ImageWidget/ImageWidget'
+export { TableWidget } from './TableWidget/TableWidget'
 export { TextWidget } from './TextWidget/TextWidget'
+export { DividerWidget } from './DividerWidget/DividerWidget'
 export { RichTextWidget } from './RichTextWidget/RichTextWidget'
