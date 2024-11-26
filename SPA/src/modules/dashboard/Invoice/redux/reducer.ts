@@ -68,7 +68,7 @@ const initialState: InvoiceState = {
   },
   template: {
     loading: false,
-    selectedTemplate: null,
+    selectedTemplate: {},
     templates: [],
   },
   transaction: {
@@ -295,7 +295,10 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
       state.template.statusCode = action.payload.statusCode
     })
     .addCase(INVOICE_ACTION_TYPE.CUSTOM_TEMPLATE_SAVE, (state, action) => {
-      state.template.selectedTemplate.settings = action.payload.data
+      state.template.selectedTemplate = {
+        ...state.template.selectedTemplate,
+        ...action.payload.data,
+      }
       state.template.statusCode = action.payload.statusCode
     })
     .addCase(INVOICE_ACTION_TYPE.AUTO_SAVE_CUSTOM_TEMPLATE_START, (state, action) => {

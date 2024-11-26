@@ -1,36 +1,13 @@
 import { Navigate, Outlet, useLocation } from 'react-router'
-import { useEffect, useState, useRef } from 'react'
 
-import { getUserAction } from '_Home/modules/authentication/Login/redux/actions'
 import { ROUTES } from '_Home/routing/routes'
-import { useAppSelector, useAppDispatch } from '_Home/common/hooks'
+import { useUser } from '_Home/common/hooks'
 
 export const AuthenticatedWrapper = () => {
-  const [hasCheckedLoginStatus, setHasCheckedLoginStatus] = useState<boolean>(false)
-  const didMount = useRef<boolean>(false)
+  const { isLoggedIn, isCheckingLoginStatus, hasCheckedLoginStatus } = useUser()
   const location = useLocation()
-  const dispatch = useAppDispatch()
-  const { isLoggedIn, isCheckingLoginStatus } = useAppSelector((state) => state.user)
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      dispatch(getUserAction())
-    } else {
-      setHasCheckedLoginStatus(true)
-    }
-  }, [hasCheckedLoginStatus])
-
-  useEffect(() => {
-    if (didMount.current) {
-      if (!isCheckingLoginStatus) {
-        setHasCheckedLoginStatus(true)
-      }
-    } else {
-      didMount.current = true
-    }
-  })
-
-  if (isCheckingLoginStatus) {
+  if (isCheckingLoginStatus || !hasCheckedLoginStatus) {
     return null
   }
 

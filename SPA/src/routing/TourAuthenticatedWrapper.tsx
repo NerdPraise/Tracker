@@ -63,7 +63,7 @@ const tourSteps = [
             <TypewriterText text="Hi, welcome to useInvoice. Here is a quick tour around your new favorite product! We will have you up in no time" />
           </div>
           <div style={{ width: '250px' }}>
-            <img src={TourSVG} />
+            <img id="full" src={TourSVG} />
           </div>
         </div>
       </div>

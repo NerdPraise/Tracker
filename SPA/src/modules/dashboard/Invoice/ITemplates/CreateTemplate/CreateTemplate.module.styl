@@ -63,6 +63,9 @@
         flex-direction column
         align-items center
         width 100%
+        .template_trigger
+          margin-left 0
+
         .circle_color
           width 120px
         > div p
@@ -86,7 +89,18 @@
           input 
             display none
             visibility hidden
-        
+  .toolbar
+    height 800px
+    display flex
+    position sticky
+    top 0
+    margin-left 20px
+    align-items center
+    justify-content center
+    flex-direction column
+    gap 10px
+    > div
+      cursor pointer
   .template
     position relative
     width 700px

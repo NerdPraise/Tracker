@@ -258,6 +258,9 @@ class InvoiceCustomTemplateAPIView(views.APIView):
         except (AttributeError, IndexError):
             return Response({"template": "Template doesn't exist"})
         from_db_temp.settings = template.get("settings", from_db_temp.settings)
+        if template.get("custom_image"):
+            from_db_temp.custom_image = template.get("custom_image").encode("utf8")
+
         from_db_temp.save()
 
         return Response(self.serializer_class(from_db_temp).data, status=200)

@@ -17,6 +17,7 @@ DATABASES = {
 }
 
 AWS_REGION_NAME = config("AWS_SES_REGION_NAME")
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_HOST = "live.smtp.mailtrap.io"
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")

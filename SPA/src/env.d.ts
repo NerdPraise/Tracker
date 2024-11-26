@@ -61,7 +61,8 @@ declare global {
     category: string
     user: string | null
     uuid: string
-    image: string
+    image: string | null
+    customImage: string | null
   }
 
   type IClient = {

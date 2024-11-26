@@ -1,11 +1,12 @@
 import { Quote } from 'lucide-react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { Popover } from '_Home/components'
 
 import { BaseWidget } from '../BaseWidget'
 import styles from './DividerWidget.module.styl'
 import { ColorPicker } from '../components/ColorPicker'
+import { LayoutContext } from '../../context'
 
 interface DividerProps {
   name?: string
@@ -16,6 +17,7 @@ interface DividerProps {
 
 const defaults = {
   width: 150,
+  color: '#000',
 }
 
 const DividerToolbar = ({
@@ -43,9 +45,21 @@ const DividerToolbar = ({
 }
 
 export const DividerWidget = (props: DividerProps) => {
-  const [color, setColor] = useState<string>('#d2d5d9')
+  const { setSettings, settings } = useContext(LayoutContext)
   const moveableProps = {
     renderDirections: ['w', 'e'],
+  }
+
+  const handleColorChange = (color: string) => {
+    const updatedWidgetSettings = settings.widgets.map((item) =>
+      item.widgetId === props.widgetId
+        ? {
+            ...item,
+            color: color,
+          }
+        : item,
+    )
+    setSettings(updatedWidgetSettings)
   }
 
   return (
@@ -53,9 +67,9 @@ export const DividerWidget = (props: DividerProps) => {
       {...props}
       defaults={defaults}
       moveableProps={moveableProps}
-      toolBar={<DividerToolbar color={color} setColor={setColor} />}
+      toolBar={<DividerToolbar color={props.color || defaults.color} setColor={handleColorChange} />}
     >
-      <div className={styles.DividerWidget} style={{ color: color, background: color }} />
+      <div className={styles.DividerWidget} style={{ background: props.color || defaults.color }} />
     </BaseWidget>
   )
 }

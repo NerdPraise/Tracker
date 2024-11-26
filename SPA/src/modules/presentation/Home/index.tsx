@@ -76,7 +76,7 @@ const Home = () => {
               <Button className={styles.hero__btn} onClick={null} text="Get started for free" />
             </Link>
             <div className={styles.hero__dash}>
-              <img src={InvoiceDash} alt="Invoice Dashboard" loading="lazy" height={1} />
+              <img id="full" src={InvoiceDash} alt="Invoice Dashboard" loading="lazy" height={1} />
               <div className={styles.hero_fade}></div>
             </div>
           </div>

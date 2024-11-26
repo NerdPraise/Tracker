@@ -24,7 +24,9 @@ const extensions = [
   TipBold,
   TextStyle,
   TipUnderline,
-  TextAlign,
+  TextAlign.configure({
+    types: ['heading', 'paragraph'],
+  }),
   Superscript,
   Subscript,
   Placeholder.configure({
@@ -61,17 +63,8 @@ interface RichTextWidgetProps {
 export const RichTextWidget = (props: RichTextWidgetProps) => {
   const { setSettings, settings } = useContext(LayoutContext)
   const [isEditMode, setIsEditMode] = useState<boolean>(true)
-  const editor = useEditor({
-    extensions,
-    content: props.content,
-    shouldRerenderOnTransaction: false,
-    editable: isEditMode,
-  })
-  const moveableProps = {
-    checkInput: isEditMode,
-  }
 
-  const handleSave = () => {
+  const handleSave = ({ editor }) => {
     const updatedWidgetSettings = settings.widgets.map((item) =>
       item.widgetId === props.widgetId
         ? {
@@ -81,6 +74,18 @@ export const RichTextWidget = (props: RichTextWidgetProps) => {
         : item,
     )
     setSettings(updatedWidgetSettings)
+  }
+
+  const editor = useEditor({
+    extensions,
+    content: props.content,
+    shouldRerenderOnTransaction: false,
+    editable: isEditMode,
+    onUpdate: handleSave,
+  })
+
+  const moveableProps = {
+    checkInput: isEditMode,
   }
 
   return (
@@ -94,7 +99,6 @@ export const RichTextWidget = (props: RichTextWidgetProps) => {
       <div className={styles.RichTextWidget}>
         <EditorContent editor={editor} className={styles.content} />
       </div>
-      <button onClick={handleSave}></button>
     </BaseWidget>
   )
 }

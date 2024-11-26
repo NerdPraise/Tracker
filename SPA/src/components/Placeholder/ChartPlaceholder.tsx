@@ -14,7 +14,7 @@ interface ChartPlaceholderProps extends PlaceholderProps {
 export const ChartPlaceholder = ({ className, width, height }: ChartPlaceholderProps) => {
   return (
     <div className={ClassNames(className, styles.ChartPlaceholder)}>
-      <img src={ChartImg} alt="chart-placeholder" />
+      <img id="full" src={ChartImg} alt="chart-placeholder" />
       <Placeholder width={width} height={height} />
     </div>
   )

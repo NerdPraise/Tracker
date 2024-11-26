@@ -18,7 +18,6 @@ export const useAutoSave = ({ data, callback, interval }: useAutoSaveProps) => {
       initialRender.current = false
     } else {
       automatedSaveInterval = setInterval(() => {
-        console.log('in here')
         setAutoSave(true)
       }, interval)
     }
@@ -31,7 +30,8 @@ export const useAutoSave = ({ data, callback, interval }: useAutoSaveProps) => {
   useEffect(() => {
     if (autoSave && !isEqual(initialData.current, data) && !initialRender.current) {
       setAutoSave(false)
-      callback()
+      console.log(typeof callback)
+      callback(data)
       initialData.current = data
     }
   }, [autoSave, data])

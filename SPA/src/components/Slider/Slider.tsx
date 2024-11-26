@@ -39,7 +39,7 @@ export const Slider = ({ className }: { className?: string }) => {
           key={index}
         >
           <div className={styles.image}>
-            <img src={item.image} alt="hero" />
+            <img id="full" src={item.image} alt="hero" />
           </div>
           <div className={styles.slider_item_details}>
             <div className={styles.slider_item_title}>{item?.title}</div>

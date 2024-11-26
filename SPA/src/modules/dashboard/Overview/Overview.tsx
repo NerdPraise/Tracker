@@ -95,7 +95,7 @@ export const Overview = () => {
                 )}
                 {loading &&
                   !errorMessage &&
-                  Array(5)
+                  Array(3)
                     .fill(0)
                     .map((_, i) => (
                       <div className={styles.loading_div_two} key={i}>
@@ -132,7 +132,7 @@ export const Overview = () => {
                 )}
                 {loading &&
                   !errorMessage &&
-                  Array(5)
+                  Array(3)
                     .fill(0)
                     .map((_, i) => (
                       <div className={styles.loading_div_two} key={i}>
@@ -148,22 +148,22 @@ export const Overview = () => {
           </div>
 
           <Card className={`${styles.card} ${styles.report_card}`} title="Reports">
-            {loading && (
+            {true && (
               <div className={styles.category_list}>
                 <div className={styles.ge_placeholder}>
                   <Placeholder width="20%" height="50px" />
                   <Placeholder width="78%" height="50px" />
+                  <ChartPlaceholder width="100%" height="150px" className={styles.chart} />
                 </div>
-                <ChartPlaceholder width="100%" height="150px" className={styles.chart} />
               </div>
             )}
-            {!loading && (
+            {false && (
               <div className={styles.category_data}>
                 <div className={styles.category_list}>
                   {Object.entries(categoryList).map(([k, v]) => (
                     <div key={k} className={styles.category_item}>
                       <div className={styles.logo} style={{ background: generateColor('c8') }}>
-                        <img src={MoneyBagIcon} alt="" />
+                        <img id="full" src={MoneyBagIcon} alt="" />
                       </div>
                       <div className={styles.category_description}>
                         <div className={styles.category_money}>

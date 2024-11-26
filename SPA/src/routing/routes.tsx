@@ -51,15 +51,21 @@ export const ROUTES: routes = {
       menu: false,
       permission: '',
     },
-    ADD_TEMPLATE: { path: '/invoice/add/:templateId', key: 'ADD_TEMPLATE', menu: false, permission: '' },
-    EDIT_INVOICE: { path: '/invoice/edit/:invoiceId', key: 'EDIT_INVOICE', menu: false, permission: '' },
-    INVOICE_DETAIL: { path: '/invoice/:invoiceId', key: 'INVOICE_DETAIL', menu: false, permission: '' },
-    CREATE_TEMPLATE: {
-      path: '/invoice/templates/create',
-      key: 'CREATE_TEMPLATE',
+    CREATE_CUSTOM_TEMPLATE: {
+      path: '/invoice/custom',
+      key: 'CREATE_CUSTOM_TEMPLATE',
       menu: false,
       permission: '',
     },
+    CUSTOM_TEMPLATE: {
+      path: '/invoice/custom/:templateId',
+      key: 'CUSTOM_TEMPLATE',
+      menu: false,
+      permission: '',
+    },
+    ADD_TEMPLATE: { path: '/invoice/add/:templateId', key: 'ADD_TEMPLATE', menu: false, permission: '' },
+    EDIT_INVOICE: { path: '/invoice/edit/:invoiceId', key: 'EDIT_INVOICE', menu: false, permission: '' },
+    INVOICE_DETAIL: { path: '/invoice/:invoiceId', key: 'INVOICE_DETAIL', menu: false, permission: '' },
   },
   unauthenticatedRoutes: {
     HOME: { path: '/', key: 'HOME' },

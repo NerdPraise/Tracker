@@ -135,7 +135,7 @@ export const TableWidgetToolBar = memo(
               {
                 child: (
                   <div onClick={() => editor.chain().focus().setCellAttribute('border', 'none').run()}>
-                    Remove all borders
+                    Remove Cell borders
                   </div>
                 ),
               },

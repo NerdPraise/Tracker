@@ -69,7 +69,7 @@ export const ImageWidget = (props: ImageWidgetProps) => {
           item.widgetId === props.widgetId
             ? {
                 ...item,
-                img: reader.result,
+                img: reader.result as string,
               }
             : item,
         )
@@ -131,16 +131,17 @@ export const ImageWidget = (props: ImageWidgetProps) => {
     }
     setShape(value)
   }
+  const { img, ...rest } = props
 
   return (
     <BaseWidget
-      {...props}
+      {...rest}
       layout={props.layout}
       defaults={defaults}
       moveableProps={moveableProps}
       toolBar={
         <ImageToolbar
-          img={props?.img}
+          img={img}
           handleClear={clearImage}
           setShape={selectShape}
           setAttribute={setAttribute}
@@ -172,7 +173,7 @@ export const ImageWidget = (props: ImageWidgetProps) => {
             ></path>
           </svg>
         </div>
-        {!props?.img?.length && (
+        {!img?.length && (
           <div className={styles.img_cont}>
             <div className={styles.logo}>
               <label htmlFor={props.widgetId}>
@@ -188,7 +189,7 @@ export const ImageWidget = (props: ImageWidgetProps) => {
             </div>
           </div>
         )}
-        {!!props?.img?.length && (
+        {!!img?.length && (
           <div
             style={{
               width: '100%',
@@ -197,6 +198,7 @@ export const ImageWidget = (props: ImageWidgetProps) => {
             }}
           >
             <img
+              id="full"
               src={props.img}
               style={{ maxWidth: '100%', maxHeight: '100%', opacity: props?.opacity }}
             />

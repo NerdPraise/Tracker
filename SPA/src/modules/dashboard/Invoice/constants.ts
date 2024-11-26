@@ -252,7 +252,7 @@ export const a = `
       <div class="body">
         <div class="header">
         {{#logo}}
-        <img src="{{.}}" alt="Your Logo" />
+        <img id="full" src="{{.}}" alt="Your Logo" />
         {{/logo}}
           <h1>INVOICE</h1>
         </div>
@@ -596,7 +596,7 @@ export const b = `
       <div class="body">
         <div class="header">
           <h1>Invoice</h1>
-          <img src="" />
+          <img id="full" src="" />
         </div>
         <div class="invoice_details">
           <div class="detail_group">

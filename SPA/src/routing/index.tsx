@@ -101,7 +101,11 @@ const BaseRouter = [
                 element: <InvoiceDetail />,
               },
               {
-                path: ROUTES.authenticatedRoutes.CREATE_TEMPLATE.path,
+                path: ROUTES.authenticatedRoutes.CUSTOM_TEMPLATE.path,
+                element: <CreateTemplate />,
+              },
+              {
+                path: ROUTES.authenticatedRoutes.CREATE_CUSTOM_TEMPLATE.path,
                 element: <CreateTemplate />,
               },
             ],

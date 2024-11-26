@@ -2,32 +2,34 @@ import ClassNames from 'classnames'
 import { Fragment, useContext, useMemo, useRef } from 'react'
 
 import { useAutoSave } from '_Home/common/hooks/useAutoSave'
-import { useAppDispatch } from '_Home/common/hooks'
 import * as AllWidget from '..'
 
-import styles from './WidgetGridLayout.module.styl'
 import { DragContext, DragStore, LayoutContext } from '../../context'
 import { allWidgets } from '../constant'
-import { saveCustomTemplates } from '../../../redux/actions'
+import styles from './WidgetGridLayout.module.styl'
 
 interface WidgetGridLayoutProps {
   settings: Settings | null
-  setSettings: (settings: Partial<Settings>) => void
+  applySettings: (settings: Partial<Settings>) => void
+  containerRef: React.MutableRefObject<HTMLDivElement>
+  handleSave: (e: string) => void
 }
 
-const WidgetGridLayout = ({ settings, setSettings }: WidgetGridLayoutProps) => {
-  const containerRef = useRef<HTMLDivElement>(null)
+const WidgetGridLayout = ({
+  settings,
+  applySettings,
+  containerRef,
+  handleSave,
+}: WidgetGridLayoutProps) => {
   const rectRef = useRef<SVGRectElement | SVGImageElement>(null)
   const { setActiveWidget } = useContext(DragContext)
-  const dispatch = useAppDispatch()
-  const dispatchSaveTemplateToDB = (data) => dispatch(saveCustomTemplates())
-  useAutoSave({ data: settings, interval: 3000, callback: dispatchSaveTemplateToDB })
+  useAutoSave({ data: settings, interval: 3000, callback: handleSave })
 
   const onHandleDragOver = (e) => {
     e.preventDefault()
   }
-  const saveSettings = (updatedWidgets: Settings['widgets']) => {
-    setSettings({ ...settings, widgets: updatedWidgets })
+  const saveWidgetChanges = (updatedWidgets: Settings['widgets']) => {
+    applySettings({ widgets: updatedWidgets })
   }
 
   const renderInvoiceBg = useMemo(() => {
@@ -60,7 +62,7 @@ const WidgetGridLayout = ({ settings, setSettings }: WidgetGridLayoutProps) => {
     const positionX = clientX - left
     const positionY = clientY - top
     const widgetId = `${newWidgetId}_${settings.widgets.length}`
-    setSettings({
+    applySettings({
       ...settings,
       widgets: [
         ...settings?.widgets,
@@ -85,7 +87,7 @@ const WidgetGridLayout = ({ settings, setSettings }: WidgetGridLayoutProps) => {
   }
 
   return (
-    <LayoutProvider value={{ setSettings: saveSettings, settings: settings }}>
+    <LayoutProvider value={{ setSettings: saveWidgetChanges, settings: settings }}>
       <div className={styles.WidgetGridLayout}>
         <div
           className={ClassNames(styles.template, 'widgetContainer')}
@@ -112,7 +114,6 @@ const WidgetGridLayout = ({ settings, setSettings }: WidgetGridLayoutProps) => {
           <div className={styles.all_widgets}>
             {settings.widgets.map((widget, ind) => {
               const Component = AllWidget[widget.name]
-
               return (
                 <Fragment key={`${widget.name}/${ind}`}>
                   <Component {...widget} />
@@ -126,10 +127,20 @@ const WidgetGridLayout = ({ settings, setSettings }: WidgetGridLayoutProps) => {
   )
 }
 
-const ContextedWidgetGridLayout = ({ settings, setSettings }: WidgetGridLayoutProps) => {
+const ContextedWidgetGridLayout = ({
+  settings,
+  applySettings,
+  containerRef,
+  handleSave,
+}: WidgetGridLayoutProps) => {
   return (
     <DragStore>
-      <WidgetGridLayout settings={settings} setSettings={setSettings} />
+      <WidgetGridLayout
+        settings={settings}
+        applySettings={applySettings}
+        containerRef={containerRef}
+        handleSave={handleSave}
+      />
     </DragStore>
   )
 }

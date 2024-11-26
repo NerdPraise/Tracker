@@ -90,11 +90,14 @@ class InvoiceTemplate(models.Model):
         SIMPLE = "SIMPLE"
         CUSTOM = "CUSTOM"
 
-    image = models.ImageField(upload_to="invoice_temp", null=True, blank=True)
+    image = models.ImageField(upload_to="invoice_temp", null=True, blank=True, max_length=255)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     settings = models.JSONField(default=dict)
     category = models.CharField(choices=CategoryChoices.choices, default=CategoryChoices.SIMPLE, max_length=20)
     user = models.ForeignKey(User, related_name="templates", null=True, blank=True, on_delete=models.CASCADE)
+    custom_image = models.BinaryField(
+        help_text="Holds the binary data image url of custom templates", null=True, blank=True, editable=True
+    )
 
     def __str__(self):
         return f"{self.uuid}"

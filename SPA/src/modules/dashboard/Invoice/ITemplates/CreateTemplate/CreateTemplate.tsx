@@ -1,16 +1,24 @@
+import { useParams } from 'react-router'
 import ClassNames from 'classnames'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Circle from '@uiw/react-color-circle'
-import { Component, Ellipsis, LayoutPanelLeft, Palette, Plus } from 'lucide-react'
+import { Component, Ellipsis, LayoutPanelLeft, Lock, Palette, Plus, Save } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 import { Spacer } from '_Home/components'
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
+import { screenshotElement } from '_Home/common/utils'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 
 import { allWidgets } from '../Widget/constant'
-import { createCustomTemplates, updateTemplateSettings } from '../../redux/actions'
+import {
+  createCustomTemplates,
+  saveCustomTemplates,
+  setSelectedTemplate,
+  updateTemplateSettings,
+} from '../../redux/actions'
 import WidgetGridLayout from '../Widget/WidgetGridLayout/WidgetGridLayout'
+import { ColorPicker } from '../Widget/components/ColorPicker'
 
 import styles from './CreateTemplate.module.styl'
 
@@ -18,89 +26,52 @@ interface CreateTemplateProps {
   onLayoutChange?: (...e: any) => void
 }
 
-const newSettingsTemp: Settings = {
-  theme: {
-    background: '#673ab7',
-  },
-  widgets: [
-    {
-      name: 'RichTextWidget',
-      widgetId: 'RichTextWidget_0',
-      layout: {
-        left: 367,
-        top: 13,
-        height: 88,
-        width: 323,
-      },
-      content: '<p><span style="font-size: 72px; font-family: rox">INVOICE</span></p>',
-    },
-    {
-      name: 'RichTextWidget',
-      widgetId: 'RichTextWidget_1',
-      layout: {
-        left: 25,
-        top: 156,
-        height: 93,
-        width: 285,
-      },
-    },
-    {
-      name: 'RichTextWidget',
-      widgetId: 'RichTextWidget_2',
-      layout: {
-        left: 325,
-        top: 161,
-        height: 53,
-        width: 375,
-      },
-    },
-    {
-      name: 'RichTextWidget',
-      widgetId: 'RichTextWidget_3',
-      layout: {
-        left: 45,
-        top: 819,
-        height: 73,
-        width: 275,
-      },
-    },
-  ],
-}
-
 const CreateTemplate = (props: CreateTemplateProps) => {
+  const templateContainerRef = useRef<HTMLDivElement>(null)
   const [panelKey, setPanelKey] = useState<string>('')
-  // const [settings, setSettings] = useState<Settings>(newSettingsTemp)
   const { selectedTemplate } = useAppSelector((state) => state.invoices.template)
   const dispatch = useAppDispatch()
   const dispatchedCreateCustomTemplates = () => dispatch(createCustomTemplates())
-  const { category, settings } = selectedTemplate || {}
+  const dispatchSaveTemplateToDB = () => dispatch(saveCustomTemplates())
+  const dispatchedUpdateTemplateSettings = (e: Partial<ITemplate>) =>
+    dispatch(updateTemplateSettings({ ...e }))
+  const settings = selectedTemplate.settings as Settings | undefined
+  const { templateId } = useParams()
 
   useEffect(() => {
-    if (selectedTemplate && selectedTemplate?.category === 'custom') {
-      // getTemplates
+    if (templateId) {
+      dispatch(setSelectedTemplate(templateId))
     } else {
       dispatchedCreateCustomTemplates()
     }
   }, [])
 
-  const setSettings = (settings: Partial<Settings>) => {
-    dispatch(updateTemplateSettings(settings))
+  const handleManualSave = () => {
+    screenshotElement(templateContainerRef, (e: string) => {
+      dispatchedUpdateTemplateSettings({ customImage: e })
+      dispatchSaveTemplateToDB()
+    })
+  }
+
+  const saveReduxSettings = (settings: Settings) => {
+    dispatchedUpdateTemplateSettings({ settings })
+  }
+  const applySettings = (newSettings: Partial<Settings>) => {
+    saveReduxSettings({ ...settings, ...newSettings })
   }
 
   const onMenuChange = (value: string) => {
     setPanelKey(value === panelKey ? '' : value)
   }
 
-  const applySettings = (newSettings: Partial<Settings>) => {
-    setSettings({ ...settings, ...newSettings })
-  }
-
-  const handleImageChange = (event) => {
+  const handleBackgroundImageChange = (event) => {
     const file = event.target.files[0]
     if (file) {
       const reader = new FileReader()
       reader.onloadend = () => {
-        applySettings({ theme: { background: '#fff', bgImg: reader.result as string } })
+        applySettings({
+          theme: { background: '#fff', bgImg: reader.result as string },
+        })
       }
       reader.readAsDataURL(file)
     }
@@ -168,11 +139,21 @@ const CreateTemplate = (props: CreateTemplateProps) => {
                         }}
                         onChange={(color) => applySettings({ theme: { background: color.hex } })}
                       />
+                      <ColorPicker
+                        setColor={(color) => applySettings({ theme: { background: color.hex } })}
+                        color={settings.theme?.background}
+                        triggerClassName={styles.template_trigger}
+                      />
                     </div>
                     <div>OR</div>
                     <div className={styles.add_image}>
                       <label htmlFor="bg">
-                        <input type="file" accept="image/*" id="bg" onChange={handleImageChange} />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id="bg"
+                          onChange={handleBackgroundImageChange}
+                        />
                         <p>
                           <Plus size={15} />
                           Add Image
@@ -195,7 +176,7 @@ const CreateTemplate = (props: CreateTemplateProps) => {
                         }}
                       >
                         <div className={styles.widget_logo}>
-                          <img src={widget.logo} alt={widget.name} />
+                          <img id="full" src={widget.logo} alt={widget.name} />
                         </div>
                         <p style={{ fontSize: 13, marginTop: 6 }}>{widget.name}</p>
                       </div>
@@ -208,10 +189,23 @@ const CreateTemplate = (props: CreateTemplateProps) => {
         </div>
         {settings && (
           <div style={{ height: '100%' }}>
-            <WidgetGridLayout settings={settings as Settings} setSettings={applySettings} />
+            <WidgetGridLayout
+              settings={settings}
+              applySettings={applySettings}
+              containerRef={templateContainerRef}
+              handleSave={handleManualSave}
+            />
             <Spacer />
           </div>
         )}
+        <div className={styles.toolbar}>
+          <div onClick={handleManualSave}>
+            <Save />
+          </div>
+          <div>
+            <Lock />
+          </div>
+        </div>
       </div>
     </SideBarLayout>
   )

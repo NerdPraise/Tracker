@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react'
 import Document from '@tiptap/extension-document'
 import Paragraph from '@tiptap/extension-paragraph'
@@ -18,11 +18,13 @@ import TipUnderline from '@tiptap/extension-underline'
 import Superscript from '@tiptap/extension-superscript'
 import Subscript from '@tiptap/extension-subscript'
 
+import { isTextSelected } from '_Home/common/utils'
+
 import { BaseWidget } from '../BaseWidget'
+import { LayoutContext } from '../../context'
 import { TableWidgetToolBar } from './TableWidgetToolBar'
 import styles from './TableWidget.module.styl'
 import { Menu } from '../Menu/Menu'
-import { isTextSelected } from '_Home/common/utils'
 
 const defaults = {
   height: 150,
@@ -30,11 +32,23 @@ const defaults = {
 }
 
 export const TableWidget = (props) => {
+  const { setSettings, settings } = useContext(LayoutContext)
   const [isEditMode, setIsEditMode] = useState<boolean>(false)
   const [color, setColor] = useState<string>('')
+  const handleSave = () => {
+    const updatedWidgetSettings = settings.widgets.map((item) =>
+      item.widgetId === props.widgetId
+        ? {
+            ...item,
+            content: editor.getHTML(),
+          }
+        : item,
+    )
+    setSettings(updatedWidgetSettings)
+  }
   const editor = useEditor({
     shouldRerenderOnTransaction: false,
-    editable: isEditMode,
+    editable: true,
     extensions: [
       Color,
       Document,
@@ -104,8 +118,10 @@ export const TableWidget = (props) => {
         },
       }),
     ],
-    content: `
-    <table style="min-width: 75px">
+    onUpdate: handleSave,
+    content:
+      props.content ||
+      `<table style="min-width: 75px">
     <colgroup>
       <col />
       <col />
@@ -155,13 +171,19 @@ export const TableWidget = (props) => {
         </td>
       </tr>
     </tbody>
-  </table>
-      `,
+  </table>`,
   })
 
   if (!editor) {
     return null
   }
+
+  useEffect(() => {
+    // https://github.com/ueberdosis/tiptap/issues/5365#issuecomment-2266652338
+    editor.setEditable(false)
+    console.log('wheen done')
+  }, [])
+
   const moveableProps = {
     checkInput: isEditMode,
   }
@@ -199,26 +221,11 @@ export const TableWidget = (props) => {
           editor={editor}
           shouldShow={shouldShow}
           tippyOptions={{
-            duration: 500,
+            duration: 4000,
             delay: 500,
             zIndex: 9999999,
             popperOptions: {
-              placement: 'right',
-              modifiers: [
-                {
-                  name: 'preventOverflow',
-                  options: {
-                    boundary: 'viewport',
-                    padding: 8,
-                  },
-                },
-                {
-                  name: 'flip',
-                  options: {
-                    fallbackPlacements: ['top-start', 'top-end', 'bottom-end'],
-                  },
-                },
-              ],
+              placement: 'bottom-start',
             },
           }}
         >

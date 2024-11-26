@@ -53,10 +53,19 @@ class TransactionSerializer(serializers.ModelSerializer):
         return obj.payment.invoice.currency
 
 
+class BinaryField(serializers.Field):
+    def to_internal_value(self, data):
+        return data.encode("utf8")
+
+    def to_representation(self, value):
+        return bytes(value).decode("utf8")
+
+
 class InvoiceTemplateSerializer(serializers.ModelSerializer):
     settings = serializers.JSONField()
     image = serializers.ImageField(read_only=True)
     invoice = serializers.SlugRelatedField(queryset=Invoice.objects, slug_field="uuid", write_only=True, required=False)
+    custom_image = BinaryField()
 
     class Meta:
         model = InvoiceTemplate

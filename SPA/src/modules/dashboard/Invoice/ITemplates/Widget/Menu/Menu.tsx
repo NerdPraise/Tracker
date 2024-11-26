@@ -61,16 +61,14 @@ export const Menu = memo(
       },
       [editor],
     )
-    const handleFontAlign = useCallback(
-      (value: string) => {
-        editor.chain().focus().setTextAlign(value).run()
-        setFontAlign(value)
-      },
-      [editor],
-    )
+    const handleFontAlign = (value: string) => {
+      editor.chain().focus().setTextAlign(value).run()
+      setFontAlign(value)
+    }
+
     const handleFontSize = useCallback(
       (value: number[]) => {
-        editor.chain().focus().setFontSize(`${value[0]}px`).run()
+        editor.chain().setFontSize(`${value[0]}px`).run()
       },
       [editor],
     )
@@ -273,7 +271,7 @@ export const Menu = memo(
             ]}
           />
           <div style={{ width: 55, marginLeft: 5 }}>
-            <HoverCard
+            <Popover
               side="top"
               trigger={<div style={{ cursor: 'pointer' }}>{currentFontSize}</div>}
               item={
@@ -297,7 +295,7 @@ export const Menu = memo(
                     defaultValue={16}
                     max={180}
                     min={8}
-                    step={2}
+                    step={1}
                     value={parseInt(currentFontSize.split('px')[0])}
                   />
                 </div>

@@ -48,7 +48,7 @@ export const Nav = () => {
     >
       <div className={styles.Nav}>
         <div className={styles.logo}>
-          <img src={LOGO} alt="LOGO" />
+          <img id="full" src={LOGO} alt="LOGO" />
         </div>
         <div className={styles.hamburger} onClick={() => setIsMenuOpen((prev) => !prev)}>
           {isMenuOpen ? <X /> : <Menu />}

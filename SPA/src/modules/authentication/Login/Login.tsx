@@ -1,23 +1,20 @@
-import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGoogleLogin } from '@react-oauth/google'
 
 import { API } from '_Home/store/api'
 import { Button, Input } from '_Home/components'
 import { ROUTES } from '_Home/routing/routes'
-import { useUser, useAppSelector, useAppDispatch } from '_Home/common/hooks'
+import { useAppSelector, useAppDispatch } from '_Home/common/hooks'
 
 import Google from '_Images/google.svg?react'
 
-import { getUserAction, loginAction, loginGoogleUser } from './redux/actions'
+import { loginAction, loginGoogleUser } from './redux/actions'
 import styles from './Login.module.styl'
 
 export const Login = () => {
   const dispatch = useAppDispatch()
-  const { isLoggedIn } = useUser()
-  const navigate = useNavigate()
-  const location = useLocation()
+
   const [isGoogleLogin, setIsGoogleLogin] = useState(false)
   const { loading, authErrorMessage } = useAppSelector((state) => state.user)
   const [formLoginData, setFormLoginData] = useState<Record<string, string>>({})
@@ -45,15 +42,6 @@ export const Login = () => {
     setIsGoogleLogin(true)
     googleLogin()
   }
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(getUserAction())
-      const queryParams = new URLSearchParams(location.search)
-      const redirectPath = queryParams.get('rdr') ?? ROUTES.authenticatedRoutes.OVERVIEW.path
-      navigate(redirectPath)
-    }
-  }, [isLoggedIn])
 
   return (
     <div className={styles.LoginContainer}>

@@ -26,9 +26,12 @@ export const AddInvoice = () => {
 
   const onTemplateSelected = () => {
     setShowModal(false)
+    if (selectedTemplate.category.toLowerCase() === 'custom') {
+      navigate(`../custom/${selectedTemplate.uuid}`)
+      return
+    }
     navigate(`./${selectedTemplate.uuid}`)
   }
-  // console.log(processed_templates)
 
   return (
     <SideBarLayout disableHide>
@@ -38,7 +41,7 @@ export const AddInvoice = () => {
           <p>
             Select from our specially curated templates&nbsp;
             <span>OR</span>
-            &nbsp;<Link to="../templates/create">Create your template</Link>
+            &nbsp;<Link to="../custom">Create your template</Link>
           </p>
         </div>
         <div className={styles.templates}>
@@ -47,8 +50,10 @@ export const AddInvoice = () => {
             <div className={`${styles.template_container}`}>
               {processed_templates.recent.map((item, ind) => (
                 <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>
-                  {item.category.toLowerCase() === 'custom' && 'Custom'}
-                  <img className={styles.card_image} src={item?.image} />
+                  <img id="full" className={styles.card_image} src={item?.image || item?.customImage} />
+                  {item.category.toLowerCase() === 'custom' && (
+                    <div className={styles.custom_backdrop}>CUSTOM</div>
+                  )}
                 </Card>
               ))}
               {!processed_templates.recent.length && "You don't have any custom templates yet!"}
@@ -59,7 +64,7 @@ export const AddInvoice = () => {
             <div className={`${styles.simple_container} ${styles.template_container}`}>
               {processed_templates.simple.map((item, ind) => (
                 <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>
-                  <img className={styles.card_image} src={item?.image} />
+                  <img id="full" className={styles.card_image} src={item?.image} />
                 </Card>
               ))}
             </div>
@@ -69,7 +74,7 @@ export const AddInvoice = () => {
             <div className={`${styles.simple_container} ${styles.template_container}`}>
               {processed_templates.custom.map((item, ind) => (
                 <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>
-                  <img className={styles.card_image} src={item?.image} />
+                  <img id="full" className={styles.card_image} src={item?.image} />
                 </Card>
               ))}
               {!processed_templates.custom.length && 'FEATURE - INCOMING DRAG & DROP'}
@@ -84,7 +89,11 @@ export const AddInvoice = () => {
         >
           <div className={styles.modal_content}>
             <div className={styles.template_image}>
-              <img className={styles.card_image} src={selectedTemplate?.image} />
+              <img
+                id="full"
+                className={styles.card_image}
+                src={selectedTemplate?.image || selectedTemplate?.customImage}
+              />
             </div>
             <div>
               <Button onClick={() => onTemplateSelected()} text="Select template" />

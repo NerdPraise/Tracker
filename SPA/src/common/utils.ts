@@ -2,6 +2,8 @@ import { camelCase, snakeCase, isArray, transform, isObject } from 'lodash'
 import html2pdf from 'html2pdf.js/dist/html2pdf.bundle.min'
 import { isTextSelection } from '@tiptap/core'
 import { Editor } from '@tiptap/react'
+import html2canvas from 'html2canvas'
+import ReactDOM from 'react-dom'
 
 export const getFirstTwoLetters = (word: string) => {
   if (typeof word !== 'string') {
@@ -193,4 +195,43 @@ export const isTextSelected = ({ editor }: { editor: Editor }) => {
   }
 
   return true
+}
+
+export const screenshotElement = (
+  element,
+  onScreenshotDone,
+  filename = 'file',
+  format = 'image/png',
+) => {
+  const actualOptions = {
+    filename,
+  }
+
+  let node = null
+  if (element.current instanceof HTMLElement) {
+    node = element.current
+  } else {
+    node = ReactDOM.findDOMNode(element.current)
+  }
+
+  setTimeout(() => {
+    // to ensure everything is rendered prior to screenshot
+    html2canvas(node, {
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+      onclone: (document, element) => {
+        console.log(document, element)
+      },
+    })
+      .then((canvas) => {
+        const dataURL = canvas.toDataURL(format)
+        onScreenshotDone?.(dataURL)
+
+        // const dataBlob = imageToBlob(data)
+      })
+      .catch((e) => {
+        throw e
+      })
+  }, 1000)
 }

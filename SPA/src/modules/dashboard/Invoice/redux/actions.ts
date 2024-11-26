@@ -515,7 +515,7 @@ export const createCustomTemplates = () => (dispatch) => {
     )
 }
 
-export const updateTemplateSettings = (data: Partial<Settings>) => (dispatch) => {
+export const updateTemplateSettings = (data: Partial<ITemplate>) => (dispatch) => {
   return dispatch({
     payload: { data },
     type: INVOICE_ACTION_TYPE.CUSTOM_TEMPLATE_SAVE,
@@ -531,7 +531,7 @@ export const saveCustomTemplates = () => (dispatch, getState) => {
   })
   return AuthenticatedAPI.put(
     `invoice/templates/custom/`,
-    JSON.stringify({ template: selectedTemplate }),
+    JSON.stringify(snakify({ template: selectedTemplate })),
   )
     .then((response) => {
       console.log(response.data)

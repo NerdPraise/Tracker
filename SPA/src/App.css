@@ -100,7 +100,7 @@ a {
   background: #ff0000;
 }
 
-img {
+img#full {
   width: 100%;
   height: 100%;
 }
