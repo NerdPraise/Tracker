@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom'
-import { useEffect, useState, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useState, useRef } from 'react'
 import { useGoogleLogin } from '@react-oauth/google'
 
 import { API } from '_Home/store/api'
 import { ROUTES } from '_Home/routing/routes'
 import { Button, Input } from '_Home/components'
 import { isFormValid } from '_Home/common/utils'
-import { useUser, useAppSelector, useAppDispatch } from '_Home/common/hooks'
+import { useAppSelector, useAppDispatch } from '_Home/common/hooks'
 
 import Google from '_Images/google.svg?react'
 import { loginGoogleUser } from '_Module/authentication/Login/redux/actions'
@@ -16,14 +15,11 @@ import { signUpAction } from './redux/actions'
 import styles from './SignUp.module.styl'
 
 export const SignUp = () => {
-  const { isLoggedIn, isCheckingLoginStatus } = useUser()
   const { loading } = useAppSelector((state) => state.user)
   const dispatch = useAppDispatch()
-  const navigate = useNavigate()
   const [formError, setFormError] = useState<Record<string, string>>({})
   const formRef = useRef<HTMLFormElement>(null)
   const [isGoogleLogin, setIsGoogleLogin] = useState(false)
-  const location = useLocation()
 
   const onSubmit = () => {
     const form = formRef.current
@@ -48,16 +44,6 @@ export const SignUp = () => {
     setIsGoogleLogin(true)
     googleLogin()
   }
-
-  useEffect(() => {
-    if (isLoggedIn && !isCheckingLoginStatus) {
-      if (location.search === '') {
-        navigate(ROUTES.authenticatedRoutes.OVERVIEW.path)
-      } else {
-        navigate('/settings/subscription')
-      }
-    }
-  }, [isLoggedIn])
 
   return (
     <div className={styles.SignUp}>

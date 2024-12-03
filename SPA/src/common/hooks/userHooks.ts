@@ -24,7 +24,6 @@ export const useUser = () => {
     if (!isLoggedIn) {
       dispatch(getUserAction())
     } else {
-      console.log('hereee')
       setHasCheckedLoginStatus(true)
     }
   }, [hasCheckedLoginStatus])
