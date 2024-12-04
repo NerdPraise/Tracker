@@ -84,6 +84,18 @@ export const TableWidget = (props) => {
                 }
               },
             },
+            border: {
+              default: null,
+              parseHTML: (element) => element.getAttribute('data-border'),
+              renderHTML: (attributes) => {
+                return {
+                  'data-border': attributes.border,
+                  style: `border: ${
+                    attributes.border === 'none' ? 'none' : `1px solid ${attributes.border}`
+                  }`,
+                }
+              },
+            },
           }
         },
       }),
@@ -218,10 +230,11 @@ export const TableWidget = (props) => {
       <div className={styles.TableWidget}>
         <EditorContent editor={editor} className={styles.editor} />
         <BubbleMenu
+          className="text-white"
           editor={editor}
           shouldShow={shouldShow}
           tippyOptions={{
-            duration: 4000,
+            duration: 400,
             delay: 500,
             zIndex: 9999999,
             popperOptions: {

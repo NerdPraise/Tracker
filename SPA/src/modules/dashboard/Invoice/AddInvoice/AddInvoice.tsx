@@ -46,7 +46,7 @@ export const AddInvoice = () => {
         </div>
         <div className={styles.templates}>
           <div className={styles.most_recent}>
-            <h2 className={styles.template_name}>Recent</h2>
+            <h2 className={`${styles.template_name} ${styles.recent}`}>Recent</h2>
             <div className={`${styles.template_container}`}>
               {processed_templates.recent.map((item, ind) => (
                 <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>
@@ -70,7 +70,7 @@ export const AddInvoice = () => {
             </div>
           </div>
           <div className={styles.simple}>
-            <h2 className={styles.template_name}>Custom</h2>
+            <h2 className={`${styles.template_name} ${styles.custom}`}>Custom</h2>
             <div className={`${styles.simple_container} ${styles.template_container}`}>
               {processed_templates.custom.map((item, ind) => (
                 <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>

@@ -148,7 +148,7 @@ export const Overview = () => {
           </div>
 
           <Card className={`${styles.card} ${styles.report_card}`} title="Reports">
-            {true && (
+            {loading && (
               <div className={styles.category_list}>
                 <div className={styles.ge_placeholder}>
                   <Placeholder width="20%" height="50px" />
@@ -157,7 +157,7 @@ export const Overview = () => {
                 </div>
               </div>
             )}
-            {false && (
+            {!loading && (
               <div className={styles.category_data}>
                 <div className={styles.category_list}>
                   {Object.entries(categoryList).map(([k, v]) => (

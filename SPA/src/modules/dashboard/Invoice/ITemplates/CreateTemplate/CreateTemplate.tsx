@@ -35,7 +35,7 @@ const CreateTemplate = (props: CreateTemplateProps) => {
   const dispatchSaveTemplateToDB = () => dispatch(saveCustomTemplates())
   const dispatchedUpdateTemplateSettings = (e: Partial<ITemplate>) =>
     dispatch(updateTemplateSettings({ ...e }))
-  const settings = selectedTemplate.settings as Settings | undefined
+  const settings = selectedTemplate?.settings as Settings | undefined
   const { templateId } = useParams()
 
   useEffect(() => {

@@ -16,7 +16,7 @@ import styles from '../Invoice.module.styl'
 
 export const InvoiceEdit = () => {
   const {
-    invoice: { invoices, selectedInvoice, statusCode, loading },
+    invoice: { invoices, selectedInvoice, statusCode, loading, hasTemplateChanged },
     invoiceSettings: { settings },
     client: { clients },
   } = useAppSelector((state) => state.invoices)
@@ -93,6 +93,7 @@ export const InvoiceEdit = () => {
             options={options}
             templateSettings={templateSettings}
             selectedInvoice={selectedInvoice}
+            hasTemplateChanged={hasTemplateChanged}
           />
         </div>
       </div>
