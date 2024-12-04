@@ -10,6 +10,7 @@ interface SelectProp {
   customValidation?: (value: string) => null | string
   error?: Record<string, string>
   setError?: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  disabled?: boolean
 }
 
 const customStyles = {

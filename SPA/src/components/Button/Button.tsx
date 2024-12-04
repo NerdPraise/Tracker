@@ -14,8 +14,6 @@ interface ButtonProps {
 }
 
 export const Button = ({ className, text, onClick, loading, disabled, logo }: ButtonProps) => {
-  const Logo = logo
-
   return (
     <button
       onClick={!disabled ? onClick : null}

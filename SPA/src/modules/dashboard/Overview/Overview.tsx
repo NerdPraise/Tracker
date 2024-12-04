@@ -2,7 +2,7 @@ import Calendar, { TileArgs } from 'react-calendar'
 import { useRef, useCallback, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 
-import { Card, Chart, ChartPlaceholder, ExportButton, Placeholder } from '_Home/components'
+import { Card, Chart, ChartPlaceholder, ExportButton, Placeholder, Spacer } from '_Home/components'
 import { Grid } from '_Home/components/Grid/Grid'
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { generateColor, monthsForDropdown } from '_Home/common/utils'
@@ -214,6 +214,7 @@ export const Overview = () => {
             // overlayNoRowsTemplate={errorMessage}
             loadingOverlayComponent={<Placeholder width="500px" height="500px" />}
           />
+          <Spacer />
         </div>
       </div>
     </SideBarLayout>

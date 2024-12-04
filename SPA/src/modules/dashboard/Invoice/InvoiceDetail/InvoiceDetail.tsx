@@ -112,7 +112,6 @@ export const InvoiceDetail = () => {
 
   const gridData = transactions?.map((item) => ({ ...item, client: selectedInvoice?.client }))
   const clientHasPaidAll = !Number(selectedInvoice?.payment.totalDue)
-  console.log(templateSettings?.html)
 
   return (
     <SideBarLayout disableHide>

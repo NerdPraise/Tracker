@@ -45,7 +45,12 @@ type InvoiceState = {
   invoiceSettings: {
     loading: boolean
     statusCode: IStatusCode
+    errorMessage?: string
     settings: IInvoiceSettings | null
+    toast?: {
+      level: 'error' | 'success'
+      message: string
+    }
   }
 }
 
@@ -80,6 +85,7 @@ const initialState: InvoiceState = {
     loading: false,
     statusCode: StatusCode.CLEARED,
     settings: null,
+    toast: {},
   },
 }
 
@@ -91,6 +97,7 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
     .addCase(INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE, (state, _) => {
       state.invoice.statusCode = StatusCode.CLEARED
       state.invoiceSettings.statusCode = StatusCode.CLEARED
+      state.invoiceSettings.toast = {}
     })
     .addCase(INVOICE_ACTION_TYPE.GET_ALL_INVOICES_DONE, (state, action) => {
       state.invoice.loading = false
@@ -187,8 +194,11 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
       state.invoice.loading = false
       state.invoice.statusCode = action.payload.statusCode
       const { template } = state.invoice.selectedInvoice
-      state.invoice.selectedInvoice = action.payload.data
-      state.invoice.selectedInvoice.template = template
+      state.invoice.selectedInvoice = {
+        ...state.invoice.selectedInvoice,
+        ...action.payload.data,
+        template,
+      }
     })
     .addCase(INVOICE_ACTION_TYPE.GET_SINGLE_INVOICE_START, (state, action) => {
       state.invoice.loading = true
@@ -228,9 +238,9 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
 
         case 'theme':
           const { color, name: colorName } = action.payload.data
+          state.invoice.hasTemplateChanged = true
           selectedInvoice.template.settings.theme[colorName] = color.hex
           selectedInvoice.template.settings.theme[`${colorName}__hsva`] = color.hsva
-          state.invoice.hasTemplateChanged = true
           break
 
         case 'delete':
@@ -273,6 +283,17 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
     .addCase(INVOICE_ACTION_TYPE.UPDATE_INVOICE_SETTINGS_DONE, (state, action) => {
       state.invoiceSettings.settings = action.payload.data
       state.invoiceSettings.statusCode = action.payload.statusCode
+      if (action.payload.errorMessage.length) {
+        state.invoiceSettings.toast = {
+          level: 'error',
+          message: action.payload.errorMessage,
+        }
+      } else {
+        state.invoiceSettings.toast = {
+          level: 'success',
+          message: 'Invoice settings updated',
+        }
+      }
     })
     .addCase(INVOICE_ACTION_TYPE.SET_SELECTED_CONTACT_DONE, (state, action) => {
       state.client.selectedClient = action.payload.data

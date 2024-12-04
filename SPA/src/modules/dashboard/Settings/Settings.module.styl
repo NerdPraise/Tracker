@@ -41,6 +41,12 @@
   width 100% 
   color $color-less-white 
   flex-direction column
+  overflow-y auto
+  height calc(100vh - 200px)
+  &::-webkit-scrollbar 
+    display none
+  -ms-overflow-style none
+  scrollbar-width none
   .basic, .preferences
     margin-top 15px
     width 100%
@@ -94,6 +100,11 @@
   display block
   color $color-less-white 
   padding-top 25px
+  overflow-y auto
+  height calc(100vh - 200px)
+  &::-webkit-scrollbar 
+    display none
+  -ms-overflow-style none
   .previous_payments
     margin 25px 0 0
     h3
@@ -155,6 +166,11 @@
   display block
   color $color-less-white 
   padding-top 25px
+  overflow-y auto
+  height calc(100vh - 200px)
+  &::-webkit-scrollbar 
+    display none
+  -ms-overflow-style none
   .previous_payments
     margin 25px 0 0
     h3
@@ -268,6 +284,12 @@
       .select
         width 100%
         margin 9px 0
+    .btn
+      display flex
+      column-gap 13px
+      > button
+        width 120px 
+
 
 :local(.ModalSubscription)
   .has_card_details

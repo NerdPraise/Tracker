@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import ClassNames from 'classnames'
 import { Plus, Trash2 } from 'lucide-react'
 import Wheel from '@uiw/react-color-wheel'
@@ -9,13 +9,13 @@ import { motion } from 'framer-motion'
 import { Content, List, Root, Trigger } from '@radix-ui/react-tabs'
 import { ColorResult } from '@uiw/color-convert'
 
-import { Button, Card, Input, Select, TextArea, Dropdown, DatePicker } from '_Home/components'
-import { capitalise, convertStringToColor } from '_Home/common/utils'
+import { Button, Card, Input, Select, TextArea, Dropdown, DatePicker, Modal } from '_Home/components'
+import { capitalise, convertStringToColor, StatusCode } from '_Home/common/utils'
 import { currencyOptions } from '_Home/constants'
+import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 
 import styles from '../Invoice.module.styl'
-import { saveInvoice, updateInvoice, saveTemplate } from '../redux/actions'
-import { useAppDispatch } from '_Home/common/hooks'
+import { saveInvoice, updateInvoice, saveTemplate, createUserClient } from '../redux/actions'
 
 export const EditForm = forwardRef(function EditForm(
   {
@@ -34,7 +34,11 @@ export const EditForm = forwardRef(function EditForm(
   }: any,
   ref: any,
 ) {
+  const { loading, statusCode, errorMessage } = useAppSelector((state) => state.invoices.client)
   const dispatch = useAppDispatch()
+  const [error, setError] = useState({})
+  const [open, setOpen] = useState<boolean>(false)
+  const formRef = useRef<HTMLFormElement>(null)
   const onHandleSaveTemplate = () => {
     ref.current?.continuousStart()
     dispatch(saveTemplate())
@@ -42,7 +46,10 @@ export const EditForm = forwardRef(function EditForm(
   const dispatchedUpdateInvoice = (data: Record<string, string | number | ColorResult>) =>
     dispatch(updateInvoice(data))
 
-  const handleCreateClient = () => {}
+  const handleCreateContact = () => {
+    const formData = new FormData(formRef.current)
+    dispatch(createUserClient(formData))
+  }
 
   const onHandleColorChange = (color: ColorResult, name: string, section: string) => {
     dispatchedUpdateInvoice({
@@ -69,6 +76,12 @@ export const EditForm = forwardRef(function EditForm(
     dispatchedUpdateInvoice(data)
     setCurrentInvoiceItem(0)
   }
+
+  useEffect(() => {
+    if (!loading && statusCode === StatusCode.CREATED) {
+      setOpen(false)
+    }
+  }, [statusCode, loading])
 
   return (
     <div className={styles.form}>
@@ -116,28 +129,34 @@ export const EditForm = forwardRef(function EditForm(
                   >
                     <Input
                       type="text"
-                      name="description"
+                      name={`description` + ind}
                       labelName="Description"
                       defaultValue={item.description}
                       onChange={(e) => onHandleInputChange(e, ind)}
+                      error={error}
+                      setError={setError}
                     />
 
                     <div className={styles.halves}>
                       <Input
                         type="number"
                         min={0}
-                        name="quantity"
+                        name={`quantity` + ind}
                         labelName="Quantity"
                         defaultValue={item.quantity}
                         onChange={(e) => onHandleInputChange(e, ind)}
+                        error={error}
+                        setError={setError}
                       />
                       <Input
                         type="number"
                         min={0}
-                        name="unitPrice"
+                        name={`unitPrice` + ind}
                         labelName="Rate"
                         defaultValue={item.unitPrice}
                         onChange={(e) => onHandleInputChange(e, ind)}
+                        error={error}
+                        setError={setError}
                       />
                     </div>
                   </div>
@@ -260,7 +279,7 @@ export const EditForm = forwardRef(function EditForm(
                 options={options}
                 onChange={(e) => onHandleGenericChange({ id: e, section: 'client' })}
               />
-              <p onClick={handleCreateClient} className={styles.add_item}>
+              <p onClick={() => setOpen(true)} className={styles.add_item}>
                 <Plus width={16} /> Add client
               </p>
             </Content>
@@ -269,13 +288,42 @@ export const EditForm = forwardRef(function EditForm(
 
         <div className={styles.btn_area}>
           <Button onClick={onHandleSave} text="Save" />
-          <Button
-            onClick={onHandleSaveTemplate}
-            text="Save Template"
-            disabled={!hasTemplateChanged || !selectedInvoice?.uuid.length}
-          />
+          <Button onClick={onHandleSaveTemplate} text="Save Template" disabled={!hasTemplateChanged} />
         </div>
       </Card>
+      <Modal
+        isVisible={open}
+        width="md"
+        className={styles.ContactModal}
+        handleClose={() => setOpen(false)}
+      >
+        <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
+          <div className={styles.input_group}>
+            <Input
+              labelName={
+                <p className={styles.label_name}>
+                  Email Address <span>*</span>
+                </p>
+              }
+              type="email"
+              name="email"
+            />
+            <Input
+              labelName={
+                <p className={styles.label_name}>
+                  Name <span>*</span>
+                </p>
+              }
+              type="text"
+              name="name"
+            />
+          </div>
+          <div className={styles.send_btn}>
+            <Button text="Add contact" onClick={handleCreateContact} />
+          </div>
+          <p className="error small" dangerouslySetInnerHTML={{ __html: errorMessage }} />
+        </form>
+      </Modal>
     </div>
   )
 })

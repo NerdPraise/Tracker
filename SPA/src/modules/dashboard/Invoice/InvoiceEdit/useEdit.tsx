@@ -10,9 +10,7 @@ export const useEdit = () => {
   const {
     invoice: { selectedInvoice },
     client: { clients },
-    invoiceSettings: {
-      settings: { defaultCurrency },
-    },
+    invoiceSettings: { settings },
   } = useAppSelector((state) => state.invoices)
   const dispatch = useAppDispatch()
   const [displayColor, setDisplayColor] = useState<string>('')
@@ -44,11 +42,14 @@ export const useEdit = () => {
   const defaultOption = options.find(
     (item) => item.label === selectedInvoice?.client?.name && item.value === selectedInvoice?.client?.id,
   )
+
   const defaultCurrencyOption = useMemo(
-    () => currencyOptions.find((item) => item.label === (selectedInvoice?.currency || defaultCurrency)),
-    [selectedInvoice, defaultCurrency],
+    () =>
+      currencyOptions.find(
+        (item) => item.label === (selectedInvoice?.currency || settings?.defaultCurrency || 'USD'),
+      ),
+    [selectedInvoice, settings?.defaultCurrency],
   )
-  console.log(defaultCurrencyOption, selectedInvoice?.currency)
 
   return {
     invoiceItems,

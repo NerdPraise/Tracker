@@ -203,17 +203,19 @@ export const updateInvoiceSettings = (id: string, data: FormData) => (dispatch) 
         payload: {
           data: camelize(response.data),
           statusCode: response.status,
+          errorMessage: '',
         },
       })
     })
-    .catch((err) =>
+    .catch((err) => {
+      console.log(err)
       dispatch({
         type: INVOICE_ACTION_TYPE.UPDATE_INVOICE_SETTINGS_DONE,
         payload: {
           errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
         },
-      }),
-    )
+      })
+    })
 }
 
 export const createUserClient = (data: FormData) => (dispatch) => {
@@ -366,6 +368,7 @@ export const updateInvoice = (data: Record<string, string | number | ColorResult
 
 export const setSelectedInvoice = (data: Record<'invoiceID' | 'type', string>) => (dispatch) => {
   dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
+  console.log(data.invoiceID)
   dispatch({
     type: INVOICE_ACTION_TYPE.SET_SELECTED_INVOICE_DONE,
     payload: {

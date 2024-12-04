@@ -1,0 +1,43 @@
+
+:local(.Toast)
+    position fixed
+    top 12px
+    right 0
+    z-index 9999999
+    .toast
+        display flex
+        width 330px
+        height 60px
+        padding 15px 0 15px 15px
+        align-content center
+        border-top-left-radius 15px
+        border-bottom-left-radius 15px
+        flex-wrap wrap
+        transition width 0.3s ease-in 
+        animation toast-in-right .7s
+        .cancel_btn
+            position absolute
+            right 13px
+            top 5px
+            font-weight 500
+            cursor pointer
+        &.alert 
+            background #b67338
+        &:global(.error)
+            background #8F1717
+        &:global(.success)
+            background #007f6d
+        &_message
+            width 270px
+            font-size 14px
+            white-space pre
+
+    @keyframes toast-in-right {
+        from {
+        transform: translateX(100%);
+        
+        }
+        to {
+        transform: translateX(0);
+        }
+    }

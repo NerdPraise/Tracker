@@ -48,6 +48,12 @@
   
 
 :local(.Tab)
+  overflow-y auto
+  height 800px
+  &::-webkit-scrollbar 
+    display none
+  -ms-overflow-style none
+  scrollbar-width none
   .filter
     display flex
     justify-content right
@@ -341,10 +347,10 @@
         height 700px
         overflow-y auto
         .btn_area
-          position fixed
-          bottom 75px
+          position static
           display flex
           margin-bottom 2px
+          margin-top 35px
           button
             min-height 0
             height 35px
@@ -517,3 +523,24 @@
 
 :local(.formDropdown)
   height 220px
+
+:local(.ContactModal)
+  form
+    padding 20px 30px
+    .input_group
+      padding 20px 0 35px
+      border-top 1.5px solid $color-light-ccc 
+      border-bottom 1.5px solid $color-light-ccc 
+      margin 20px 0
+      .label_name
+        margin-bottom 7px
+        font-weight 600
+        span 
+          color $color-red
+      input
+        height 50px
+    .send_btn > button
+      margin-left auto
+      font-size 17px
+      padding 13px 35px
+     

@@ -8,7 +8,7 @@ import { Users, Plus, Lock, Check } from 'lucide-react'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { noRowRenderer } from '_Home/components/Grid/renderer'
-import { Button, Grid, Input, Modal } from '_Home/components'
+import { Button, Grid, Input, Modal, Spacer } from '_Home/components'
 import { useAppDispatch, useAppSelector, useUser } from '_Home/common/hooks'
 import { capitalise } from '_Home/common/utils'
 import { PricingDeets } from '_Home/modules/presentation/Home/constants'
@@ -137,9 +137,10 @@ export const InvoiceList = () => {
               />
             </div>
           </div>
-        </div>
-        <div id="export" className={styles.export}>
-          <p onClick={() => onExport()}>Export all invoice</p>
+          <div id="export" className={styles.export}>
+            <p onClick={() => onExport()}>Export all invoice</p>
+          </div>
+          <Spacer />
         </div>
       </div>
       <Modal

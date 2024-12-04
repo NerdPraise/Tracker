@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
-import { Button, Card, Modal } from '_Home/components'
+import { Button, Card, Modal, Spacer } from '_Home/components'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 
 import { setSelectedTemplate } from '../redux/actions'
@@ -80,6 +80,7 @@ export const AddInvoice = () => {
               {!processed_templates.custom.length && 'FEATURE - INCOMING DRAG & DROP'}
             </div>
           </div>
+          <Spacer />
         </div>
         <Modal
           isVisible={showModal}

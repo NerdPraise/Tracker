@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import LoadingBar from 'react-top-loading-bar'
 import ClassNames from 'classnames'
 
-import { Button, Input, Select } from '_Home/components'
+import { Button, Input, Select, Spacer } from '_Home/components'
 import { useAppDispatch, useAppSelector, useUser } from '_Home/common/hooks'
 import { StatusCode } from '_Home/common/utils'
 
@@ -189,6 +189,7 @@ const GeneralSettings = () => {
         <h5>Preferences</h5>
         {preference_fields.map(preferenceRenderField)}
       </div>
+      <Spacer />
     </div>
   )
 }
