@@ -10,11 +10,6 @@ body {
   background: #181c1e;
 }
 
-@font-face {
-  font-family: 'fantasys';
-  src: url('/market.woff2') format('woff');
-}
-
 * {
   box-sizing: border-box;
   outline: none;

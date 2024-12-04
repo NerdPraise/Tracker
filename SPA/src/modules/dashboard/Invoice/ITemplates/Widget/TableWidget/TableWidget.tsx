@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react'
+import { BubbleMenu, EditorContent, useEditor, useEditorState } from '@tiptap/react'
 import Document from '@tiptap/extension-document'
 import Paragraph from '@tiptap/extension-paragraph'
 import StarterKit from '@tiptap/starter-kit'
@@ -210,6 +210,17 @@ export const TableWidget = (props) => {
     },
     [editor],
   )
+  const { currentBorderColor, currentBgColor } = useEditorState({
+    editor,
+    selector: (ctx) => {
+      console.log(ctx.editor.getAttributes('tableCell'))
+      return {
+        currentBorderColor: ctx.editor.getAttributes('tableCell').border || undefined,
+        currentBgColor: ctx.editor.getAttributes('tableCell').backgroundColor || undefined,
+        currentHeaderBgColor: ctx.editor.getAttributes('tableHeader').backgroundColor || undefined,
+      }
+    },
+  })
 
   return (
     <BaseWidget
@@ -224,6 +235,8 @@ export const TableWidget = (props) => {
           setIsEditMode={setIsEditMode}
           color={color}
           setColor={setColor}
+          currentBorderColor={currentBorderColor}
+          currentBgColor={currentBgColor}
         />
       }
     >

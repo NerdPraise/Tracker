@@ -42,8 +42,9 @@ export const BaseWidget = ({
   }
 
   const handleRemove = () => {
-    const updatedSettings = settings.widgets.filter((item) => item.widgetId !== widgetId)
-    setSettings(updatedSettings)
+    const updatedWidgets = settings.widgets.filter((item) => item.widgetId !== widgetId)
+    console.log(settings, widgetId, updatedWidgets)
+    setSettings(updatedWidgets)
   }
 
   const handleDrag = (e: OnDragEnd) => {

@@ -28,17 +28,27 @@ interface TableWidgetToolBarProps {
   setColor?: (e: string) => void
   color?: string
   setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>
+  currentBorderColor?: string
+  currentBgColor?: string
 }
 
 export const TableWidgetToolBar = memo(
-  ({ editor, isEditMode, setIsEditMode, color, setColor }: TableWidgetToolBarProps) => {
+  ({
+    editor,
+    isEditMode,
+    setIsEditMode,
+    color,
+    setColor,
+    currentBgColor,
+    currentBorderColor,
+  }: TableWidgetToolBarProps) => {
     const onSelectColor = (hex: string) => {
       editor.chain().focus().setCellAttribute('backgroundColor', hex).run()
       setColor(hex)
     }
 
     const onChangeBorderColor = (hex: string) => {
-      editor.chain().focus().setCellAttribute('border', hex).run()
+      editor.chain().setCellAttribute('border', hex).run()
     }
 
     return (
@@ -206,7 +216,11 @@ export const TableWidgetToolBar = memo(
             }
           />
 
-          <ColorPicker setColor={null} iconSize={19} />
+          <ColorPicker
+            setColor={(color) => onChangeBorderColor(color.hex)}
+            color={currentBorderColor}
+            iconSize={19}
+          />
 
           {/* <HoverCard
             side="top"

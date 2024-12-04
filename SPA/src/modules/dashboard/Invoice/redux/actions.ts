@@ -208,7 +208,6 @@ export const updateInvoiceSettings = (id: string, data: FormData) => (dispatch) 
       })
     })
     .catch((err) => {
-      console.log(err)
       dispatch({
         type: INVOICE_ACTION_TYPE.UPDATE_INVOICE_SETTINGS_DONE,
         payload: {
@@ -368,7 +367,6 @@ export const updateInvoice = (data: Record<string, string | number | ColorResult
 
 export const setSelectedInvoice = (data: Record<'invoiceID' | 'type', string>) => (dispatch) => {
   dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
-  console.log(data.invoiceID)
   dispatch({
     type: INVOICE_ACTION_TYPE.SET_SELECTED_INVOICE_DONE,
     payload: {
@@ -537,7 +535,6 @@ export const saveCustomTemplates = () => (dispatch, getState) => {
     JSON.stringify(snakify({ template: selectedTemplate })),
   )
     .then((response) => {
-      console.log(response.data)
       dispatch({
         type: INVOICE_ACTION_TYPE.AUTO_SAVE_CUSTOM_TEMPLATE_DONE,
         payload: {

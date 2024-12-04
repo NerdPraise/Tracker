@@ -61,7 +61,9 @@ const WidgetGridLayout = ({
     const { left, top } = containerRef.current.getBoundingClientRect()
     const positionX = clientX - left
     const positionY = clientY - top
-    const widgetId = `${newWidgetId}_${settings.widgets.length}`
+    const widgetId = `${newWidgetId}_${settings.widgets.length}_${Math.floor(
+      Math.random() * settings.widgets.length,
+    )}`
     applySettings({
       ...settings,
       widgets: [
