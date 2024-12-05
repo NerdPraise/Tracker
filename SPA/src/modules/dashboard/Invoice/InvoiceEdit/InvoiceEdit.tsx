@@ -1,11 +1,11 @@
-import { useMemo, useEffect } from 'react'
-import { useMatch, useNavigate, useParams, Link } from 'react-router-dom'
+import { useMemo, useEffect, useRef } from 'react'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 import { Frame, Spacer } from '_Home/components'
-import { StatusCode } from '_Home/common/utils'
+import { screenshotElement, StatusCode } from '_Home/common/utils'
 
 import { getContext, a, b } from '../constants'
 import { setSelectedInvoice, setSelectedTemplate } from '../redux/actions'
@@ -18,13 +18,12 @@ export const InvoiceEdit = () => {
   const {
     invoice: { invoices, selectedInvoice, statusCode, loading, hasTemplateChanged },
     invoiceSettings: { settings },
-    client: { clients },
   } = useAppSelector((state) => state.invoices)
   const { user } = useAppSelector((state) => state.user)
   const dispatch = useAppDispatch()
-  const isAddRoute = useMatch('invoice/add/:id')
   const invoiceID = useParams().invoiceId
   const navigate = useNavigate()
+  const frameRef = useRef<HTMLDivElement>(null)
 
   const {
     invoiceItems,
@@ -52,12 +51,13 @@ export const InvoiceEdit = () => {
   }, [selectedInvoice, statusCode])
 
   useEffect(() => {
-    if (isAddRoute) {
-      dispatch(setSelectedTemplate(isAddRoute.params.id))
-      dispatch(setSelectedInvoice({ invoiceID, type: 'new' }))
-    } else {
-      dispatch(setSelectedInvoice({ invoiceID, type: 'exist' }))
+    if (invoiceID === 'temp' && selectedInvoice?.uuid) {
+      navigate(`../${selectedInvoice.uuid}`)
     }
+  }, [selectedInvoice])
+
+  useEffect(() => {
+    dispatch(setSelectedInvoice({ invoiceID }))
   }, [invoices])
 
   const context = useMemo(() => getContext(selectedInvoice, user, settings), [selectedInvoice, settings])
@@ -76,12 +76,13 @@ export const InvoiceEdit = () => {
         </div>
         <div className={styles.details}>
           <div className={styles.frame}>
-            <Frame template={templateSettings?.html || ''} context={context} />
+            <Frame frameRef={frameRef} template={templateSettings?.html || ''} context={context} />
             <Spacer />
           </div>
 
           <EditForm
             ref={loadingRef}
+            frameRef={frameRef}
             invoiceItems={invoiceItems}
             currentInvoiceItem={currentInvoiceItem}
             setCurrentInvoiceItem={setCurrentInvoiceItem}

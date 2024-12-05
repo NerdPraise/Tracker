@@ -55,6 +55,8 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 class BinaryField(serializers.Field):
     def to_internal_value(self, data):
+        if not data:
+            return
         return data.encode("utf8")
 
     def to_representation(self, value):
@@ -65,7 +67,7 @@ class InvoiceTemplateSerializer(serializers.ModelSerializer):
     settings = serializers.JSONField()
     image = serializers.ImageField(read_only=True)
     invoice = serializers.SlugRelatedField(queryset=Invoice.objects, slug_field="uuid", write_only=True, required=False)
-    custom_image = BinaryField()
+    custom_image = BinaryField(required=False, allow_null=True)
 
     class Meta:
         model = InvoiceTemplate

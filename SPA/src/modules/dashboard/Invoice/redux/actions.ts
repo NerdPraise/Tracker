@@ -15,6 +15,8 @@ export const INVOICE_ACTION_TYPE = {
   GET_ALL_TEMPLATES_START: 'INVOICE_ACTION_TYPE/GET_ALL_TEMPLATES/START',
   GET_ALL_TEMPLATES_DONE: 'INVOICE_ACTION_TYPE/GET_ALL_TEMPLATES/DONE',
   SET_SELECTED_TEMPLATE_DONE: 'INVOICE_ACTION_TYPE/SET_SELECTED_TEMPLATE/DONE',
+  CREATE_SELECTED_TEMPLATE_START: 'INVOICE_ACTION_TYPE/CREATE_SELECTED_TEMPLATE/START',
+  CREATE_SELECTED_TEMPLATE_DONE: 'INVOICE_ACTION_TYPE/CREATE_SELECTED_TEMPLATE/DONE',
   CREATE_TRANSACTION_START: 'INVOICE_ACTION_TYPE/CREATE_TRANSACTION/START',
   CREATE_TRANSACTION_DONE: 'INVOICE_ACTION_TYPE/CREATE_TRANSACTION/DONE',
   GET_ALL_TRANSACTION_DONE: 'INVOICE_ACTION_TYPE/GET_ALL_TRANSACTION/DONE',
@@ -97,6 +99,30 @@ export const setSelectedTemplate = (id) => (dispatch) => {
   })
 }
 
+export const createNewCustomTemplate = () => (dispatch, getState) => {
+  const { uuid } = getState().invoices.template.selectedTemplate
+  dispatch({ type: INVOICE_ACTION_TYPE.CREATE_SELECTED_TEMPLATE_START })
+  return AuthenticatedAPI.get(`invoice/templates/custom/?template=${uuid}`)
+    .then((res) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.CREATE_SELECTED_TEMPLATE_DONE,
+        payload: {
+          data: camelize(res.data),
+          errorMessage: '',
+        },
+      })
+    })
+    .catch((err) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.CREATE_SELECTED_TEMPLATE_DONE,
+        payload: {
+          errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+          data: {},
+        },
+      })
+    })
+}
+
 export const getAllTemplates = () => (dispatch) => {
   dispatch({ type: INVOICE_ACTION_TYPE.GET_ALL_TEMPLATES_START })
 
@@ -119,7 +145,7 @@ export const getAllTemplates = () => (dispatch) => {
     )
 }
 
-export const saveTemplate = () => (dispatch, getState) => {
+export const saveTemplate = (imageDataUrl?: string) => (dispatch, getState) => {
   dispatch({
     type: INVOICE_ACTION_TYPE.UPDATE_TEMPLATE_START,
   })
@@ -127,6 +153,7 @@ export const saveTemplate = () => (dispatch, getState) => {
   const data = snakify({
     ...getState().invoices.invoice.selectedInvoice.template,
     invoice: getState().invoices.invoice.selectedInvoice.uuid,
+    customImage: imageDataUrl,
   })
   AuthenticatedAPI.put(
     `invoice/templates/${getState().invoices.invoice.selectedInvoice.template.id}`,
@@ -365,12 +392,11 @@ export const updateInvoice = (data: Record<string, string | number | ColorResult
   })
 }
 
-export const setSelectedInvoice = (data: Record<'invoiceID' | 'type', string>) => (dispatch) => {
+export const setSelectedInvoice = (data: Record<'invoiceID', string>) => (dispatch) => {
   dispatch({ type: INVOICE_ACTION_TYPE.CLEAR_INVOICE_STATUS_CODE })
   dispatch({
     type: INVOICE_ACTION_TYPE.SET_SELECTED_INVOICE_DONE,
     payload: {
-      type: data.type,
       id: data.invoiceID,
     },
   })
@@ -404,7 +430,7 @@ export const saveInvoice = (uuid?: string) => (dispatch, getState) => {
           data: camelize(response.data),
         },
       })
-      !uuid.length && dispatch(saveTemplate())
+      !uuid && dispatch(saveTemplate())
     })
     .catch((err) =>
       dispatch({

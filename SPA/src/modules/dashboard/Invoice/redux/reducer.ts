@@ -32,6 +32,8 @@ type InvoiceState = {
     loading: boolean
     selectedTemplate: ITemplate | null
     templates: ITemplate[]
+    isCreateLoading: boolean
+    errorMessage?: string
   }
   transaction: {
     loading: boolean
@@ -75,6 +77,7 @@ const initialState: InvoiceState = {
     loading: false,
     selectedTemplate: {},
     templates: [],
+    isCreateLoading: false,
   },
   transaction: {
     loading: false,
@@ -142,32 +145,26 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
       state.client.errorMessage = parseErrorFromResponse(action.payload.errorMessage || '')
     })
     .addCase(INVOICE_ACTION_TYPE.SET_SELECTED_INVOICE_DONE, (state, action) => {
-      switch (action.payload.type) {
-        case 'new':
-          state.invoice.selectedInvoice = {
-            invoiceItems: [],
-            name: '',
-            uuid: '',
-            dueDate: '',
-            description: '',
-            extraInfo: '',
-            client: null,
-            template: state.template.selectedTemplate,
-            amount: 0,
-            currency: '',
-            payment: {
-              status: '',
-              totalDue: 0,
-            },
-          }
-          break
-        case 'exist':
-          state.invoice.selectedInvoice = state.invoice.invoices.find(
-            (item) => item.uuid === action.payload.id,
-          )
-          break
-        default:
-          break
+      const isAreadyInvoice = state.invoice.invoices.find((item) => item.uuid === action.payload.id)
+      if (isAreadyInvoice) {
+        state.invoice.selectedInvoice = isAreadyInvoice
+      } else {
+        state.invoice.selectedInvoice = {
+          invoiceItems: [],
+          name: '',
+          uuid: '',
+          dueDate: '',
+          description: '',
+          extraInfo: '',
+          client: null,
+          template: state.template.selectedTemplate,
+          amount: 0,
+          currency: '',
+          payment: {
+            status: '',
+            totalDue: 0,
+          },
+        }
       }
     })
     .addCase(INVOICE_ACTION_TYPE.CREATE_TRANSACTION_START, (state, _) => {
@@ -186,6 +183,19 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
     })
     .addCase(INVOICE_ACTION_TYPE.DELETE_TRANSACTION_START, (state, _) => {
       state.transaction.loading = true
+    })
+    .addCase(INVOICE_ACTION_TYPE.CREATE_SELECTED_TEMPLATE_START, (state, _) => {
+      state.template.isCreateLoading = true
+      state.template.selectedTemplate = {
+        image: state.template.selectedTemplate.image,
+        customImage: state.template.selectedTemplate.customImage,
+      }
+      state.template.errorMessage = ''
+    })
+    .addCase(INVOICE_ACTION_TYPE.CREATE_SELECTED_TEMPLATE_DONE, (state, action) => {
+      state.template.isCreateLoading = false
+      state.template.selectedTemplate = action.payload.data
+      state.template.errorMessage = action.payload.errorMessage
     })
     .addCase(INVOICE_ACTION_TYPE.SAVE_INVOICE_START, (state, _) => {
       state.invoice.loading = true

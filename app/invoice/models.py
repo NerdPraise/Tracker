@@ -96,7 +96,7 @@ class InvoiceTemplate(models.Model):
     category = models.CharField(choices=CategoryChoices.choices, default=CategoryChoices.SIMPLE, max_length=20)
     user = models.ForeignKey(User, related_name="templates", null=True, blank=True, on_delete=models.CASCADE)
     custom_image = models.BinaryField(
-        help_text="Holds the binary data image url of custom templates", null=True, blank=True, editable=True
+        help_text="Holds the binary data image url of custom templates", null=True, blank=True, editable=False
     )
 
     def __str__(self):

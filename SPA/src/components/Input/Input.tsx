@@ -33,6 +33,7 @@ interface InputProps {
   // customValidation requires the proceeding two
   customValidation?: (value: string | number) => null | string
   error?: Record<string, string>
+  errorName?: string
   setError?: React.Dispatch<React.SetStateAction<Record<string, string>>>
   iconStyle?: React.CSSProperties
 }
@@ -41,6 +42,7 @@ export const Input = ({
   type,
   labelName,
   autoComplete,
+  errorName,
   debounce,
   name,
   onChange,
@@ -65,7 +67,7 @@ export const Input = ({
       // Validate only if error and setError are defined
       if (isValid && customValidation) {
         const errorMessage = customValidation(value)
-        errorMessage && setError((prevState) => ({ ...prevState, [name]: errorMessage }))
+        errorMessage && setError((prevState) => ({ ...prevState, [errorName || name]: errorMessage }))
       }
     }
     if (debounce) {
@@ -79,7 +81,7 @@ export const Input = ({
     let isValid = true
     if (!value) {
       // eslint-disable-next-line quotes
-      setError((prevState) => ({ ...prevState, [name]: "Field can't be empty" }))
+      setError((prevState) => ({ ...prevState, [errorName || name]: "Field can't be empty" }))
       return false
     }
 
@@ -92,10 +94,10 @@ export const Input = ({
     }
 
     if (!isValid) {
-      setError((prevState) => ({ ...prevState, [name]: typeError[type] }))
+      setError((prevState) => ({ ...prevState, [errorName || name]: typeError[type] }))
       return false
     }
-    setError((prevState) => omit(prevState, [name]))
+    setError((prevState) => omit(prevState, [errorName || name]))
     return true
   }
   return (
@@ -121,7 +123,7 @@ export const Input = ({
           {...props}
         />
       </div>
-      {error?.[name] && <div className={styles.error}>{error[name]}</div>}
+      {error?.[errorName || name] && <div className={styles.error}>{error[errorName || name]}</div>}
     </div>
   )
 }

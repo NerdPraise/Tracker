@@ -20,7 +20,7 @@ export const useEdit = () => {
   const loadingRef = useRef(null)
 
   const invoiceItems = selectedInvoice?.invoiceItems
-  const templateSettings = selectedInvoice?.template?.settings
+  const templateSettings = selectedInvoice?.template?.settings as SimpleSettings
 
   const onHandleAdd = () => {
     setCurrentInvoiceItem(invoiceItems?.length)

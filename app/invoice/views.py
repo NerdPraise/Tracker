@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -239,6 +240,27 @@ class InvoiceSettingsAPIView(generics.ListAPIView, generics.UpdateAPIView):
 class InvoiceCustomTemplateAPIView(views.APIView):
     serializer_class = InvoiceTemplateSerializer
     queryset = InvoiceTemplate.objects.all()
+
+    def get(self, request):
+        user = request.user
+        template_uuid = request.query_params.get("template")
+
+        if not template_uuid:
+            return Response({"error": "Template UUID is required."}, status=400)
+
+        try:
+            to_be_cloned_template = InvoiceTemplate.objects.get(uuid=template_uuid)
+        except InvoiceTemplate.DoesNotExist:
+            return Response({"error": "Template not found."}, status=400)
+
+        to_be_cloned_template.pk = None
+        to_be_cloned_template._state.adding = True
+        to_be_cloned_template.user = user
+        to_be_cloned_template.uuid = uuid.uuid4()
+        to_be_cloned_template.save()
+
+        serializer = self.serializer_class(to_be_cloned_template, context={"request": request})
+        return Response(serializer.data, status=200)
 
     def post(self, request):
         user = request.user

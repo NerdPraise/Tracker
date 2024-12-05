@@ -829,11 +829,11 @@ export const getContext = (invoice: IInvoice, user: IUser, invoiceSettings: IInv
   },
   client: invoice?.client?.name,
   theme: {
-    footerBg: invoice?.template?.settings.theme?.footerBg,
-    accent: invoice?.template?.settings.theme?.accent,
-    header: invoice?.template?.settings.theme?.header,
-    body: invoice?.template?.settings.theme?.body,
-    background: invoice?.template?.settings.theme?.background,
+    footerBg: invoice?.template?.settings?.theme?.footerBg,
+    accent: invoice?.template?.settings?.theme?.accent,
+    header: invoice?.template?.settings?.theme?.header,
+    body: invoice?.template?.settings?.theme?.body,
+    background: invoice?.template?.settings?.theme?.background,
   },
   invoice: {
     description: invoice?.description,

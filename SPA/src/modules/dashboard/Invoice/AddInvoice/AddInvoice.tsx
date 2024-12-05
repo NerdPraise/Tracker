@@ -1,18 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { Button, Card, Modal, Spacer } from '_Home/components'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 
-import { setSelectedTemplate } from '../redux/actions'
+import BouncingBalls from '_Images/bouncing-circles.svg?react'
+
+import { createNewCustomTemplate, setSelectedTemplate } from '../redux/actions'
 import { TemplatesProcessor } from '../redux/processor'
 import styles from '../Invoice.module.styl'
 
 export const AddInvoice = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
+  const [createLoading, setCreateLoading] = useState<boolean>(false)
   const {
-    template: { templates, selectedTemplate },
+    template: { templates, selectedTemplate, isCreateLoading, errorMessage },
   } = useAppSelector((state) => state.invoices)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -25,13 +28,21 @@ export const AddInvoice = () => {
   }
 
   const onTemplateSelected = () => {
-    setShowModal(false)
-    if (selectedTemplate.category.toLowerCase() === 'custom') {
-      navigate(`../custom/${selectedTemplate.uuid}`)
-      return
-    }
-    navigate(`./${selectedTemplate.uuid}`)
+    setCreateLoading(true)
+    dispatch(createNewCustomTemplate())
   }
+
+  useEffect(() => {
+    if (createLoading && !isCreateLoading && selectedTemplate.uuid && !errorMessage.length) {
+      if (selectedTemplate.category.toLowerCase() === 'custom') {
+        navigate(`../custom/${selectedTemplate.uuid}`)
+        return
+      }
+      navigate(`../edit/temp`)
+      setCreateLoading(false)
+      setShowModal(false)
+    }
+  }, [isCreateLoading, selectedTemplate])
 
   return (
     <SideBarLayout disableHide>
@@ -97,7 +108,12 @@ export const AddInvoice = () => {
               />
             </div>
             <div>
-              <Button onClick={() => onTemplateSelected()} text="Select template" />
+              {!createLoading && <Button onClick={() => onTemplateSelected()} text="Select template" />}
+              {createLoading && (
+                <div className={styles.loadingProject}>
+                  <BouncingBalls />
+                </div>
+              )}
             </div>
           </div>
         </Modal>

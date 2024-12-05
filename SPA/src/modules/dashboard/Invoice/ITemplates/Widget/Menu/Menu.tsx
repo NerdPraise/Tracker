@@ -184,6 +184,13 @@ export const Menu = memo(
               },
               {
                 child: (
+                  <div onClick={() => handleFontFamilyChange('garet')} style={{ fontFamily: 'garet' }}>
+                    Garet
+                  </div>
+                ),
+              },
+              {
+                child: (
                   <div onClick={() => handleFontFamilyChange('sign')} style={{ fontFamily: 'sign' }}>
                     Sign
                   </div>

@@ -39,9 +39,7 @@ const CreateTemplate = (props: CreateTemplateProps) => {
   const { templateId } = useParams()
 
   useEffect(() => {
-    if (templateId) {
-      dispatch(setSelectedTemplate(templateId))
-    } else {
+    if (!templateId) {
       dispatchedCreateCustomTemplates()
     }
   }, [])

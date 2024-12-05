@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from 'react'
+import { forwardRef, MutableRefObject, useEffect, useRef, useState } from 'react'
 import ClassNames from 'classnames'
 import { Plus, Trash2 } from 'lucide-react'
 import Wheel from '@uiw/react-color-wheel'
@@ -9,8 +9,18 @@ import { motion } from 'framer-motion'
 import { Content, List, Root, Trigger } from '@radix-ui/react-tabs'
 import { ColorResult } from '@uiw/color-convert'
 
-import { Button, Card, Input, Select, TextArea, Dropdown, DatePicker, Modal } from '_Home/components'
-import { capitalise, convertStringToColor, StatusCode } from '_Home/common/utils'
+import {
+  Button,
+  Card,
+  Input,
+  Select,
+  TextArea,
+  Dropdown,
+  DatePicker,
+  Modal,
+  HelpToolTip,
+} from '_Home/components'
+import { capitalise, convertStringToColor, screenshotElement, StatusCode } from '_Home/common/utils'
 import { currencyOptions } from '_Home/constants'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 
@@ -31,7 +41,25 @@ export const EditForm = forwardRef(function EditForm(
     defaultOption,
     options,
     hasTemplateChanged,
-  }: any,
+    frameRef,
+  }: {
+    frameRef?: MutableRefObject<HTMLDivElement>
+    invoiceItems: IInvoiceItems[]
+    currentInvoiceItem: number
+    setCurrentInvoiceItem: React.Dispatch<React.SetStateAction<number>>
+    onHandleAdd: VoidFunction
+    selectedInvoice: IInvoice
+    defaultCurrencyOption: Record<'label' | 'value', string>
+    displayColor: string
+    onClickInputColor: (value: string) => void
+    templateSettings: {
+      html: string
+      theme: ITheme
+    }
+    defaultOption: Record<'label' | 'value', string | number>
+    options: Record<'label' | 'value', string | number>[]
+    hasTemplateChanged: boolean
+  },
   ref: any,
 ) {
   const { loading, statusCode, errorMessage } = useAppSelector((state) => state.invoices.client)
@@ -40,8 +68,9 @@ export const EditForm = forwardRef(function EditForm(
   const [open, setOpen] = useState<boolean>(false)
   const formRef = useRef<HTMLFormElement>(null)
   const onHandleSaveTemplate = () => {
+    console.log(frameRef)
     ref.current?.continuousStart()
-    dispatch(saveTemplate())
+    screenshotElement(frameRef, (e: string) => dispatch(saveTemplate(e)))
   }
   const dispatchedUpdateInvoice = (data: Record<string, string | number | ColorResult>) =>
     dispatch(updateInvoice(data))
@@ -68,7 +97,9 @@ export const EditForm = forwardRef(function EditForm(
   }
   const onHandleSave = () => {
     ref.current?.continuousStart()
+    // screenshotElement(frameRef, (e: string) =>
     dispatch(saveInvoice(selectedInvoice.uuid))
+    // )
   }
 
   const onDeleteItem = () => {
@@ -126,10 +157,12 @@ export const EditForm = forwardRef(function EditForm(
                     className={ClassNames(styles.input_group, {
                       [styles.active_it]: ind === currentInvoiceItem,
                     })}
+                    key={ind}
                   >
                     <Input
                       type="text"
-                      name={`description` + ind}
+                      name="description"
+                      errorName={`description${ind}`}
                       labelName="Description"
                       defaultValue={item.description}
                       onChange={(e) => onHandleInputChange(e, ind)}
@@ -141,7 +174,8 @@ export const EditForm = forwardRef(function EditForm(
                       <Input
                         type="number"
                         min={0}
-                        name={`quantity` + ind}
+                        errorName={`quantity` + ind}
+                        name="quantity"
                         labelName="Quantity"
                         defaultValue={item.quantity}
                         onChange={(e) => onHandleInputChange(e, ind)}
@@ -151,7 +185,8 @@ export const EditForm = forwardRef(function EditForm(
                       <Input
                         type="number"
                         min={0}
-                        name={`unitPrice` + ind}
+                        name="unitPrice"
+                        errorName={`unitPrice` + ind}
                         labelName="Rate"
                         defaultValue={item.unitPrice}
                         onChange={(e) => onHandleInputChange(e, ind)}
@@ -253,7 +288,7 @@ export const EditForm = forwardRef(function EditForm(
                           />
                         }
                         iconStyle={{
-                          backgroundColor: v,
+                          backgroundColor: v as string,
                           cursor: 'pointer',
                         }}
                         type="text"
@@ -288,7 +323,12 @@ export const EditForm = forwardRef(function EditForm(
 
         <div className={styles.btn_area}>
           <Button onClick={onHandleSave} text="Save" />
-          <Button onClick={onHandleSaveTemplate} text="Save Template" disabled={!hasTemplateChanged} />
+          <Button
+            onClick={onHandleSaveTemplate}
+            text="Save Template"
+            disabled={!hasTemplateChanged || !selectedInvoice.uuid}
+          />
+          <HelpToolTip delay={0} helpMessage="Save an invoice to allow template changes" />
         </div>
       </Card>
       <Modal

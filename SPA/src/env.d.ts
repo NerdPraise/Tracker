@@ -44,6 +44,8 @@ declare global {
     color?: string
   }
 
+  type SimpleSettings = { html: string; theme: ITheme }
+
   type Widget = {
     name: string
     widgetId: string
@@ -57,7 +59,7 @@ declare global {
   }
 
   type ITemplate = {
-    settings: { html: string; theme: IThemes } | Settings
+    settings: SimpleSettings | Settings
     category: string
     user: string | null
     uuid: string
