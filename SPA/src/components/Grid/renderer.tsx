@@ -23,8 +23,9 @@ export const ActionsCellRenderer = ({
   api,
   node,
   DeleteBtn,
+  view,
   deleteAction,
-}: CustomCellRendererProps & { deleteAction: (...e) => null; DeleteBtn: any }) => {
+}: CustomCellRendererProps & { deleteAction: (...e) => null; DeleteBtn: any; view: boolean }) => {
   const dispatch = useDispatch()
   const onRemoveClick = useCallback(() => {
     const rowData = node.data
@@ -40,9 +41,11 @@ export const ActionsCellRenderer = ({
 
   return (
     <div className={styles.ActionsRenderer}>
-      <div onClick={handleViewClick}>
-        <NotebookText size={19} />
-      </div>
+      {view && (
+        <div onClick={handleViewClick}>
+          <NotebookText size={19} />
+        </div>
+      )}
       <div onClick={onRemoveClick}>
         {!DeleteBtn ? <OctagonX fill="#891919" size={19} /> : <DeleteBtn size={19} />}
       </div>

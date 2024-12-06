@@ -182,7 +182,7 @@
     display flex
     justify-content space-between
     align-items center
-    margin-bottom 30px
+    margin-bottom 20px
     height 50px
     h2
       display flex
@@ -201,13 +201,14 @@
   .details
     display flex
     height 100vh
+    column-gap 30px
     overflow-y auto
     &::-webkit-scrollbar 
       display none
     -ms-overflow-style none
     scrollbar-width none
     .frame 
-      width 100%
+      width 800px
       .transactions
         display flex
         padding-bottom 130px
@@ -218,7 +219,6 @@
           width 100%
           height 200px
     .client_actions
-      margin-left 25px
       min-width 450px
       max-width 450px
       width 100%
@@ -289,7 +289,7 @@
     display flex
     justify-content space-between
     align-items center
-    margin-bottom 30px
+    margin-bottom 20px
     min-height 50px
     height 60px
     h2
@@ -304,17 +304,17 @@
     height 1500vh
     overflow-y auto
     padding-bottom 60px
+    column-gap 30px
     &::-webkit-scrollbar 
       display none
     -ms-overflow-style none
     scrollbar-width none
     .frame 
-      width 100%
+      width 800px
       padding-bottom 130px
       min-height 800px
       height 100%
     .form 
-      margin-left 25px
       min-width 450px
       max-width 450px
       width 100%
@@ -334,14 +334,13 @@
         width 100%
         .tab_list
           display flex
-          justify-content space-between
           gap 0 20px
           .trigger
             all unset
             cursor pointer
             margin-bottom 12px
-            width 100%
             padding-bottom 10px
+            min-width 80px
             color #959595
             font-size 14px
             transition border-bottom 5s 
@@ -355,7 +354,7 @@
       .form_card_children
         padding 15px
       .form_card
-        height 700px
+        height 750px
         overflow-y auto
         .btn_area
           position static
@@ -369,6 +368,8 @@
             width 120px
           button:first-of-type
             margin-right 15px
+        label
+          font-size 12px
 
         .dots_container
           display flex
@@ -390,21 +391,21 @@
           .input_group
             display none
             label
-              font-size 13px
+              font-size 12px
           .active_it
             display block
         .add_item
           color $color-purple
           display flex
           align-items center
-          font-size 14px
+          font-size 12px
           cursor pointer
           justify-content center
-          margin 25px 0
+          margin 15px 0
 
           svg
             stroke $color-purple
-            margin-right 7px
+            margin-right 3px
       .halves
         display flex
         justify-content space-between
@@ -414,10 +415,10 @@
         .select, .datepicker, .color_input
           margin 10px 0
           label
-            font-size 13px
+            font-size 12px
       .textarea
         label 
-          font-size 13px
+          font-size 12px
         textarea
           font-family inherit
           padding 8px
@@ -530,7 +531,7 @@
       .price
         font-size 30px
       .month
-        font-size 13px
+        font-size 12px
         color #838181
       .features
         font-weight bold

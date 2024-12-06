@@ -12,6 +12,8 @@ export const INVOICE_ACTION_TYPE = {
   GET_USER_CLIENT_DONE: 'INVOICE_ACTION_TYPE/GET_USER_CLIENT/DONE',
   CREATE_USER_CLIENT_START: 'INVOICE_ACTION_TYPE/CREATE_USER_CLIENT/START',
   CREATE_USER_CLIENT_DONE: 'INVOICE_ACTION_TYPE/CREATE_USER_CLIENT/DONE',
+  UPDATE_USER_CLIENT_START: 'INVOICE_ACTION_TYPE/UPDATE_USER_CLIENT/START',
+  UPDATE_USER_CLIENT_DONE: 'INVOICE_ACTION_TYPE/UPDATE_USER_CLIENT/DONE',
   GET_ALL_TEMPLATES_START: 'INVOICE_ACTION_TYPE/GET_ALL_TEMPLATES/START',
   GET_ALL_TEMPLATES_DONE: 'INVOICE_ACTION_TYPE/GET_ALL_TEMPLATES/DONE',
   SET_SELECTED_TEMPLATE_DONE: 'INVOICE_ACTION_TYPE/SET_SELECTED_TEMPLATE/DONE',
@@ -265,6 +267,31 @@ export const createUserClient = (data: FormData) => (dispatch) => {
         },
       }),
     )
+}
+
+export const updateUserClient = (data: FormData, id: number, callable?: VoidFunction) => (dispatch) => {
+  dispatch({ type: INVOICE_ACTION_TYPE.UPDATE_USER_CLIENT_START })
+
+  AuthenticatedAPI.put(`clients/${id}`, data)
+    .then((response) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.UPDATE_USER_CLIENT_DONE,
+        payload: {
+          data: camelize(response.data),
+          status: response.status,
+        },
+      })
+      callable()
+    })
+    .catch((err) => {
+      dispatch({
+        type: INVOICE_ACTION_TYPE.UPDATE_USER_CLIENT_DONE,
+        payload: {
+          errorMessage: err.response ? err.response.data : 'Something terrible occurred',
+        },
+      }),
+        callable()
+    })
 }
 
 export const deleteUserClient = (id: number) => (dispatch) => {

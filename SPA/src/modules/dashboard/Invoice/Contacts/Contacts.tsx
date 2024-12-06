@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { CellClickedEvent } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 
-import { Button, Modal, Input, Grid, TextArea } from '_Home/components'
+import { Button, Modal, Input, Grid, TextArea, Spacer } from '_Home/components'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { noRowRenderer } from '_Home/components/Grid/renderer'
@@ -71,6 +71,7 @@ const Contacts = () => {
             onCellClicked={onCellClick}
           />
         </div>
+        <Spacer />
       </div>
       <Modal
         isVisible={open}
@@ -100,18 +101,11 @@ const Contacts = () => {
             />
             <TextArea
               className={styles.textarea}
-              placeholder="Specify extra information e.g. NUBAN e.t.c."
+              placeholder="Add client's address and other info. (Optional)"
               name="address"
-              rows={4}
+              rows={10}
               cols={40}
               labelName={<p className={styles.label_name}>Address</p>}
-              // onChange={(e) =>
-              //   onHandleGenericChange({
-              //     field: e.target.name,
-              //     resVal: e.target.value,
-              //     section: 'others',
-              //   })
-              // }
             />
           </div>
           <div className={styles.send_btn}>

@@ -150,7 +150,7 @@ class InvoicePreviewView(generics.RetrieveAPIView):
     queryset = Invoice.objects.all()
 
 
-class ClientAPIView(generics.ListCreateAPIView, generics.DestroyAPIView):
+class ClientAPIView(generics.ListCreateAPIView, generics.DestroyAPIView, generics.UpdateAPIView):
     serializer_class = ClientSerializer
     permission_classes = [permissions.IsAuthenticated]
 

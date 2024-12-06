@@ -33,7 +33,7 @@ class Invoice(TimeStampedModel):
     issue_date = models.DateField(null=True, blank=True)
     due_date = models.DateField()
     user = models.ForeignKey(User, related_name="invoices", on_delete=models.CASCADE)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     extra_info = models.TextField(null=True, blank=True)
     currency = models.CharField(choices=CurrencyChoices.choices, default=CurrencyChoices.USD, max_length=20)
     template = models.ForeignKey("InvoiceTemplate", on_delete=models.PROTECT, null=True)
@@ -45,7 +45,7 @@ class Invoice(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.name = f"INV-{self.user.invoices.count() + 1}"
+            self.name = f"{self.user.invoicesettings.prefix}-{self.user.invoices.count() + 1}"
         return super().save(*args, **kwargs)
 
     @cached_property
@@ -110,7 +110,7 @@ class Client(TimeStampedModel):
     address = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} {self.email}"
 
     class Meta:
         constraints = (models.UniqueConstraint(fields=["user", "email"], name="unique-user-clients"),)

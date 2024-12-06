@@ -49,6 +49,7 @@ export const InvoiceEdit = () => {
   useEffect(() => {
     if (!loading) {
       if (statusCode === StatusCode.CREATED) {
+        console.log('NAH THIS RUNS')
         navigate(`../../invoice/${selectedInvoice?.uuid}`)
       } else if (statusCode === StatusCode.SUCCESS) {
         // For templates
@@ -59,6 +60,7 @@ export const InvoiceEdit = () => {
 
   useEffect(() => {
     if (invoiceID === 'temp' && selectedInvoice?.uuid) {
+      console.log('THIS RUNS')
       navigate(`../${selectedInvoice.uuid}`)
     }
   }, [selectedInvoice])

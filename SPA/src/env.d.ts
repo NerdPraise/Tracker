@@ -76,6 +76,7 @@ declare global {
     name: string
     email: string
     createdAt: string
+    address: string
   }
 
   type IUser = {

@@ -77,7 +77,7 @@ urlpatterns = [
         name="invoice-settings-update",
     ),
     path("clients/", invoice_views.ClientAPIView.as_view(), name="client-list-create"),
-    path("clients/<int:pk>", invoice_views.ClientAPIView.as_view(), name="client-delete"),
+    path("clients/<int:pk>", invoice_views.ClientAPIView.as_view(), name="client-update-delete"),
     path("invoice/payment/", invoice_views.TransactionAPIView.as_view(), name="invoice-payment-list-create"),
     path("invoice/<str:uuid>/", invoice_views.InvoicePreviewView.as_view(), name="invoice-retrieve"),
 ] + router.urls

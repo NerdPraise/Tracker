@@ -29,18 +29,31 @@ export const AddInvoice = () => {
 
   const onTemplateSelected = () => {
     setCreateLoading(true)
-    dispatch(createNewCustomTemplate())
+    if (selectedTemplate.category.toLowerCase() === 'custom') {
+      dispatch(createNewCustomTemplate())
+    }
   }
+
+  useEffect(() => {
+    let debouncedCreateSimpleInvoice
+    if (createLoading && showModal && selectedTemplate?.category.toLowerCase() !== 'custom') {
+      debouncedCreateSimpleInvoice = setTimeout(() => {
+        navigate(`../edit/temp`)
+        setCreateLoading(false)
+        setShowModal(false)
+      }, 2000)
+    }
+
+    return () => debouncedCreateSimpleInvoice && clearTimeout(debouncedCreateSimpleInvoice)
+  }, [createLoading])
 
   useEffect(() => {
     if (createLoading && !isCreateLoading && selectedTemplate.uuid && !errorMessage.length) {
       if (selectedTemplate.category.toLowerCase() === 'custom') {
         navigate(`../custom/${selectedTemplate.uuid}`)
+        setCreateLoading(false)
         return
       }
-      navigate(`../edit/temp`)
-      setCreateLoading(false)
-      setShowModal(false)
     }
   }, [isCreateLoading, selectedTemplate])
 

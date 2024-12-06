@@ -134,6 +134,7 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
       state.template.selectedTemplate = state.template.templates.find(
         (item) => item.uuid === action.payload.data,
       )
+      state.invoice.selectedInvoice = null
     })
     .addCase(INVOICE_ACTION_TYPE.CREATE_USER_CLIENT_START, (state, _) => {
       state.client.loading = true
@@ -144,13 +145,31 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
       state.client.statusCode = action.payload.status
       state.client.errorMessage = parseErrorFromResponse(action.payload.errorMessage || '')
     })
+    .addCase(INVOICE_ACTION_TYPE.UPDATE_USER_CLIENT_START, (state, _) => {
+      state.client.loading = true
+    })
+    .addCase(INVOICE_ACTION_TYPE.UPDATE_USER_CLIENT_DONE, (state, action) => {
+      state.client.loading = false
+      state.client.selectedClient = action.payload.data
+      state.client.clients = state.client.clients.map((item) =>
+        item.id === action.payload.data.id ? { ...item, ...action.payload.data } : item,
+      )
+      state.client.statusCode = action.payload.status
+      state.client.errorMessage = parseErrorFromResponse(action.payload.errorMessage || '')
+    })
     .addCase(INVOICE_ACTION_TYPE.SET_SELECTED_INVOICE_DONE, (state, action) => {
       const isAreadyInvoice = state.invoice.invoices.find((item) => item.uuid === action.payload.id)
       if (isAreadyInvoice) {
         state.invoice.selectedInvoice = isAreadyInvoice
       } else {
         state.invoice.selectedInvoice = {
-          invoiceItems: [],
+          invoiceItems: [
+            {
+              description: '',
+              unitPrice: 0,
+              quantity: 0,
+            },
+          ],
           name: '',
           uuid: '',
           dueDate: '',
@@ -208,6 +227,19 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
         ...state.invoice.selectedInvoice,
         ...action.payload.data,
         template,
+      }
+      const invoiceExist = state.invoice.invoices.find((item) => item.uuid === action.payload.data.uuid)
+      if (invoiceExist) {
+        state.invoice.invoices = state.invoice.invoices.map((item) =>
+          item.uuid === action.payload.uuid
+            ? {
+                ...item,
+                ...action.payload.data,
+              }
+            : item,
+        )
+      } else {
+        state.invoice.invoices.push(action.payload.data)
       }
     })
     .addCase(INVOICE_ACTION_TYPE.GET_SINGLE_INVOICE_START, (state, action) => {
@@ -269,7 +301,6 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
             description: '',
             unitPrice: 0,
             quantity: 0,
-            invoice: state.invoice.selectedInvoice.id,
           })
           break
 
