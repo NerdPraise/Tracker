@@ -48,6 +48,7 @@ const customStyles = {
   option: (styles, { isFocused, isSelected }) => {
     return {
       ...styles,
+      fontSize: '12px',
       backgroundColor: isSelected ? '#181c1f' : isFocused ? '#181c1f' : undefined,
       ':active': {
         ...styles[':active'],

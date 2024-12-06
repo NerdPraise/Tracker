@@ -55,10 +55,9 @@ const InvoiceSettings = () => {
       setDisableCardDeets(true)
     }
   }
-  const defaultCurrencyOption = useMemo(
-    () => currencyOptions.find((item) => item.label === settings?.defaultCurrency) || currencyOptions[0],
-    [settings?.defaultCurrency],
-  )
+  const defaultCurrencyOption = useMemo(() => {
+    currencyOptions.find((item) => item.value === settings?.defaultCurrency) || currencyOptions[0]
+  }, [settings?.defaultCurrency])
 
   return (
     <div className={styles.InvoiceSettings}>

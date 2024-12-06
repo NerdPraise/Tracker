@@ -23,7 +23,7 @@ declare global {
     name: string
     uuid: string
     issueDate: string
-    dueDate: Date | null
+    dueDate: string | null
     description: string
     extraInfo: string
     client: IClient

@@ -222,7 +222,7 @@ export const EditForm = forwardRef(function EditForm(
                       <DatePicker
                         className={styles.datepicker}
                         label="Due By"
-                        selected={selectedInvoice?.dueDate}
+                        selected={new Date(selectedInvoice?.dueDate)}
                         dateFormat="yyyy-MM-dd"
                         onSelect={(date) =>
                           onHandleGenericChange({
@@ -237,6 +237,7 @@ export const EditForm = forwardRef(function EditForm(
                     <Select
                       className={styles.select}
                       label="Currency"
+                      defaultValue={defaultCurrencyOption}
                       options={currencyOptions}
                       onChange={(e) =>
                         onHandleGenericChange({

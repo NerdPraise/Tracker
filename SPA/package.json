@@ -34,6 +34,7 @@
     "@uiw/react-color-colorful": "^2.3.2",
     "@uiw/react-color-wheel": "^2.3.0",
     "ag-grid-react": "32.2.2",
+    "currency-list": "^1.0.8",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.3.31",
     "html2canvas": "^1.4.1",

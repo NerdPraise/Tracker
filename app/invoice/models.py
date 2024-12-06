@@ -107,6 +107,7 @@ class Client(TimeStampedModel):
     name = models.CharField(max_length=255)
     email = models.EmailField()
     user = models.ForeignKey(User, related_name="clients", on_delete=models.CASCADE)
+    address = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name

@@ -1,3 +1,5 @@
+import CurrencyList from 'currency-list'
+
 export const plans = [
   {
     name: 'Free',
@@ -28,4 +30,7 @@ export const plans = [
   },
 ]
 
-export const currencyOptions = [{ label: 'USD', value: 'USD' }]
+export const currencyOptions = Object.entries(CurrencyList.getAll('en_US')).map(([k, v]) => ({
+  label: `${v.name} ${v.symbol}`,
+  value: v.code,
+}))
