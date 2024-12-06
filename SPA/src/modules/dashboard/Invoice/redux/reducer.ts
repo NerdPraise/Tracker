@@ -253,6 +253,12 @@ export const invoiceReducer: Reducer<InvoiceState> = createReducer(initialState,
           selectedInvoice.template.settings.theme[`${colorName}__hsva`] = color.hsva
           break
 
+        case 'logo':
+          const { logo } = action.payload.data
+          state.invoice.hasTemplateChanged = true
+          selectedInvoice.template.settings.theme['logo'] = logo
+          break
+
         case 'delete':
           const { id } = action.payload.data
           selectedInvoice.invoiceItems.splice(id, 1)

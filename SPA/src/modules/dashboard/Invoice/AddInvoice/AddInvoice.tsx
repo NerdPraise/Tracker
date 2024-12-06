@@ -61,7 +61,7 @@ export const AddInvoice = () => {
             <div className={`${styles.template_container}`}>
               {processed_templates.recent.map((item, ind) => (
                 <Card onClick={() => onTemplateClick(item.uuid)} key={ind} className={styles.template}>
-                  <img id="full" className={styles.card_image} src={item?.image || item?.customImage} />
+                  <img id="full" className={styles.card_image} src={item?.customImage || item?.image} />
                   {item.category.toLowerCase() === 'custom' && (
                     <div className={styles.custom_backdrop}>CUSTOM</div>
                   )}
@@ -104,7 +104,7 @@ export const AddInvoice = () => {
               <img
                 id="full"
                 className={styles.card_image}
-                src={selectedTemplate?.image || selectedTemplate?.customImage}
+                src={selectedTemplate?.customImage || selectedTemplate?.image}
               />
             </div>
             <div>

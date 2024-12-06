@@ -76,10 +76,11 @@ class InvoiceTemplateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated):
         user = self.context["request"].user
         invoice = validated["invoice"]
+        custom_image = validated.get("custom_image")
         template, created = InvoiceTemplate.objects.update_or_create(
             user=user,
             invoice=validated["invoice"],
-            defaults={"settings": validated["settings"], "user": user},
+            defaults={"settings": validated["settings"], "user": user, "custom_image": custom_image},
         )
 
         if created:

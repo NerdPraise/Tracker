@@ -57,7 +57,6 @@ export const userReducer: Reducer<userInitialStateI> = createReducer(userInitial
       state.isLoggedIn = false
     })
     .addCase(USER_ACTION_TYPES.SET_DATA_FOR_INVOICE, (state, action) => {
-      console.log(action)
       state.user = action.payload.data.user
     })
 })

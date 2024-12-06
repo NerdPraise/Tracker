@@ -5,10 +5,10 @@ import { ArrowLeft } from 'lucide-react'
 import { SideBarLayout } from '_Home/layout/SideBarLayout'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 import { Frame, Spacer } from '_Home/components'
-import { screenshotElement, StatusCode } from '_Home/common/utils'
+import { StatusCode } from '_Home/common/utils'
 
 import { getContext, a, b } from '../constants'
-import { setSelectedInvoice, setSelectedTemplate } from '../redux/actions'
+import { setSelectedInvoice } from '../redux/actions'
 import { EditForm } from './EditForm'
 import { useEdit } from './useEdit'
 
@@ -18,6 +18,7 @@ export const InvoiceEdit = () => {
   const {
     invoice: { invoices, selectedInvoice, statusCode, loading, hasTemplateChanged },
     invoiceSettings: { settings },
+    template: { selectedTemplate },
   } = useAppSelector((state) => state.invoices)
   const { user } = useAppSelector((state) => state.user)
   const dispatch = useAppDispatch()
@@ -38,6 +39,12 @@ export const InvoiceEdit = () => {
     templateSettings,
     loadingRef,
   } = useEdit()
+
+  useEffect(() => {
+    if (invoiceID === 'temp' && !Object.keys(selectedTemplate).length) {
+      navigate('../add')
+    }
+  }, [])
 
   useEffect(() => {
     if (!loading) {
@@ -67,7 +74,7 @@ export const InvoiceEdit = () => {
       <div className={styles.InvoiceEdit}>
         <div className={styles.header}>
           <h2>
-            <Link to={invoiceID ? `../${invoiceID}` : '../add'}>
+            <Link to={invoiceID !== 'temp' ? `../${invoiceID}` : '../add'}>
               <ArrowLeft />
             </Link>
             Edit Invoice {selectedInvoice?.name}

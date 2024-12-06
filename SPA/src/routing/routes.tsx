@@ -35,7 +35,7 @@ export const ROUTES: routes = {
       logo: <Receipt />,
       permission: 'view-budget',
     },
-    TRACK: {
+    MILESTONE: {
       path: '/track',
       key: 'TRACK',
       menu: true,

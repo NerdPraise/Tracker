@@ -46,7 +46,7 @@ export const useEdit = () => {
   const defaultCurrencyOption = useMemo(
     () =>
       currencyOptions.find(
-        (item) => item.label === (selectedInvoice?.currency || settings?.defaultCurrency || 'USD'),
+        (item) => item.label === (selectedInvoice?.currency || settings?.defaultCurrency),
       ),
     [selectedInvoice, settings?.defaultCurrency],
   )

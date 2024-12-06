@@ -41,7 +41,7 @@ const BaseRouter = [
             element: <BudgetStudio />,
           },
           {
-            path: ROUTES.authenticatedRoutes.TRACK.path,
+            path: ROUTES.authenticatedRoutes.MILESTONE.path,
             element: <Track />,
           },
           {

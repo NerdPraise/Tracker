@@ -1,5 +1,5 @@
 import { useParams } from 'react-router'
-import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
+import { useAppDispatch, useAppSelector, useUser } from '_Home/common/hooks'
 
 import { Button, Frame } from '_Home/components'
 import { htmlToPdf } from '_Home/common/utils'
@@ -16,7 +16,7 @@ export const InvoicePreview = () => {
     invoice: { preview, loading },
     invoiceSettings: { settings },
   } = useAppSelector((state) => state.invoices)
-  const { user } = useAppSelector((state) => state.user)
+  const { user } = useUser()
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -34,16 +34,17 @@ export const InvoicePreview = () => {
     htmlToPdf(invoiceToBeDownloaded)
   }
 
-  const templateSettings = preview?.template?.settings
+  const templateSettings = preview?.template?.settings as SimpleSettings
   const context = useMemo(() => getContext(preview, user, settings), [preview, settings])
-  console.log(user)
+
   if (loading) {
     return 'Loading.......'
   }
   return (
     <div className={styles.InvoicePreview}>
-      <div className="header"></div>
-      <Frame template={templateSettings?.html || ''} context={context} />
+      <div className={styles.frame_body}>
+        <Frame template={templateSettings?.html || ''} className={styles.frame} context={context} />
+      </div>
       <div className={styles.banner}>
         <Button onClick={null} text="Create your Invoice" />
         <Button onClick={handleDownloadInvoice} text="Download PDF" />

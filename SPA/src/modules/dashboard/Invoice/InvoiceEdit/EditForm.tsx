@@ -1,6 +1,6 @@
 import { forwardRef, MutableRefObject, useEffect, useRef, useState } from 'react'
 import ClassNames from 'classnames'
-import { Plus, Trash2 } from 'lucide-react'
+import { Camera, Plus, Trash2 } from 'lucide-react'
 import Wheel from '@uiw/react-color-wheel'
 import LoadingBar from 'react-top-loading-bar'
 import { color as colorFunc, hexToHsva } from '@uiw/color-convert'
@@ -24,8 +24,13 @@ import { capitalise, convertStringToColor, screenshotElement, StatusCode } from 
 import { currencyOptions } from '_Home/constants'
 import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 
-import styles from '../Invoice.module.styl'
 import { saveInvoice, updateInvoice, saveTemplate, createUserClient } from '../redux/actions'
+
+import styles from '../Invoice.module.styl'
+
+const validateFields = {
+  client: 'Specify a client',
+}
 
 export const EditForm = forwardRef(function EditForm(
   {
@@ -68,7 +73,6 @@ export const EditForm = forwardRef(function EditForm(
   const [open, setOpen] = useState<boolean>(false)
   const formRef = useRef<HTMLFormElement>(null)
   const onHandleSaveTemplate = () => {
-    console.log(frameRef)
     ref.current?.continuousStart()
     screenshotElement(frameRef, (e: string) => dispatch(saveTemplate(e)))
   }
@@ -90,6 +94,20 @@ export const EditForm = forwardRef(function EditForm(
   const onHandleGenericChange = (e) => {
     dispatchedUpdateInvoice(e)
   }
+  const onHandleLogoChange = (e) => {
+    const file = e.target.files[0]
+
+    // Encode the file using the FileReader API
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      onHandleGenericChange({
+        logo: reader.result,
+        section: 'logo',
+      })
+      console.log(reader.result)
+    }
+    reader.readAsDataURL(file)
+  }
   const onHandleInputChange = (e, ind) => {
     const { value, name } = e.target
     const data = { value, name, ind, section: 'invoiceItems' }
@@ -97,9 +115,7 @@ export const EditForm = forwardRef(function EditForm(
   }
   const onHandleSave = () => {
     ref.current?.continuousStart()
-    // screenshotElement(frameRef, (e: string) =>
     dispatch(saveInvoice(selectedInvoice.uuid))
-    // )
   }
 
   const onDeleteItem = () => {
@@ -113,6 +129,7 @@ export const EditForm = forwardRef(function EditForm(
       setOpen(false)
     }
   }, [statusCode, loading])
+  // console.log(templateSettings?.html)
 
   return (
     <div className={styles.form}>
@@ -220,7 +237,6 @@ export const EditForm = forwardRef(function EditForm(
                     <Select
                       className={styles.select}
                       label="Currency"
-                      defaultValue={defaultCurrencyOption}
                       options={currencyOptions}
                       onChange={(e) =>
                         onHandleGenericChange({
@@ -255,6 +271,7 @@ export const EditForm = forwardRef(function EditForm(
                 <div className={styles.halves}>
                   {Object.entries(templateSettings?.theme || {})
                     .filter(([k, v]) => !k.includes('__hsva'))
+                    .filter(([k, v]) => k !== 'logo')
                     .map(([k, v], index) => (
                       <Input
                         key={index}
@@ -303,6 +320,29 @@ export const EditForm = forwardRef(function EditForm(
                           )
                         }
                       />
+                    ))}
+                </div>
+              </div>
+              <div className="input_group">
+                <div className={styles.halves}>
+                  {Object.entries(templateSettings?.theme || {})
+                    .filter(([k, v]) => k === 'logo')
+                    .map((i) => (
+                      <label
+                        htmlFor="logo"
+                        style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                      >
+                        <input
+                          type="file"
+                          id="logo"
+                          accept="image/*"
+                          onChange={onHandleLogoChange}
+                          className={styles.file_upload}
+                          style={{ display: 'none', visibility: 'hidden' }}
+                        />
+                        <Camera />
+                        <span style={{ marginLeft: '10px' }}>Upload logo</span>
+                      </label>
                     ))}
                 </div>
               </div>

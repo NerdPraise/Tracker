@@ -39,9 +39,13 @@ declare global {
   }
 
   type ITheme = {
-    footer_background?: string
-    accent_color?: string
+    footerBg?: string
+    accent?: string
+    background?: string
+    body?: string
+    header?: string
     color?: string
+    logo?: string
   }
 
   type SimpleSettings = { html: string; theme: ITheme }
