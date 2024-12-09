@@ -1,13 +1,15 @@
 import { useRef } from 'react'
 import ClassNames from 'classnames'
 import { Link, useNavigate } from 'react-router-dom'
-import { CircleCheckBig } from 'lucide-react'
+import { ArrowUpRight, CircleCheckBig } from 'lucide-react'
 import { motion } from 'framer-motion'
+import CountUp from 'react-countup'
 
 import { Button, Nav, Card } from '_Home/components'
 import { ROUTES } from '_Home/routing/routes'
-import { plans } from '_Home/constants'
+import { plans, steps } from '_Home/constants'
 import InvoiceDash from '_Images/invoice.svg'
+import PaidInvoice from '_Images/iluss.svg'
 
 import { features } from './constants'
 import styles from './Home.module.styl'
@@ -20,6 +22,17 @@ const generateDots = (count: number) => {
     duration: 3 + Math.random() * 10,
     delay: Math.random() * 5,
   }))
+}
+const bounce = {
+  animate: {
+    y: [5, -6, 5],
+    transition: {
+      duration: 1.8,
+      ease: 'easeInOut',
+      repeat: Infinity,
+      // repeatType: 'loop',
+    },
+  },
 }
 
 const Home = () => {
@@ -82,7 +95,156 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <motion.div
+
+      <motion.section
+        className={styles.why}
+        initial={{ opacity: 0, transform: 'translateY(50px)' }}
+        whileInView={{ opacity: 1, transform: 'translateY(0)' }}
+        viewport={{ root: scrollRef, amount: 0.2 }}
+      >
+        <h5>WHY US?</h5>
+        <h2>
+          Why you should use&nbsp;
+          <motion.span
+            style={{
+              display: 'inline-flex',
+              color: '#993ad5',
+            }}
+            variants={bounce}
+            animate="animate"
+          >
+            USEINVOICE
+          </motion.span>
+        </h2>
+        <div className={styles.why_cards}>
+          <div className={styles.half}>
+            <Card childrenClassName={styles.card_children}>
+              <div className={styles.info}>
+                <p>
+                  <CountUp end={10} enableScrollSpy duration={8} scrollSpyOnce />+
+                </p>
+                <p>Fully customisable invoices</p>
+              </div>
+            </Card>
+            <Card childrenClassName={styles.card_children}>
+              <div className={styles.invoice_paid}>
+                <p>Auto-billing & Recurring Invoices coupled with client side payment</p>
+                <div>
+                  <img src={PaidInvoice} />
+                </div>
+              </div>
+            </Card>
+          </div>
+          <div className={styles.full}>
+            <Card childrenClassName={styles.card_children}>
+              <div className={styles.report}>
+                <p>Finance reporting</p>
+                <img src="" alt="" />
+              </div>
+            </Card>
+          </div>
+        </div>
+      </motion.section>
+
+      <section className={styles.steps}>
+        <h5>STEPS</h5>
+        <h2>Minimise effort, customise branding and reserve a system that works for you</h2>
+        <div className={styles.list_steps}>
+          {steps.map((item, ind) => (
+            <Card childrenClassName={styles.step_card_children}>
+              <p className={styles.step_number}>{ind + 1}</p>
+              <div className={styles.header}>{item.title}</div>
+              <div className={styles.desc}>{item.desc}</div>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.goals}>
+        <h5>OUR GOAL</h5>
+        <h2>Simplify, Automate and Ease invoice transportation</h2>
+        <p>
+          Our service is built to tailor towards any and every audience from SMEs to Freelancers across
+          all industries
+        </p>
+        <div className={styles.insights}>
+          <div>
+            <p>
+              <CountUp end={69} enableScrollSpy duration={2} scrollSpyOnce />%
+            </p>
+            <p>Enhanced productivity</p>
+          </div>
+          <div>
+            <p>
+              <CountUp end={100} enableScrollSpy duration={2} scrollSpyOnce />%
+            </p>
+            <p>Improvement on every other invoicing system</p>
+          </div>
+          <div>
+            <p>0</p>
+            <p>Starting cost</p>
+          </div>
+        </div>
+        <section className={styles.home_pricing} id="pricing">
+          <p className="small">CHOOSE PLAN - Unlock all endless possibilites</p>
+          <div className={styles.pricing_cards}>
+            {plans.map((item, index) => (
+              <Card
+                key={item.name}
+                className={styles.pricing_card}
+                childrenClassName={styles.children}
+                onMouseMove={(e) => handleMouseMove(e, index)}
+                ref={(el) => setRef(el, index)}
+              >
+                {item.name === 'Premium' && <div className={styles.recommended}>POPULAR</div>}
+                <h5>{item.name}</h5>
+                <p className="small">{item.description}</p>
+                <div className={styles.price}>
+                  <span>$</span>
+                  &nbsp;{item.price.toFixed(2)}
+                </div>
+                <Button
+                  onClick={() => navigate('/register?rdr=subscribe')}
+                  text="Get started"
+                  className={styles.pricing_btn}
+                />
+                {item.offers.slice(0, 4).map((offer) => (
+                  <div className={ClassNames('small', styles.list_item)} key={offer}>
+                    <CircleCheckBig />
+                    {offer}
+                  </div>
+                ))}
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <Card className={styles.action}>
+          <div className={styles.middle_set}>
+            <h5>TRY IT NOW</h5>
+            <div className={styles.call}>
+              <div>
+                <h2>Ready to level up your invoice game?</h2>
+                <p>
+                  Supports small business with simple invoicing solution, powerful integrations and
+                  flexible branding management
+                </p>
+              </div>
+              <div className={styles.btn_group}>
+                <Button className={styles.hero__btn} onClick={null} text="Get started" />
+                <Button
+                  className={styles.hero__btn}
+                  onClick={null}
+                  logo={<ArrowUpRight size={18} />}
+                  text="Learn more"
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
+      </section>
+
+      {/* <motion.div
         className={styles.home__features}
         initial={{ opacity: 0, transform: 'translateY(50px)' }}
         whileInView={{ opacity: 1, transform: 'translateY(0)' }}
@@ -120,43 +282,7 @@ const Home = () => {
             </Card>
           ))}
         </div>
-      </motion.div>
-      <div className={styles.home_pricing} id="pricing">
-        <div className={styles.pricing_header}>
-          <h3>Equip yourself with world class software</h3>
-          <p className="small">Unlock all endless possibilites - pricing that works for everyone</p>
-        </div>
-        <div className={styles.pricing_cards}>
-          {plans.map((item, index) => (
-            <Card
-              key={item.name}
-              className={styles.pricing_card}
-              childrenClassName={styles.children}
-              onMouseMove={(e) => handleMouseMove(e, index)}
-              ref={(el) => setRef(el, index)}
-            >
-              {item.name === 'Premium' && <div className={styles.recommended}>POPULAR</div>}
-              <h5>{item.name}</h5>
-              <p className="small">{item.description}</p>
-              <div className={styles.price}>
-                <span>$</span>
-                &nbsp;{item.price}
-              </div>
-              <Button
-                onClick={() => navigate('/register?rdr=subscribe')}
-                text="Get started"
-                className={styles.pricing_btn}
-              />
-              {item.offers.slice(0, 4).map((offer) => (
-                <div className={ClassNames('small', styles.list_item)} key={offer}>
-                  <CircleCheckBig />
-                  {offer}
-                </div>
-              ))}
-            </Card>
-          ))}
-        </div>
-      </div>
+      </motion.div> */}
     </div>
   )
 }

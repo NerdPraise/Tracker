@@ -7,9 +7,10 @@ import { ROUTES } from '_Home/routing/routes'
 import { Button, Input } from '_Home/components'
 import { isFormValid } from '_Home/common/utils'
 import { useAppSelector, useAppDispatch } from '_Home/common/hooks'
+import { loginGoogleUser } from '_Module/authentication/Login/redux/actions'
 
 import Google from '_Images/google.svg?react'
-import { loginGoogleUser } from '_Module/authentication/Login/redux/actions'
+import BouncingBalls from '_Images/bouncing-circles.svg?react'
 
 import { signUpAction } from './redux/actions'
 import styles from './SignUp.module.styl'
@@ -109,12 +110,17 @@ export const SignUp = () => {
       <div className={styles.other_signup}>
         <Button
           onClick={onHandleGoogleClick}
-          loading={isGoogleLogin}
           text={
-            <>
-              <Google />
-              GOOGLE
-            </>
+            !isGoogleLogin ? (
+              <>
+                <Google />
+                GOOGLE
+              </>
+            ) : (
+              <div style={{ width: 50 }}>
+                <BouncingBalls fill="white" />
+              </div>
+            )
           }
         />
       </div>

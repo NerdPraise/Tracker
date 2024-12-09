@@ -8,6 +8,7 @@ import { ROUTES } from '_Home/routing/routes'
 import { useAppSelector, useAppDispatch } from '_Home/common/hooks'
 
 import Google from '_Images/google.svg?react'
+import BouncingBalls from '_Images/bouncing-circles.svg?react'
 
 import { loginAction, loginGoogleUser } from './redux/actions'
 import styles from './Login.module.styl'
@@ -83,12 +84,17 @@ export const Login = () => {
       <div className={styles.other_signup}>
         <Button
           onClick={onHandleGoogleClick}
-          loading={isGoogleLogin}
           text={
-            <>
-              <Google />
-              GOOGLE
-            </>
+            !isGoogleLogin ? (
+              <>
+                <Google />
+                GOOGLE
+              </>
+            ) : (
+              <div style={{ width: 50 }}>
+                <BouncingBalls fill="white" />
+              </div>
+            )
           }
         />
       </div>
