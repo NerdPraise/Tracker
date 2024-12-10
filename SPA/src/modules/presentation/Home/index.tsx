@@ -30,7 +30,6 @@ const bounce = {
       duration: 1.8,
       ease: 'easeInOut',
       repeat: Infinity,
-      // repeatType: 'loop',
     },
   },
 }
@@ -38,7 +37,7 @@ const bounce = {
 const Home = () => {
   const refs = useRef<HTMLDivElement[]>([])
   const setRef = (element, index) => {
-    refs.current[index] = element // Assign element to the specific index
+    refs.current[index] = element
   }
   const scrollRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
