@@ -18,6 +18,10 @@ export const saveUserDetails =
     let updatedData
     if (isUser) {
       updatedData = { user: data }
+      // TODO: small hack
+      if (Object.keys(data).includes('address')) {
+        updatedData = data
+      }
     } else {
       updatedData = data
     }

@@ -480,7 +480,7 @@ export const b = `
       .invoice_details {
         display: flex;
         flex-direction: column;
-        max-width: 200px;
+        max-width: 250px;
         font-size: 14px;
         margin-bottom: 15px;
 
@@ -828,6 +828,8 @@ export const getContext = (invoice: IInvoice, user: IUser, invoiceSettings: IInv
     account_number: invoiceSettings?.accountNumber,
   },
   client: invoice?.client?.name,
+  clientAddress: invoice?.client?.address,
+  clientEmail: invoice?.client?.email,
   theme: {
     footerBg: (invoice?.template?.settings as SimpleSettings)?.theme?.footerBg,
     accent: (invoice?.template?.settings as SimpleSettings)?.theme?.accent,
@@ -898,7 +900,7 @@ export const contactColumnDefs = [
   },
 ]
 
-const j = `
+export const j = `
 
 
 <!DOCTYPE html>
@@ -979,7 +981,7 @@ const j = `
       .invoice_details {
         display: flex;
         flex-direction: column;
-        max-width: 200px;
+        max-width: 240px;
         font-size: 14px;
         margin-bottom: 15px;
 
@@ -998,15 +1000,13 @@ const j = `
         max-width: 420px;
         display: flex;
         justify-content: space-between;
+        gap: 20px;
         .address_group {
+          max-width: 230px;
           display: flex;
           flex-direction: column;
           margin-bottom: 15px;
         }
-      }
-
-      .address .address_group div {
-        flex-basis:48%;
       }
 
       .address .address_group p {
@@ -1107,7 +1107,7 @@ const j = `
             <p>{{.}}</p>
             {{/invoice.inv_tag}}
             {{^invoice.inv_tag}}
-            <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+            <div style="height: 15px; min-width: 120px; background: #efeeee; mix-blend-mode: darken;"></div>
             {{/invoice.inv_tag}}
             </div>
           </div>
@@ -1120,7 +1120,7 @@ const j = `
               <p>{{.}}</p>
               {{/invoice.due_date}}
               {{^invoice.due_date}}
-              <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+              <div style="height: 15px; min-width: 120px; background: #efeeee; mix-blend-mode: darken;"></div>
               {{/invoice.due_date}}
             </div>
           </div>
@@ -1142,31 +1142,31 @@ const j = `
               <p>
                 {{ user.name }}
                 {{^user.name }}
-                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                <div style="height: 15px; min-width: 120px; background: #efeeee; mix-blend-mode: darken;"></div>
                 {{/user.name }}
               </p>
               <p>
                 {{user.address}}
                 {{^user.address }}
-                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                <div style="height: 15px; min-width: 120px; background: #efeeee; mix-blend-mode: darken;"></div>
                 {{/user.address }}
               </p>
               <p>
                 {{user.bank}}
                 {{^user.bank }}
-                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                <div style="height: 15px; min-width: 120px; background: #efeeee; mix-blend-mode: darken;"></div>
                 {{/user.bank }}
                 </>
               <p>
                 {{user.account_name}}
                 {{^user.account_name }}
-                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                <div style="height: 15px; min-width: 120px; background: #efeeee; mix-blend-mode: darken;"></div>
                 {{/user.account_name }}
                 </p>
               <p>
                 {{user.account_number}}
                 {{^user.account_number }}
-                <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+                <div style="height: 15px; min-width: 120px; background: #efeeee; mix-blend-mode: darken;"></div>
                 {{/user.account_number }}
               </p>
             </div>
@@ -1178,8 +1178,23 @@ const j = `
             {{/client }}
 
             {{^client }}
-            <div style="height: 15px; min-width: 80px; background: #efeeee; mix-blend-mode: darken;"></div>
+            <div style="height: 15px; margin-bottom: 5px; min-width: 120px; background: #efeeee; mix-blend-mode: darken; flex-basis:none;"></div>
             {{/client }}
+            {{#clientEmail}}
+              <p>{{.}}</p> 
+              {{/clientEmail }} 
+              {{^clientEmail }} 
+              <div
+                style="height: 15px!important;margin-bottom: 5px; min-width: 120px; background: #efeeee; mix-blend-mode: darken; flex-basis:none;"></div>
+            {{/clientEmail }}
+
+            {{#clientAddress}}
+              <p>{{.}}</p> 
+              {{/clientAddress }} 
+              {{^clientAddress }} 
+              <div
+                style="height: 15px!important; min-width: 120px; background: #efeeee; mix-blend-mode: darken; flex-basis:none;"></div>
+            {{/clientAddress }}
           </div>
         </div>
 
@@ -1270,11 +1285,9 @@ const j = `
           <p> Extra information........ </p>
           <p> 🙌🏾Thank you </p>
           {{/invoice.description}}
-        
         </div>
       </div>
     </div>
   </main>
 </html>
-
 `

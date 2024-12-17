@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 import { Frame, Spacer } from '_Home/components'
 import { StatusCode } from '_Home/common/utils'
 
-import { getContext, a, b } from '../constants'
+import { getContext, a, b, j } from '../constants'
 import { setSelectedInvoice } from '../redux/actions'
 import { EditForm } from './EditForm'
 import { useEdit } from './useEdit'
@@ -85,7 +85,7 @@ export const InvoiceEdit = () => {
         </div>
         <div className={styles.details}>
           <div className={styles.frame}>
-            <Frame frameRef={frameRef} template={templateSettings?.html || ''} context={context} />
+            <Frame frameRef={frameRef} template={j || templateSettings?.html || ''} context={context} />
             <Spacer />
           </div>
 

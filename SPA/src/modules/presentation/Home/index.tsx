@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import ClassNames from 'classnames'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowUpRight, CircleCheckBig } from 'lucide-react'
@@ -36,6 +36,20 @@ const bounce = {
 
 const Home = () => {
   const refs = useRef<HTMLDivElement[]>([])
+  const menuExplore = ['Income', 'Identity', 'Identity', 'Identity']
+
+  const [transformStyle, setTransformStyle] = useState<{
+    [key: string]: string | number
+  }>({
+    transform: 'translate3d(calc(0% - 0px), 0px, 0px)',
+    nth: 0,
+  })
+  const updateExploreContent = (nth: number) => {
+    setTransformStyle({
+      transform: `translate3d(calc(${-nth * 100}% - ${nth * 32}px), 0px, 0px)`,
+      nth,
+    })
+  }
   const setRef = (element, index) => {
     refs.current[index] = element
   }
@@ -99,7 +113,7 @@ const Home = () => {
         className={styles.why}
         initial={{ opacity: 0, transform: 'translateY(50px)' }}
         whileInView={{ opacity: 1, transform: 'translateY(0)' }}
-        viewport={{ root: scrollRef, amount: 0.2 }}
+        viewport={{ root: scrollRef, amount: 0.2, once: true }}
       >
         <h5>WHY US?</h5>
         <h2>
@@ -123,22 +137,48 @@ const Home = () => {
                   <CountUp end={10} enableScrollSpy duration={8} scrollSpyOnce />+
                 </p>
                 <p>Fully customisable invoices</p>
+                <p>
+                  You can also build your personalized invoice templates from scratch using our state of
+                  the art widgets.
+                </p>
               </div>
             </Card>
             <Card childrenClassName={styles.card_children}>
               <div className={styles.invoice_paid}>
-                <p>Auto-billing & Recurring Invoices coupled with client side payment</p>
+                {/* <p>Auto-billing & Recurring Invoices coupled with client side payment</p>
                 <div>
                   <img src={PaidInvoice} />
-                </div>
+                </div> */}
               </div>
             </Card>
           </div>
           <div className={styles.full}>
             <Card childrenClassName={styles.card_children}>
               <div className={styles.report}>
-                <p>Finance reporting</p>
-                <img src="" alt="" />
+                <div className={styles.lp__explore}>
+                  <div className={styles.lp__explore_menu}>
+                    <h4>Explore our services </h4>
+                    {menuExplore.map((item, i) => (
+                      <div className={styles.menu_btn} onClick={() => updateExploreContent(i)}>
+                        <span
+                          className={ClassNames(styles.menu_btn_icon, {
+                            active: transformStyle.nth === i,
+                          })}
+                        />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                  <div className={styles.lp__explore_slider}>
+                    <div className={styles.lp__explore_content} style={transformStyle}>
+                      <div className={styles.lp__explore_cards}>d</div>
+                      <div className={styles.lp__explore_cards}>ddjsd</div>
+                      <div className={styles.lp__explore_cards}>dwew</div>
+                      <div className={styles.lp__explore_cards}>dwe</div>
+                      <div className={styles.lp__explore_cards}>dwe</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Card>
           </div>

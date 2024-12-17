@@ -31,6 +31,7 @@ const GeneralSettings = () => {
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({
     username: user?.username,
     email: user?.email,
+    address: user?.address,
     firstName: user?.firstName,
     timezone: user?.timezone,
     dateFormat: user?.dateFormat,
@@ -80,6 +81,7 @@ const GeneralSettings = () => {
   const basic_fields = [
     { label: 'Username', name: 'username' },
     { label: 'Email', name: 'email' },
+    { label: 'Address', name: 'address' },
   ]
 
   const renderField = ({ label, name }: { label: string; name: string }) => (
