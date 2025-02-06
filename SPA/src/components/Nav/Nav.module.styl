@@ -36,10 +36,44 @@
         inset 0
   .nav_login
     display flex
-    max-width 100px
+    // max-width 100px
+    padding 6px
+    border-radius 9999px
     align-items center
+    font-size 14px
+    column-gap 5px
+    background rgba(255, 255, 255, 0.2)
+    box-shadow 0 4px 30px rgba(0, 0, 0, 0.1)
+    backdrop-filter blur(5px)
+    -webkit-backdrop-filter blur(5px)
+    // border 1px solid rgba(255, 255, 255, 0.3)
     a
       color $color-light-ccc
+      &:first-of-type
+        padding 6px 10px
+        border-top-left-radius 9999px
+        border-top-right-radius 1500px
+        border-bottom-right-radius 1500px
+        border-bottom-left-radius 9999px
+        background rgb(255 255 255 / 0.4)
+        color rgb(40, 25, 80)
+        transition .5s
+        0 0 #0000
+        box-shadow 0 1px 2px -1px rgb(0 0 0 / 0.1)
+        &:hover
+          color $color-purple
+
+          
+      &:nth-of-type(even)
+        padding 6px 10px
+        border-top-right-radius 9999px
+        border-bottom-right-radius 9999px
+        border-top-left-radius 1500px
+        border-bottom-left-radius 1500px
+        background #7c3aed
+        background-image linear-gradient(to bottom right, #A02BE4, transparent, #8b46e5)
+        color white
+       
     > span
       margin-left 20px
   .hamburger

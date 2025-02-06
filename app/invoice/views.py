@@ -229,12 +229,17 @@ class TransactionAPIView(views.APIView):
         return Response(status=204)
 
 
-# TODO: CREATE upon user signup
 class InvoiceSettingsAPIView(generics.ListAPIView, generics.UpdateAPIView):
     serializer_class = InvoiceSettingsSerializer
 
     def get_queryset(self):
         return InvoiceSettings.objects.filter(user=self.request.user)
+
+    def get(self, request):
+        qs = self.get_queryset()
+        if not qs.exists():
+            InvoiceSettings.objects.create(user=request.user)  # optimise
+        return super().get(self, request)
 
 
 class InvoiceCustomTemplateAPIView(views.APIView):

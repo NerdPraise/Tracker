@@ -96,7 +96,9 @@ const Home = () => {
             <div className={styles.hero_content_light_item} />
           </div>
           <div className={styles.hero_content_item}>
-            <h1>Streamline Your Invoicing with Ease</h1>
+            <h1>
+              Streamline Your <span className={styles.title_diff}>Invoicing</span> with Ease
+            </h1>
             <p>Create, Send, and Manage Invoices in Seconds – Get Paid Faster!</p>
             <Link to={ROUTES.unauthenticatedRoutes.SIGNUP.path}>
               <Button className={styles.hero__btn} onClick={null} text="Get started for free" />
@@ -145,10 +147,10 @@ const Home = () => {
             </Card>
             <Card childrenClassName={styles.card_children}>
               <div className={styles.invoice_paid}>
-                {/* <p>Auto-billing & Recurring Invoices coupled with client side payment</p>
+                <p>Auto-billing & Recurring Invoices coupled with client side payment</p>
                 <div>
                   <img src={PaidInvoice} />
-                </div> */}
+                </div>
               </div>
             </Card>
           </div>
@@ -159,12 +161,13 @@ const Home = () => {
                   <div className={styles.lp__explore_menu}>
                     <h4>Explore our services </h4>
                     {menuExplore.map((item, i) => (
-                      <div className={styles.menu_btn} onClick={() => updateExploreContent(i)}>
-                        <span
-                          className={ClassNames(styles.menu_btn_icon, {
-                            active: transformStyle.nth === i,
-                          })}
-                        />
+                      <div
+                        className={ClassNames(styles.menu_btn, {
+                          [styles.active]: transformStyle.nth === i,
+                        })}
+                        onClick={() => updateExploreContent(i)}
+                      >
+                        <span className={ClassNames(styles.menu_btn_icon)} />
                         {item}
                       </div>
                     ))}

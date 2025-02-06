@@ -14,7 +14,6 @@ const NavMenu = [
 ]
 
 export const Nav = () => {
-  const [lightMode, setLightMode] = useState<boolean>(false)
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const goToSection = (id: string) => {
     document.getElementById(id).scrollIntoView({ behavior: 'smooth' })
@@ -71,9 +70,7 @@ export const Nav = () => {
         </div>
         <div className={styles.nav_login}>
           <Link to="/login">Sign in</Link>
-          <span style={{ cursor: 'pointer' }} onClick={() => setLightMode((prev) => !prev)}>
-            {lightMode ? <Sun /> : <Moon />}
-          </span>
+          <Link to="/register">Get Started</Link>
         </div>
       </div>
     </motion.nav>

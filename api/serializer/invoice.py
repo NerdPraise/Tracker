@@ -97,6 +97,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
     invoice_items = InvoiceItemsSerializer(many=True, allow_empty=False, required=True)
     user = serializers.CharField(read_only=True)
     amount = serializers.SerializerMethodField()
+    number = serializers.IntegerField(required=False, default=0)
 
     class Meta:
         model = Invoice

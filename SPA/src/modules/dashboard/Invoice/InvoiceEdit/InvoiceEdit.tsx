@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef } from 'react'
+import { useMemo, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
@@ -7,12 +7,13 @@ import { useAppDispatch, useAppSelector } from '_Home/common/hooks'
 import { Frame, Spacer } from '_Home/components'
 import { StatusCode } from '_Home/common/utils'
 
-import { getContext, a, b, j } from '../constants'
+import { getContext, a } from '../constants'
 import { setSelectedInvoice } from '../redux/actions'
 import { EditForm } from './EditForm'
 import { useEdit } from './useEdit'
 
 import styles from '../Invoice.module.styl'
+import { Toast, ToastLevel } from '_Home/components/Toast'
 
 export const InvoiceEdit = () => {
   const {
@@ -25,6 +26,10 @@ export const InvoiceEdit = () => {
   const invoiceID = useParams().invoiceId
   const navigate = useNavigate()
   const frameRef = useRef<HTMLDivElement>(null)
+  const [toastMessage, setToastMessage] = useState({
+    level: 'error' as ToastLevel,
+    message: '',
+  })
 
   const {
     invoiceItems,
@@ -49,7 +54,6 @@ export const InvoiceEdit = () => {
   useEffect(() => {
     if (!loading) {
       if (statusCode === StatusCode.CREATED) {
-        console.log('NAH THIS RUNS')
         navigate(`../../invoice/${selectedInvoice?.uuid}`)
       } else if (statusCode === StatusCode.SUCCESS) {
         // For templates
@@ -60,7 +64,6 @@ export const InvoiceEdit = () => {
 
   useEffect(() => {
     if (invoiceID === 'temp' && selectedInvoice?.uuid) {
-      console.log('THIS RUNS')
       navigate(`../${selectedInvoice.uuid}`)
     }
   }, [selectedInvoice])
@@ -70,9 +73,10 @@ export const InvoiceEdit = () => {
   }, [invoices])
 
   const context = useMemo(() => getContext(selectedInvoice, user, settings), [selectedInvoice, settings])
-
+  console.log(toastMessage.message)
   return (
     <SideBarLayout disableHide>
+      <Toast {...toastMessage} />
       <div className={styles.InvoiceEdit}>
         <div className={styles.header}>
           <h2>
@@ -85,7 +89,7 @@ export const InvoiceEdit = () => {
         </div>
         <div className={styles.details}>
           <div className={styles.frame}>
-            <Frame frameRef={frameRef} template={j || templateSettings?.html || ''} context={context} />
+            <Frame frameRef={frameRef} template={templateSettings?.html || ''} context={context} />
             <Spacer />
           </div>
 
@@ -104,6 +108,7 @@ export const InvoiceEdit = () => {
             templateSettings={templateSettings}
             selectedInvoice={selectedInvoice}
             hasTemplateChanged={hasTemplateChanged}
+            setToastMessage={setToastMessage}
           />
         </div>
       </div>

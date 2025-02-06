@@ -29,14 +29,14 @@ export const AddInvoice = () => {
 
   const onTemplateSelected = () => {
     setCreateLoading(true)
-    if (selectedTemplate.category.toLowerCase() === 'custom') {
+    if (selectedTemplate.category?.toLowerCase() === 'custom') {
       dispatch(createNewCustomTemplate())
     }
   }
 
   useEffect(() => {
     let debouncedCreateSimpleInvoice
-    if (createLoading && showModal && selectedTemplate?.category.toLowerCase() !== 'custom') {
+    if (createLoading && showModal && selectedTemplate?.category?.toLowerCase() !== 'custom') {
       debouncedCreateSimpleInvoice = setTimeout(() => {
         navigate(`../edit/temp`)
         setCreateLoading(false)
@@ -124,7 +124,7 @@ export const AddInvoice = () => {
               {!createLoading && <Button onClick={() => onTemplateSelected()} text="Select template" />}
               {createLoading && (
                 <div className={styles.loadingProject}>
-                  <BouncingBalls />
+                  <BouncingBalls fill="#993ad5" />
                 </div>
               )}
             </div>

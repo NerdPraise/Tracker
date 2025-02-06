@@ -27,6 +27,7 @@ class TimeStampedModel(models.Model):
 
 
 class Invoice(TimeStampedModel):
+    number = models.PositiveIntegerField(default=1)
     name = models.CharField(max_length=255, null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     client = models.ForeignKey("Client", on_delete=models.SET_NULL, null=True)
@@ -45,7 +46,12 @@ class Invoice(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.name = f"{self.user.invoicesettings.prefix}-{self.user.invoices.count() + 1}"
+            if last_invoice := self.user.invoices.first():
+                next_count = max(last_invoice.number, self.user.invoices.count()) + 1
+            else:
+                next_count = self.user.invoices.count() + 1
+            self.number = max(self.number, next_count)
+            self.name = f"{self.user.invoicesettings.prefix}-{self.number}"
         return super().save(*args, **kwargs)
 
     @cached_property

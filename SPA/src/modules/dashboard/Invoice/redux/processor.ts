@@ -12,7 +12,7 @@ export const TemplatesProcessor = (templates: ITemplate[]): IProcessedTemplates 
     if (item.user) {
       result['recent'].push(item)
     } else {
-      result[item.category.toLowerCase()].push(item)
+      result[item.category?.toLowerCase()].push(item)
     }
   })
   return result as IProcessedTemplates

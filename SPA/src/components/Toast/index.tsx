@@ -6,9 +6,10 @@ import { Portal } from '../Portal/Portal'
 
 import style from './Toast.module.styl'
 
+export type ToastLevel = 'alert' | 'success' | 'error'
 export interface ToastProps {
   message: string | undefined
-  level: 'alert' | 'success' | 'error'
+  level: ToastLevel
   onClear?: VoidFunction
 }
 

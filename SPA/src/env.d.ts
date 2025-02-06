@@ -19,6 +19,7 @@ declare global {
 
   type IInvoice = {
     id: number
+    number: number
     invoiceItems: IInvoiceItems[]
     name: string
     uuid: string
@@ -63,6 +64,7 @@ declare global {
   }
 
   type ITemplate = {
+    id?: string
     settings: SimpleSettings | Settings
     category: string
     user: string | null
