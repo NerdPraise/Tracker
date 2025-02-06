@@ -97,10 +97,10 @@ const Home = () => {
           </div>
           <div className={styles.hero_content_item}>
             <h1>
-              Streamline Your <span className={styles.title_diff}>Invoicing</span> with Ease
+              Streamline Your <span className={styles.title_diff}>Invoicing with</span> Ease
             </h1>
             <p>Create, Send, and Manage Invoices in Seconds – Get Paid Faster!</p>
-            <Link to={ROUTES.unauthenticatedRoutes.SIGNUP.path}>
+            <Link to={ROUTES.unauthenticatedRoutes.SIGNUP.path} className={styles.hero__btn_container}>
               <Button className={styles.hero__btn} onClick={null} text="Get started for free" />
             </Link>
             <div className={styles.hero__dash}>
@@ -125,6 +125,7 @@ const Home = () => {
               display: 'inline-flex',
               color: '#993ad5',
             }}
+            className={styles.bounce_name}
             variants={bounce}
             animate="animate"
           >
@@ -133,7 +134,7 @@ const Home = () => {
         </h2>
         <div className={styles.why_cards}>
           <div className={styles.half}>
-            <Card childrenClassName={styles.card_children}>
+            <Card childrenClassName={styles.card_children} className={styles.card_container}>
               <div className={styles.info}>
                 <p>
                   <CountUp end={10} enableScrollSpy duration={8} scrollSpyOnce />+
@@ -145,7 +146,7 @@ const Home = () => {
                 </p>
               </div>
             </Card>
-            <Card childrenClassName={styles.card_children}>
+            <Card childrenClassName={styles.card_children} className={styles.card_container}>
               <div className={styles.invoice_paid}>
                 <p>Auto-billing & Recurring Invoices coupled with client side payment</p>
                 <div>
@@ -155,7 +156,7 @@ const Home = () => {
             </Card>
           </div>
           <div className={styles.full}>
-            <Card childrenClassName={styles.card_children}>
+            <Card childrenClassName={styles.card_children} className={styles.card_container}>
               <div className={styles.report}>
                 <div className={styles.lp__explore}>
                   <div className={styles.lp__explore_menu}>

@@ -21,6 +21,10 @@
     h2
       font-size 34px
       margin-bottom 35px
+      .bounce_name
+          background linear-gradient(to right, #8052FF, #F95FFF)
+          background-clip text
+          -webkit-text-fill-color transparent
     &_cards
       width 100%
       .half
@@ -31,6 +35,9 @@
       .full
         height 400px
         width 100%
+      .card_container
+        z-index 50
+        box-shadow 0px 20.81px 60.15px 0px rgba(136, 93, 254, 0.05)
       .card_children
         padding 35px
         .info
@@ -161,7 +168,7 @@
         font-size 100px
         font-weight 600
         color transparent
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 75%);
+        background linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 75%);
         background-clip: text; 
         -webkit-background-clip: text;
       .header
@@ -319,7 +326,7 @@
           line-height 78px
           margin-bottom 22px
           span
-            background linear-gradient(to right, $color-purple, #fff)
+            background linear-gradient(to right, #8052FF, #F95FFF)
             background-clip text
             -webkit-text-fill-color transparent
         > p
@@ -328,11 +335,27 @@
           font-weight 400
           color $color-less-white 
           text-align center
+        .hero__btn_container
+          background linear-gradient(180deg, #9A75FF 0%, #6733F4 100%)
+          box-shadow 0px 8.75px 24.49px 0px #8052FF52
+          box-shadow 0px 38.49px 45.49px 0px #8052FF47
+          border-radius 9999px
+          padding 3px
+          height 56px
+          transition ease .5s 
+          &:hover
+            padding 1px
+
         .hero__btn
           font-size 16px
           height 50px
           width 180px
-          border-radius 7px
+          border-radius 9999px
+          background radial-gradient(50% 50% at 50% 50%, #A686FF 0%, #8052FF 100%)
+          border 2px solid #FFFFFF1A
+          &:hover
+            color white
+            background radial-gradient(50% 50% at 50% 20%, #A686FF 0%, #8052FF 100%)
         .hero__dash
           background #181c1e66
           backdrop-filter blur(4px)
