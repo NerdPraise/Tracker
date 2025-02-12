@@ -1,9 +1,11 @@
 import datetime
 import uuid
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.utils import timezone
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, permissions, views, viewsets
@@ -21,7 +23,7 @@ from api.serializer.invoice import (
 from lib.tasks import send_mail_async
 from lib.utils import send_mail_user
 
-from .models import Client, Invoice, InvoiceMessageCode, InvoiceSettings, InvoiceTemplate, Transaction
+from .models import Client, Invoice, InvoiceMessageCode, InvoiceSettings, InvoiceTemplate, Payment, Transaction
 
 User = get_user_model()
 
@@ -291,3 +293,61 @@ class InvoiceCustomTemplateAPIView(views.APIView):
         from_db_temp.save()
 
         return Response(self.serializer_class(from_db_temp).data, status=200)
+
+
+class UserOverviewAPIView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        today = timezone.now()
+        thirty_days_ago = today - timedelta(days=30)
+
+        # Get invoice statistics
+        invoices = Invoice.objects.filter(user=user)
+        draft_invoices = invoices.filter(payment__status=Payment.StatusChoices.DRAFT)
+        pending_invoices = invoices.filter(payment__status=Payment.StatusChoices.PENDING)
+        paid_invoices = invoices.filter(payment__status=Payment.StatusChoices.PAID)
+
+        # Get recent activity
+        recent_invoices = invoices.filter(created_at__gte=thirty_days_ago)
+        recent_sent = recent_invoices.filter(date_sent__isnull=False).count()
+        recent_paid = recent_invoices.filter(payment__status=Payment.StatusChoices.PAID).count()
+
+        # Calculate financial metrics
+        total_revenue = Invoice.calculate_total_amount(paid_invoices)
+        pending_revenue = Invoice.calculate_total_amount(pending_invoices)
+
+        # Get client statistics
+        total_clients = Client.objects.filter(user=user).count()
+        active_clients = (
+            Client.objects.filter(user=user, invoice__date_sent__isnull=False, invoice__created_at__gte=thirty_days_ago)
+            .distinct()
+            .count()
+        )
+
+        response_data = {
+            "invoice_stats": {
+                "total": invoices.count(),
+                "draft": draft_invoices.count(),
+                "pending": pending_invoices.count(),
+                "paid": paid_invoices.count(),
+            },
+            "financial_stats": {
+                "total_revenue": total_revenue,
+                "pending_revenue": pending_revenue,
+                "average_invoice_value": total_revenue / paid_invoices.count() if paid_invoices.count() > 0 else 0,
+            },
+            "client_stats": {
+                "total_clients": total_clients,
+                "active_clients": active_clients,
+            },
+            "recent_activity": {
+                "invoices_sent": recent_sent,
+                "invoices_paid": recent_paid,
+                "new_clients": Client.objects.filter(user=user, created_at__gte=thirty_days_ago).count(),
+            },
+            "currency": user.invoicesettings.default_currency,
+        }
+
+        return Response(response_data)

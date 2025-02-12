@@ -44,7 +44,7 @@ const Contacts = () => {
     <SideBarLayout disableHide>
       <div className={styles.Contacts}>
         <div className={styles.header}>
-          <h2>
+          <h2 className="text-2xl font-semibold">
             <Link to="..">
               <ArrowLeft />
             </Link>

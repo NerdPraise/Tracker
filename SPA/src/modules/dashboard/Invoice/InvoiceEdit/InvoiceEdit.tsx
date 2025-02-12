@@ -79,7 +79,7 @@ export const InvoiceEdit = () => {
       <Toast {...toastMessage} />
       <div className={styles.InvoiceEdit}>
         <div className={styles.header}>
-          <h2>
+          <h2 className="text-2xl font-semibold">
             <Link to={invoiceID !== 'temp' ? `../${invoiceID}` : '../add'}>
               <ArrowLeft />
             </Link>

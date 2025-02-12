@@ -65,7 +65,9 @@ const Settings = () => {
       <div className={styles.Settings}>
         <div className={styles.header}>
           <div>
-            <h2 id="settings">Settings</h2>
+            <h2 id="settings" className="text-2xl font-semibold">
+              Settings
+            </h2>
             <p>Manage your details and personal preferences here.</p>
           </div>
         </div>

@@ -10,7 +10,7 @@ import { genericChartData } from './constants'
 
 export const dateFormat = 'YYYY-MM-DD'
 
-export const useMoneyDash = () => {
+export const useDash = () => {
   const dispatch = useAppDispatch()
   const {
     transaction: { transactions, loading },

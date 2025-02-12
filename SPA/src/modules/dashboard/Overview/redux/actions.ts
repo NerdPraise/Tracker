@@ -1,4 +1,10 @@
 import { AuthenticatedAPI } from '_Home/store/api'
+import { camelize } from '_Home/common/utils'
+
+export const OVERVIEW_ACTION_TYPES = {
+  GET_OVERVIEW_START: 'OVERVIEW_ACTION_TYPES/GET_OVERVIEW/START',
+  GET_OVERVIEW_DONE: 'OVERVIEW_ACTION_TYPES/GET_OVERVIEW/DONE',
+}
 
 export const MONEY_ACTION_TYPES = {
   GET_MONTHLY_TRANSACTION: 'MONEY_ACTION_TYPES/GET_MONTHLY_TRANSACTION',
@@ -50,6 +56,28 @@ export const getTransactionReportByCategory = (date) => (dispatch) => {
         type: MONEY_ACTION_TYPES.GET_TRANSACTION_BY_CATEGORY_DONE,
         payload: {
           categories: [],
+          errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
+        },
+      }),
+    )
+}
+
+export const getOverviewData = () => (dispatch) => {
+  dispatch({ type: OVERVIEW_ACTION_TYPES.GET_OVERVIEW_START })
+
+  AuthenticatedAPI.get('overview/')
+    .then((response) => {
+      dispatch({
+        type: OVERVIEW_ACTION_TYPES.GET_OVERVIEW_DONE,
+        payload: {
+          data: camelize(response.data),
+        },
+      })
+    })
+    .catch((err) =>
+      dispatch({
+        type: OVERVIEW_ACTION_TYPES.GET_OVERVIEW_DONE,
+        payload: {
           errorMessage: err.response ? err.response.data.message : 'Something terrible occurred',
         },
       }),

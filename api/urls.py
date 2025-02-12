@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from app.accounts.views import ChangePasswordView, GoogleLoginAPIView, MeAPIView, RegisterAPIView
 from app.invoice import views as invoice_views
+from app.invoice.views import UserOverviewAPIView
 from app.money_tracker.views import CategoryAPIView, MonthlyTrackAPIView, TransactionAPIView, WalletAPIView
 from app.pricing.views import UserSubscriptionViewSet, UserTransactionViewSet
 
@@ -80,6 +81,7 @@ urlpatterns = [
     path("clients/<int:pk>", invoice_views.ClientAPIView.as_view(), name="client-update-delete"),
     path("invoice/payment/", invoice_views.TransactionAPIView.as_view(), name="invoice-payment-list-create"),
     path("invoice/<str:uuid>/", invoice_views.InvoicePreviewView.as_view(), name="invoice-retrieve"),
+    path("overview/", UserOverviewAPIView.as_view(), name="user-overview"),
 ] + router.urls
 
 if config("ENVIRONMENT") == "dev":

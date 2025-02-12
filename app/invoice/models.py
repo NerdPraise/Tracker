@@ -54,6 +54,16 @@ class Invoice(TimeStampedModel):
             self.name = f"{self.user.invoicesettings.prefix}-{self.number}"
         return super().save(*args, **kwargs)
 
+    @classmethod
+    def calculate_total_amount(cls, queryset):
+        """
+        Calculates total amount for a queryset of invoices by summing their invoice items
+        """
+        total = 0
+        for invoice in queryset:
+            total += invoice.amount
+        return total
+
     @cached_property
     def amount(self):
         return reduce(lambda a, b: a + (b["quantity"]) * b["unit_price"], self.invoice_items, 0)

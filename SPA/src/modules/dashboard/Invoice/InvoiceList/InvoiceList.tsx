@@ -78,7 +78,9 @@ export const InvoiceList = () => {
     <SideBarLayout disableHide>
       <div className={styles.InvoiceList}>
         <div className={styles.header}>
-          <h2 id="invoice">Invoices</h2>
+          <h2 id="invoice" className="text-2xl font-semibold">
+            Invoices
+          </h2>
           <div className={styles.header_btn}>
             <Button
               className={ClassNames(styles.track_button, 'clients')}

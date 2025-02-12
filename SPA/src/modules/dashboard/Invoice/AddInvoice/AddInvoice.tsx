@@ -61,7 +61,7 @@ export const AddInvoice = () => {
     <SideBarLayout disableHide>
       <div className={styles.InvoiceAdd}>
         <div className={styles.header}>
-          <h2>Create your invoice</h2>
+          <h2 className="text-2xl font-semibold">Create your invoice</h2>
           <p>
             Select from our specially curated templates&nbsp;
             <span>OR</span>

@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import svgr from 'vite-plugin-svgr'
 import { compression } from 'vite-plugin-compression2'
+import tailwindcss from '@tailwindcss/vite'
 
 const root = resolve(__dirname, 'src')
 
@@ -38,5 +39,6 @@ export default defineConfig({
     }),
     svgr(),
     compression(),
+    tailwindcss(),
   ],
 })
